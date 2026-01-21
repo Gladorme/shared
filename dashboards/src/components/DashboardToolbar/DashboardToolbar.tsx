@@ -25,6 +25,7 @@ import { EditButton } from '../EditButton';
 import { EditJsonButton } from '../EditJsonButton';
 import { SaveDashboardButton } from '../SaveDashboardButton';
 import { DashboardStickyToolbar } from '../DashboardStickyToolbar';
+import { EditAnnotationsButton } from '../Annotations/EditAnnotationsButton';
 
 export interface DashboardToolbarProps {
   dashboardName: string;
@@ -32,6 +33,7 @@ export interface DashboardToolbarProps {
   initialVariableIsSticky?: boolean;
   isReadonly: boolean;
   isVariableEnabled: boolean;
+  isAnnotationEnabled: boolean;
   isDatasourceEnabled: boolean;
   onEditButtonClick: () => void;
   onCancelButtonClick: () => void;
@@ -45,6 +47,7 @@ export const DashboardToolbar = (props: DashboardToolbarProps): ReactElement => 
     initialVariableIsSticky,
     isReadonly,
     isVariableEnabled,
+    isAnnotationEnabled,
     isDatasourceEnabled,
     onEditButtonClick,
     onCancelButtonClick,
@@ -82,6 +85,7 @@ export const DashboardToolbar = (props: DashboardToolbarProps): ReactElement => 
                 </Alert>
               )}
               <Stack direction="row" spacing={0.5} ml={1} whiteSpace="nowrap">
+                {isAnnotationEnabled && <EditAnnotationsButton />}
                 {isVariableEnabled && <EditVariablesButton />}
                 {isDatasourceEnabled && <EditDatasourcesButton />}
                 <AddPanelButton />

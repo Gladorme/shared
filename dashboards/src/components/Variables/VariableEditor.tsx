@@ -34,7 +34,14 @@ import {
   AccordionDetails,
 } from '@mui/material';
 import AddIcon from 'mdi-material-ui/Plus';
-import { Action, BuiltinVariableDefinition, VariableDefinition, ExternalVariableDefinition } from '@perses-dev/core';
+import {
+  Action,
+  BuiltinVariableDefinition,
+  VariableDefinition,
+  ExternalVariableDefinition,
+  ListVariableDefinition,
+  TextVariableDefinition,
+} from '@perses-dev/core';
 import { useImmer } from 'use-immer';
 import PencilIcon from 'mdi-material-ui/Pencil';
 import TrashIcon from 'mdi-material-ui/TrashCan';
@@ -86,7 +93,9 @@ export function VariableEditor(props: {
   const [variableState] = useMemo(() => {
     return [hydrateVariableDefinitionStates(variableDefinitions, {}, externalVariableDefinitions)];
   }, [externalVariableDefinitions, variableDefinitions]);
-  const currentEditingVariableDefinition = typeof variableEditIdx === 'number' && variableDefinitions[variableEditIdx];
+  const currentEditingVariableDefinition: VariableDefinition | undefined = variableEditIdx
+    ? variableDefinitions[variableEditIdx]
+    : undefined;
 
   const { openDiscardChangesConfirmationDialog, closeDiscardChangesConfirmationDialog } =
     useDiscardChangesConfirmationDialog();
@@ -179,7 +188,7 @@ export function VariableEditor(props: {
 
   return (
     <>
-      {currentEditingVariableDefinition && (
+      {variableEditIdx && currentEditingVariableDefinition && (
         <ValidationProvider>
           <VariableEditorForm
             initialVariableDefinition={currentEditingVariableDefinition}

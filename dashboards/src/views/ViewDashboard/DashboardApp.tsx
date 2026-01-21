@@ -36,6 +36,7 @@ export interface DashboardAppProps {
   emptyDashboardProps?: Partial<EmptyDashboardProps>;
   isReadonly: boolean;
   isVariableEnabled: boolean;
+  isAnnotationEnabled: boolean;
   isDatasourceEnabled: boolean;
   isCreating?: boolean;
   isInitialVariableSticky?: boolean;
@@ -52,6 +53,7 @@ export const DashboardApp = (props: DashboardAppProps): ReactElement => {
     emptyDashboardProps,
     isReadonly,
     isVariableEnabled,
+    isAnnotationEnabled,
     isDatasourceEnabled,
     isCreating,
     isInitialVariableSticky,
@@ -124,6 +126,7 @@ export const DashboardApp = (props: DashboardAppProps): ReactElement => {
         onSave={onSave}
         isReadonly={isReadonly}
         isVariableEnabled={isVariableEnabled}
+        isAnnotationEnabled={isAnnotationEnabled}
         isDatasourceEnabled={isDatasourceEnabled}
         onEditButtonClick={onEditButtonClick}
         onCancelButtonClick={onCancelButtonClick}
