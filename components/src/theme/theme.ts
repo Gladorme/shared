@@ -43,27 +43,26 @@ const getModalBackgroundStyle = ({
  *
  * Need to reinstantiate the theme everytime to support switching between light and dark themes
  * https://github.com/mui-org/material-ui/issues/18831
+ *
+ * Enable disableBodyOverride to prevent the theme from applying color scheme to the body element.
  */
-export function getTheme(mode: PaletteMode, options: Parameters<typeof createTheme>[0] = {}): Theme {
+export function getTheme(
+  mode: PaletteMode,
+  options: Parameters<typeof createTheme>[0] = {},
+  disableBodyOverride: boolean = false
+): Theme {
   return createTheme({
     palette: getPaletteOptions(mode),
     typography,
     mixins: {},
-    components: getComponents(mode),
+    components: getComponents(mode, disableBodyOverride),
     ...options,
   });
 }
 
 // Overrides for component default prop values and styles go here
-function getComponents(mode: PaletteMode): ThemeOptions['components'] {
-  return {
-    MuiCssBaseline: {
-      styleOverrides: {
-        body: {
-          colorScheme: mode,
-        },
-      },
-    },
+function getComponents(mode: PaletteMode, disableBodyOverride: boolean): ThemeOptions['components'] {
+  const components: ThemeOptions['components'] = {
     MuiAlert,
     MuiFormControl: {
       defaultProps: {
@@ -91,5 +90,20 @@ function getComponents(mode: PaletteMode): ThemeOptions['components'] {
         paper: getModalBackgroundStyle,
       },
     },
+  };
+
+  if (disableBodyOverride) {
+    return components;
+  }
+
+  return {
+    MuiCssBaseline: {
+      styleOverrides: {
+        body: {
+          colorScheme: mode,
+        },
+      },
+    },
+    ...components,
   };
 }
