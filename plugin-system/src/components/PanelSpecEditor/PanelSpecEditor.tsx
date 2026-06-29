@@ -11,8 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ErrorAlert, JSONEditor, LinksEditor } from '@perses-dev/components';
-import { PanelDefinition, PanelEditorValues, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
+import { ErrorAlert, JSONEditor } from '@perses-dev/components';
+import { PanelDefinition, PanelGroupId, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
 import { Control, Controller } from 'react-hook-form';
 import { forwardRef, ReactElement } from 'react';
 import { useDataQueriesContext, usePlugin } from '../../runtime';
@@ -20,6 +20,15 @@ import { PanelPlugin } from '../../model';
 import { OptionsEditorTabsProps, OptionsEditorTabs } from '../OptionsEditorTabs';
 import { MultiQueryEditor } from '../MultiQueryEditor';
 import { PluginEditorRef } from '../PluginEditor';
+import { LinksEditor } from './LinksEditor';
+
+/**
+ * Panel values that can be edited in the panel editor.
+ */
+export interface PanelEditorValues {
+  groupId: PanelGroupId;
+  panelDefinition: PanelDefinition;
+}
 
 export interface PanelSpecEditorProps {
   control: Control<PanelEditorValues>;
