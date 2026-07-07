@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { memo, MutableRefObject, useRef, useState } from 'react';
+import { memo, MutableRefObject, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { Box, Portal, Stack } from '@mui/material';
 import { ECharts as EChartsInstance } from 'echarts/core';
 import { TimeSeries } from '@perses-dev/spec';
@@ -57,26 +57,49 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
 }: TimeChartTooltipProps) {
   const [showAllSeries, setShowAllSeries] = useState(false);
   const transform = useRef<string | undefined>();
+  const tooltipElementRef = useRef<HTMLDivElement | null>(null);
 
   const mousePos = useMousePosition();
   const { height, width, ref: tooltipRef } = useResizeObserver();
 
   const isTooltipPinned = pinnedPos !== null && enablePinning;
 
+  // Stable callback — prevents the ResizeObserver from disconnecting/reconnecting on every render.
+  const setTooltipRef = useCallback(
+    (node: HTMLDivElement | null): void => {
+      tooltipElementRef.current = node;
+      tooltipRef(node);
+    },
+    [tooltipRef]
+  );
+
+  const containerElement = containerId ? document.querySelector(containerId) : undefined;
+
+  // Synchronously reposition after every render to prevent one-frame viewport overflow.
+  useLayoutEffect(() => {
+    if (mousePos === null) return;
+    const node = tooltipElementRef.current;
+    if (!node) return;
+    const rect = node.getBoundingClientRect();
+    if (rect.height === 0 || rect.width === 0) return;
+    const nextTransform = assembleTransform(mousePos, pinnedPos, rect.height, rect.width, containerElement);
+    if (nextTransform && nextTransform !== transform.current) {
+      transform.current = nextTransform;
+      node.style.transform = nextTransform;
+    }
+  });
+
   if (mousePos === null || mousePos.target === null || data === null) return null;
 
-  // Ensure user is hovering over a chart before checking for nearby series.
   if (pinnedPos === null && (mousePos.target as HTMLElement).tagName !== 'CANVAS') return null;
 
   const chart = chartRef.current;
 
-  const containerElement = containerId ? document.querySelector(containerId) : undefined;
-  // if tooltip is attached to a container, set max height to the height of the container so tooltip does not get cut off
+  // Cap height to container so the tooltip is not cut off.
   const maxHeight = containerElement ? containerElement.getBoundingClientRect().height : undefined;
 
   transform.current = assembleTransform(mousePos, pinnedPos, height ?? 0, width ?? 0, containerElement);
 
-  // Get series nearby the cursor and pass into tooltip content children.
   const nearbySeries = getNearbySeriesData({
     mousePos,
     data,
@@ -96,7 +119,7 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
   return (
     <Portal container={containerElement}>
       <Box
-        ref={tooltipRef}
+        ref={setTooltipRef}
         sx={(theme) => getTooltipStyles(theme, pinnedPos, maxHeight)}
         style={{
           transform: transform.current,
