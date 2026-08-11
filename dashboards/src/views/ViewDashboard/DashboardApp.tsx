@@ -46,6 +46,10 @@ export interface DashboardAppProps {
   isDatasourceEnabled: boolean;
   disableShortcuts?: boolean;
   isCreating?: boolean;
+  /**
+   * When true, displays the dashboard "lock/unlock" button that pins plugin versions. Disabled by default.
+   */
+  isPluginVersioningEnabled?: boolean;
   isInitialVariableSticky?: boolean;
   // If true, browser confirmation dialog will be shown when navigating away with unsaved changes (closing tab, ...).
   isLeavingConfirmDialogEnabled?: boolean;
@@ -75,6 +79,7 @@ const DashboardAppContent = (props: DashboardAppProps): ReactElement => {
     isCreating,
     isInitialVariableSticky,
     isLeavingConfirmDialogEnabled,
+    isPluginVersioningEnabled,
     dashboardTitleComponent,
     userPreferenceTimezone,
     onSave,
@@ -159,6 +164,7 @@ const DashboardAppContent = (props: DashboardAppProps): ReactElement => {
         isVariableEnabled={isVariableEnabled}
         isAnnotationEnabled={isAnnotationEnabled}
         isDatasourceEnabled={isDatasourceEnabled}
+        isPluginVersioningEnabled={isPluginVersioningEnabled}
         onEditButtonClick={onEditButtonClick}
         onCancelButtonClick={onCancelButtonClick}
       />

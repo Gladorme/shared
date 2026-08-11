@@ -28,6 +28,7 @@ import { DownloadButton } from '../DownloadButton';
 import { EditButton } from '../EditButton';
 import { EditJsonButton } from '../EditJsonButton';
 import { LinksDisplay } from '../LinksDisplay';
+import { LockDashboardButton } from '../LockDashboardButton';
 import { SaveDashboardButton } from '../SaveDashboardButton';
 import { EditVariablesButton } from '../Variables';
 
@@ -40,6 +41,7 @@ export interface DashboardToolbarProps {
   isAnnotationEnabled: boolean;
   isDatasourceEnabled: boolean;
   isLinksEnabled?: boolean;
+  isPluginVersioningEnabled?: boolean;
   timezone: string;
   onEditButtonClick: () => void;
   onCancelButtonClick: () => void;
@@ -56,6 +58,7 @@ export const DashboardToolbar = (props: DashboardToolbarProps): ReactElement => 
     isAnnotationEnabled,
     isDatasourceEnabled,
     isLinksEnabled = true,
+    isPluginVersioningEnabled = false,
     timezone: toolbarTimezone,
     onEditButtonClick,
     onCancelButtonClick,
@@ -106,6 +109,7 @@ export const DashboardToolbar = (props: DashboardToolbarProps): ReactElement => 
                 {isLinksEnabled && <EditDashboardLinksButton />}
                 <AddPanelButton />
                 <AddGroupButton />
+                {isPluginVersioningEnabled && <LockDashboardButton />}
               </Stack>
               <SaveDashboardButton onSave={onSave} isDisabled={isReadonly} />
               <Button variant="outlined" onClick={onCancelButtonClick}>
