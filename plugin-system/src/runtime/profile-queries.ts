@@ -16,7 +16,7 @@ import type { UseQueryResult } from '@tanstack/react-query';
 import { useQueries } from '@tanstack/react-query';
 
 import { useDatasourceStore } from './datasources';
-import { usePluginRegistry } from './plugin-registry';
+import { usePluginRegistry, getPluginOverrides } from './plugin-registry';
 import { useTimeRange } from './TimeRangeProvider';
 export type ProfileQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'ProfileQuery', PluginSpec>;
 export const PROFILE_QUERY_KEY = 'ProfileQuery';
@@ -48,7 +48,11 @@ export function useProfileQueries(definitions: ProfileQueryDefinition[]): Array<
         refetchOnReconnect: false,
         staleTime: Infinity,
         queryFn: async ({ signal }: { signal?: AbortSignal }): Promise<ProfileData> => {
-          const plugin = await getPlugin({ kind: PROFILE_QUERY_KEY, name: profileQueryKind });
+          const plugin = await getPlugin({
+            kind: PROFILE_QUERY_KEY,
+            name: profileQueryKind,
+            ...getPluginOverrides(definition.spec.plugin),
+          });
           const data = await plugin.getProfileData(definition.spec.plugin.spec, context, signal);
           return data;
         },
