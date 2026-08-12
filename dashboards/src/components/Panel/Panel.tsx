@@ -22,7 +22,7 @@ import {
   useId,
 } from '@perses-dev/components';
 import type { ActionOptions } from '@perses-dev/plugin-system';
-import { useDataQueriesContext, usePluginRegistry } from '@perses-dev/plugin-system';
+import { getPluginOverrides, useDataQueriesContext, usePluginRegistry } from '@perses-dev/plugin-system';
 import type { PanelDefinition } from '@perses-dev/spec';
 import type { ReactNode } from 'react';
 import { memo, useEffect, useMemo, useState } from 'react';
@@ -136,7 +136,11 @@ export const Panel = memo(function Panel(props: PanelProps) {
       }
 
       try {
-        const plugin = await getPlugin({ kind: 'Panel', name: panelPluginKind });
+        const plugin = await getPlugin({
+          kind: 'Panel',
+          name: panelPluginKind,
+          ...getPluginOverrides(definition.spec.plugin),
+        });
 
         // More defensive checking for plugin and actions
         if (
@@ -173,7 +177,7 @@ export const Panel = memo(function Panel(props: PanelProps) {
     };
 
     loadPluginActions();
-  }, [definition.spec.plugin.kind, panelPropsForActions, getPlugin]);
+  }, [definition.spec.plugin, panelPropsForActions, getPlugin]);
 
   const handleMouseEnter: CardProps['onMouseEnter'] = (e) => {
     onMouseEnter?.(e);
