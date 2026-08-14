@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Grid, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import { Action, PanelDefinition, PanelEditorValues } from '@perses-dev/core';
 import { DiscardChangesConfirmationDialog, ErrorAlert, ErrorBoundary } from '@perses-dev/components';
+import { Action, PanelDefinition, PanelEditorValues } from '@perses-dev/core';
 import {
   PluginKindSelect,
   usePluginEditor,
@@ -22,12 +22,13 @@ import {
   getSubmitText,
   useValidationSchemas,
 } from '@perses-dev/plugin-system';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+
 import { useListPanelGroups } from '../../context';
 import { PanelEditorProvider } from '../../context/PanelEditorProvider/PanelEditorProvider';
-import { usePanelEditor } from './usePanelEditor';
 import { PanelQueriesSharedControls } from './PanelQueriesSharedControls';
+import { usePanelEditor } from './usePanelEditor';
 
 export interface PanelEditorFormProps {
   initialValues: PanelEditorValues;

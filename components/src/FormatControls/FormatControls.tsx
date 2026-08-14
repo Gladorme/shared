@@ -13,6 +13,7 @@
 import { Switch, SwitchProps } from '@mui/material';
 import { FormatOptions, isUnitWithDecimalPlaces, isUnitWithShortValues, shouldShortenValues } from '@perses-dev/core';
 import { ReactElement } from 'react';
+
 import { OptionsEditorControl } from '../OptionsEditorLayout';
 import { SettingsAutocomplete } from '../SettingsAutocomplete';
 import { UnitSelector } from './UnitSelector';

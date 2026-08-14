@@ -11,20 +11,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Column, HeaderGroup, Row, flexRender } from '@tanstack/react-table';
 import { Box, TablePagination, TableRow as MuiTableRow } from '@mui/material';
-import { TableVirtuoso, TableComponents, TableVirtuosoHandle, TableVirtuosoProps } from 'react-virtuoso';
+import { Column, HeaderGroup, Row, flexRender } from '@tanstack/react-table';
 import { useRef, useMemo, ReactElement } from 'react';
-import { TableRow } from './TableRow';
-import { TableBody } from './TableBody';
+import { TableVirtuoso, TableComponents, TableVirtuosoHandle, TableVirtuosoProps } from 'react-virtuoso';
+
+import { useVirtualizedTableKeyboardNav } from './hooks/useVirtualizedTableKeyboardNav';
 import { InnerTable } from './InnerTable';
+import { TableCellConfigs, TableProps, TableRowEventOpts } from './model/table-model';
+import { TableBody } from './TableBody';
+import { TableCell, TableCellProps } from './TableCell';
+import { TableFoot } from './TableFoot';
 import { TableHead } from './TableHead';
 import { TableHeaderCell } from './TableHeaderCell';
-import { TableCell, TableCellProps } from './TableCell';
+import { TableRow } from './TableRow';
 import { VirtualizedTableContainer } from './VirtualizedTableContainer';
-import { TableCellConfigs, TableProps, TableRowEventOpts } from './model/table-model';
-import { useVirtualizedTableKeyboardNav } from './hooks/useVirtualizedTableKeyboardNav';
-import { TableFoot } from './TableFoot';
 
 type TableCellPosition = {
   row: number;
@@ -245,7 +246,7 @@ export function VirtualizedTable<TableData>({
                 const cellRenderFn = cell.column.columnDef.cell;
                 const cellContent = typeof cellRenderFn === 'function' ? cellRenderFn(cellContext) : null;
 
-                /* 
+                /*
                    IMPORTANT:
                    If Variables exist in the link, they should have been translated by the plugin already. (Being developed at the moment)
                    Components have no access to any context (Which is intentional and correct)
@@ -266,7 +267,7 @@ export function VirtualizedTable<TableData>({
                   description = cellContent;
                 }
 
-                /* this has been specifically added for the data link, 
+                /* this has been specifically added for the data link,
                    therefore, non string and numeric values should be excluded
                 */
                 const adjacentCellsValuesMap = Object.entries(row.original as Record<string, unknown>)

@@ -19,6 +19,7 @@ import {
   PanelGroupDefinition,
   PanelGroupId,
 } from '@perses-dev/core';
+
 import { useDashboardStore } from './DashboardProvider';
 import { useVariableDefinitionActions, useVariableDefinitions } from './VariableProvider';
 

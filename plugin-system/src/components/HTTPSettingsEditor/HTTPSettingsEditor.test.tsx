@@ -11,11 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { HTTPDatasourceSpec } from '@perses-dev/core';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { HTTPDatasourceSpec } from '@perses-dev/core';
-import { FormProvider, useForm } from 'react-hook-form';
 import { ReactElement } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+
 import { HTTPSettingsEditor } from './HTTPSettingsEditor';
 
 describe('HTTPSettingsEditor - Request Headers', () => {

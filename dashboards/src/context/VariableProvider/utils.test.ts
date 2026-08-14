@@ -13,6 +13,7 @@
 
 import { VariableDefinition, ExternalVariableDefinition } from '@perses-dev/core';
 import { VariableStoreStateMap } from '@perses-dev/plugin-system';
+
 import { checkSavedDefaultVariableStatus, mergeVariableDefinitions } from './utils';
 
 describe('checkSavedDefaultVariableStatus', () => {

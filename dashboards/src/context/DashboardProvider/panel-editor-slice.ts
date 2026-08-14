@@ -20,6 +20,7 @@ import {
   PanelGroupItemLayout,
 } from '@perses-dev/core';
 import { StateCreator } from 'zustand';
+
 import { generatePanelKey, getYForNewRow } from '../../utils';
 import { generateId, Middleware, createPanelDefinition } from './common';
 import { PanelGroupSlice, addPanelGroup, createEmptyPanelGroup } from './panel-group-slice';

@@ -12,9 +12,9 @@
 // limitations under the License.
 
 import { getPanelKeyFromRef, LayoutDefinition, PanelGroupId, PanelGroupDefinition } from '@perses-dev/core';
-
-import { StateCreator } from 'zustand';
 import { WritableDraft } from 'immer';
+import { StateCreator } from 'zustand';
+
 import { generateId, Middleware } from './common';
 
 /**

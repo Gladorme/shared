@@ -25,9 +25,10 @@ import {
   useReactTable,
 } from '@tanstack/react-table';
 import { ReactElement, useCallback, useMemo } from 'react';
+
+import { DEFAULT_COLUMN_WIDTH, TableProps, persesColumnsToTanstackColumns } from './model/table-model';
 import { TableCheckbox } from './TableCheckbox';
 import { VirtualizedTable } from './VirtualizedTable';
-import { DEFAULT_COLUMN_WIDTH, TableProps, persesColumnsToTanstackColumns } from './model/table-model';
 
 const DEFAULT_GET_ROW_ID = (data: unknown, index: number): string => {
   return `${index}`;

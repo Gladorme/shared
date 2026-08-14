@@ -12,6 +12,7 @@
 // limitations under the License.
 
 import { PanelGroupItemLayout } from '@perses-dev/core';
+
 import { insertPanelInLayout, UnpositionedPanelGroupItemLayout } from './panelUtils';
 
 describe('insertPanelInLayout', () => {

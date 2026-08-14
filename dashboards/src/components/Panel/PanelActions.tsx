@@ -12,22 +12,23 @@
 // limitations under the License.
 
 import { Stack, Box, Popover, CircularProgress, styled, PopoverPosition } from '@mui/material';
-import { isValidElement, PropsWithChildren, ReactElement, ReactNode, useMemo, useState } from 'react';
 import { InfoTooltip } from '@perses-dev/components';
+import { Link, Notice } from '@perses-dev/core';
 import { QueryData } from '@perses-dev/plugin-system';
-import DatabaseSearch from 'mdi-material-ui/DatabaseSearch';
-import ArrowCollapseIcon from 'mdi-material-ui/ArrowCollapse';
-import ArrowExpandIcon from 'mdi-material-ui/ArrowExpand';
-import PencilIcon from 'mdi-material-ui/PencilOutline';
-import DeleteIcon from 'mdi-material-ui/DeleteOutline';
-import DragIcon from 'mdi-material-ui/DragVertical';
-import ContentCopyIcon from 'mdi-material-ui/ContentCopy';
-import MenuIcon from 'mdi-material-ui/Menu';
 import AlertIcon from 'mdi-material-ui/Alert';
 import AlertCircleIcon from 'mdi-material-ui/AlertCircle';
+import ArrowCollapseIcon from 'mdi-material-ui/ArrowCollapse';
+import ArrowExpandIcon from 'mdi-material-ui/ArrowExpand';
+import ContentCopyIcon from 'mdi-material-ui/ContentCopy';
+import DatabaseSearch from 'mdi-material-ui/DatabaseSearch';
+import DeleteIcon from 'mdi-material-ui/DeleteOutline';
+import DragIcon from 'mdi-material-ui/DragVertical';
 import InformationOutlineIcon from 'mdi-material-ui/InformationOutline';
 import LightningBoltIcon from 'mdi-material-ui/LightningBolt';
-import { Link, Notice } from '@perses-dev/core';
+import MenuIcon from 'mdi-material-ui/Menu';
+import PencilIcon from 'mdi-material-ui/PencilOutline';
+import { isValidElement, PropsWithChildren, ReactElement, ReactNode, useMemo, useState } from 'react';
+
 import {
   ARIA_LABEL_TEXT,
   HEADER_ACTIONS_CONTAINER_NAME,
@@ -36,8 +37,8 @@ import {
   TOOLTIP_TEXT,
 } from '../../constants';
 import { HeaderIconButton } from './HeaderIconButton';
-import { PanelLinks } from './PanelLinks';
 import { PanelOptions } from './Panel';
+import { PanelLinks } from './PanelLinks';
 
 const noticeTypeToIcon: Record<Notice['type'], ReactNode> = {
   error: <AlertCircleIcon color="error" />,

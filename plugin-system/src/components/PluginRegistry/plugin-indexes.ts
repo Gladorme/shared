@@ -12,6 +12,7 @@
 // limitations under the License.
 
 import { useCallback, useRef } from 'react';
+
 import { PluginLoader, PluginMetadataWithModule, PluginModuleResource, PluginType } from '../../model';
 import { useEvent } from '../../utils';
 

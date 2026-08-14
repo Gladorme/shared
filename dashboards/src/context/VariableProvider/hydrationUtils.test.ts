@@ -12,6 +12,7 @@
 // limitations under the License.
 
 import { DEFAULT_ALL_VALUE, VariableDefinition, ExternalVariableDefinition } from '@perses-dev/core';
+
 import { hydrateVariableDefinitionStates } from './hydrationUtils';
 
 describe('hydrateVariableStates', () => {

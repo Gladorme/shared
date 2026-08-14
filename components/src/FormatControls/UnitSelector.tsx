@@ -13,6 +13,7 @@
 
 import { FormatOptions, UNIT_CONFIG, UnitConfig } from '@perses-dev/core';
 import { ReactElement } from 'react';
+
 import { SettingsAutocomplete } from '../SettingsAutocomplete';
 
 export interface UnitSelectorProps {

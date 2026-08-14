@@ -19,12 +19,13 @@ import {
   VariableStateMap,
 } from '@perses-dev/components';
 import { fetch } from '@perses-dev/core';
+
 import { ItemAction, EventAction, WebhookAction } from '../components/ItemSelectionActionsOptionsEditor';
 
 const BODY_METHODS = new Set(['POST', 'PUT', 'PATCH']);
 
 function buildWebhookHeaders(action: WebhookAction): Record<string, string> {
-  const headers: Record<string, string> = { ...(action.headers ?? {}) };
+  const headers: Record<string, string> = { ...action.headers };
   const contentType = action.contentType ?? 'none';
   const supportsBody = BODY_METHODS.has(action.method);
 
