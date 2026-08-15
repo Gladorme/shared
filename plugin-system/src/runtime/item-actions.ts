@@ -11,6 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { type FetchFn } from '@perses-dev/client';
 import {
   ActionStatus,
   interpolateSelectionBatch,
@@ -18,13 +19,13 @@ import {
   SelectionItem,
   VariableStateMap,
 } from '@perses-dev/components';
-import { type FetchFn } from '@perses-dev/client';
+
 import { ItemAction, EventAction, WebhookAction } from '../components/ItemSelectionActionsOptionsEditor';
 
 const BODY_METHODS = new Set(['POST', 'PUT', 'PATCH']);
 
 function buildWebhookHeaders(action: WebhookAction): Record<string, string> {
-  const headers: Record<string, string> = { ...(action.headers ?? {}) };
+  const headers: Record<string, string> = { ...action.headers };
   const contentType = action.contentType ?? 'none';
   const supportsBody = BODY_METHODS.has(action.method);
 

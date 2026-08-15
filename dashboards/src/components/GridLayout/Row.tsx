@@ -12,11 +12,12 @@
 // limitations under the License.
 
 import { Collapse, useTheme } from '@mui/material';
+import { ErrorAlert, ErrorBoundary } from '@perses-dev/components';
 import { PanelOptions, useViewPanelGroup } from '@perses-dev/dashboards';
+import { PanelGroupId } from '@perses-dev/plugin-system';
 import { ReactElement, useEffect, useMemo, useState } from 'react';
 import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
-import { ErrorAlert, ErrorBoundary } from '@perses-dev/components';
-import { PanelGroupId } from '@perses-dev/plugin-system';
+
 import { GRID_LAYOUT_COLS, GRID_LAYOUT_SMALL_BREAKPOINT } from '../../constants';
 import { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
 import { GridContainer } from './GridContainer';
@@ -137,7 +138,7 @@ export function Row({
             <div
               key={i}
               style={{
-                display: itemLayoutViewed ? (itemLayoutViewed === i ? 'unset' : 'none') : 'unset',
+                display: !itemLayoutViewed || itemLayoutViewed === i ? 'unset' : 'none',
               }}
             >
               <ErrorBoundary FallbackComponent={ErrorAlert}>

@@ -12,6 +12,7 @@
 // limitations under the License.
 
 import { render, screen, waitFor } from '@testing-library/react';
+
 import { FetchProvider, useFetch, FetchFn } from './FetchContext';
 
 function TestConsumer(): React.ReactElement {

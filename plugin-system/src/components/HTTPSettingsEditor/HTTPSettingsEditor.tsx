@@ -12,13 +12,14 @@
 // limitations under the License.
 
 import { Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
-import React, { Fragment, ReactElement, useState } from 'react';
+import { RequestHeaders } from '@perses-dev/client';
+import { HTTPDatasourceSpec } from '@perses-dev/spec';
 import { produce } from 'immer';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import MinusIcon from 'mdi-material-ui/Minus';
 import PlusIcon from 'mdi-material-ui/Plus';
-import { HTTPDatasourceSpec } from '@perses-dev/spec';
-import { RequestHeaders } from '@perses-dev/client';
+import React, { Fragment, ReactElement, useState } from 'react';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
+
 import { OptionsEditorRadios } from '../OptionsEditorRadios';
 
 type HeaderEntry = {

@@ -12,13 +12,14 @@
 // limitations under the License.
 
 import { RequestHeaders } from '@perses-dev/client';
+
+import { createRegexFromString } from './regexp';
 import {
   replaceVariables,
   VariableStateMap,
   parseVariablesAndFormat,
   InterpolationFormat,
 } from './variable-interpolation';
-import { createRegexFromString } from './regexp';
 
 export type QueryParamValues = Record<string, string | string[]>;
 

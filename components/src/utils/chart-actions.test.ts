@@ -13,6 +13,7 @@
 
 import { TimeSeries, TimeSeriesValueTuple } from '@perses-dev/spec';
 import { ECharts as EChartsInstance } from 'echarts/core';
+
 import { DatapointInfo } from '../model';
 import {
   batchDispatchNearbySeriesActions,

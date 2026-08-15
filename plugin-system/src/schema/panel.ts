@@ -11,8 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { z } from 'zod';
 import { PluginSchema, panelDefinitionSchema, buildPanelDefinitionSchema } from '@perses-dev/spec';
+import { z } from 'zod';
+
 import { PanelEditorValues } from '../model';
 
 export const panelEditorSchema: z.ZodSchema<PanelEditorValues> = z.object({

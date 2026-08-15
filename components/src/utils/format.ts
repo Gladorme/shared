@@ -52,12 +52,12 @@ export function formatWithTimeZone(date: Date, formatString: string, timeZone?: 
 export function getGMTOffset(timeZone?: string): string {
   const lower = timeZone?.toLowerCase();
 
-  const resolvedTimeZone =
-    !timeZone || lower === 'local' || lower === 'browser'
-      ? Intl.DateTimeFormat().resolvedOptions().timeZone
-      : lower === 'utc'
-        ? 'UTC'
-        : timeZone;
+  let resolvedTimeZone = timeZone;
+  if (!timeZone || lower === 'local' || lower === 'browser') {
+    resolvedTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  } else if (lower === 'utc') {
+    resolvedTimeZone = 'UTC';
+  }
 
   try {
     const formatter = new Intl.DateTimeFormat('en-US', {

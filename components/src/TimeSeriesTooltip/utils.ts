@@ -12,8 +12,9 @@
 // limitations under the License.
 
 import { Theme } from '@mui/material';
-import { ECharts as EChartsInstance } from 'echarts/core';
 import { BarSeriesOption, LineSeriesOption } from 'echarts/charts';
+import { ECharts as EChartsInstance } from 'echarts/core';
+
 import { TimeChartSeriesMapping } from '../model';
 import {
   CursorCoordinates,

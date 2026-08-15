@@ -11,14 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createPanelRef, DashboardSpec, DurationString, GridDefinition } from '@perses-dev/spec';
 import { DashboardResource } from '@perses-dev/client';
 import { PanelGroupId } from '@perses-dev/plugin-system';
-import { PanelGroupDefinition } from '../model';
+import { createPanelRef, DashboardSpec, DurationString, GridDefinition } from '@perses-dev/spec';
 
+import { PanelGroupDefinition } from '../model';
+import { useAnnotationActions, useAnnotationSpecs } from './AnnotationProvider';
 import { useDashboardStore } from './DashboardProvider';
 import { useVariableDefinitionActions, useVariableDefinitions } from './VariableProvider';
-import { useAnnotationActions, useAnnotationSpecs } from './AnnotationProvider';
 
 type DashboardType = Omit<DashboardResource, 'spec'> & { spec: DashboardSpec & { ttl?: DurationString } };
 export function useDashboard(): {
