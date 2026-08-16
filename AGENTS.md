@@ -17,8 +17,8 @@ Before editing:
 - `client/`: framework-neutral HTTP clients, API models, and data-access helpers.
 - `components/`: low-level reusable React components, hooks, themes, and visualization utilities.
 - `plugin-system/`: plugin APIs, runtime registration, module federation, and plugin-facing UI contracts.
-- `dashboards/`: reusable dashboard domain behavior and UI built on the lower layers.
-- `explore/`: Explore domain behavior and UI built on dashboards and the lower layers.
+- `dashboards/`: reusable dashboard UI components and logic.
+- `explore/`: explorer UI components and logic.
 - `scripts/`: local development, publishing, and cross-repository linking utilities.
 - `dist/`, `.turbo/`, and `node_modules/` are generated or downloaded outputs. Do not edit or commit them.
 
