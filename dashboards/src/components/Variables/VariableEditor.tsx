@@ -417,7 +417,7 @@ export function VariableEditor(props: {
                           </TableContainer>
                         </AccordionDetails>
                       </Accordion>
-                    )
+                    ),
                 )}
               {builtinVariableDefinitions && (
                 <BuiltinVariableAccordions builtinVariableDefinitions={builtinVariableDefinitions} />

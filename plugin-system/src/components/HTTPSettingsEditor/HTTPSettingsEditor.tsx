@@ -98,7 +98,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
         if (draft.proxy !== undefined) {
           draft.proxy.spec.headers = Object.keys(headersObject).length > 0 ? headersObject : undefined;
         }
-      })
+      }),
     );
   };
 
@@ -128,7 +128,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                       if (draft.proxy !== undefined) {
                         draft.proxy.spec.url = e.target.value;
                       }
-                    })
+                    }),
                   );
                 }}
                 sx={{ mb: 2 }}
@@ -173,10 +173,10 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                                         } else {
                                           return item;
                                         }
-                                      }
+                                      },
                                     );
                                   }
-                                })
+                                }),
                               );
                             }}
                           />
@@ -214,10 +214,10 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                                         } else {
                                           return item;
                                         }
-                                      }
+                                      },
                                     );
                                   }
-                                })
+                                }),
                               );
                             }}
                           >
@@ -249,7 +249,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                                       }) || []),
                                     ];
                                   }
-                                })
+                                }),
                               );
                             }}
                           >
@@ -279,7 +279,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                           { endpointPattern: '', method: '' },
                         ];
                       }
-                    })
+                    }),
                   )
                 }
               >
@@ -399,7 +399,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                       if (draft.proxy !== undefined) {
                         draft.proxy.spec.secret = e.target.value;
                       }
-                    })
+                    }),
                   );
                 }}
               />
@@ -430,7 +430,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                 onChange(
                   produce(value, (draft) => {
                     draft.directUrl = e.target.value;
-                  })
+                  }),
                 );
               }}
             />

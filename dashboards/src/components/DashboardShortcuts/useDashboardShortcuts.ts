@@ -81,7 +81,7 @@ function resolveAbsoluteRange(timeRange: TimeRangeValue): {
 }
 
 const selectPanelStoreActions = (
-  state: DashboardStoreState
+  state: DashboardStoreState,
 ): {
   openEditPanel: DashboardStoreState['openEditPanel'];
   duplicatePanel: DashboardStoreState['duplicatePanel'];
@@ -327,7 +327,7 @@ export function useDashboardShortcuts({
       hotkey: requireShortcutHotkey(def),
       callback,
       options: buildShortcutOptions(def, enabled),
-    }))
+    })),
   );
 
   useHotkeySequences(
@@ -347,6 +347,6 @@ export function useDashboardShortcuts({
       sequence: requireShortcutSequence(def),
       callback,
       options: buildShortcutOptions(def, enabled),
-    }))
+    })),
   );
 }

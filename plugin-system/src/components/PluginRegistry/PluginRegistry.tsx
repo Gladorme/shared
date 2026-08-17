@@ -70,7 +70,7 @@ export function PluginRegistry(props: PluginRegistryProps): ReactElement {
 
       const candidateKeys = resolvePluginKeys(
         pluginIndexes.pluginResourcesByNameKindRegistryVersion.keys(),
-        compoundKeyObj
+        compoundKeyObj,
       );
 
       for (const resourceKey of candidateKeys) {
@@ -88,7 +88,7 @@ export function PluginRegistry(props: PluginRegistryProps): ReactElement {
 
       throw new Error(`A ${name} plugin for kind '${kind}' is not installed`);
     },
-    [getPluginIndexes, loadPluginModule]
+    [getPluginIndexes, loadPluginModule],
   );
 
   const listPluginMetadata = useCallback(
@@ -96,13 +96,13 @@ export function PluginRegistry(props: PluginRegistryProps): ReactElement {
       const pluginIndexes = await getPluginIndexes();
       return pluginTypes.flatMap((type) => pluginIndexes.pluginMetadataByKind.get(type) ?? []);
     },
-    [getPluginIndexes]
+    [getPluginIndexes],
   );
 
   // Create the registry's context value and render
   const context = useMemo(
     () => ({ getPlugin, listPluginMetadata, defaultPluginKinds }),
-    [getPlugin, listPluginMetadata, defaultPluginKinds]
+    [getPlugin, listPluginMetadata, defaultPluginKinds],
   );
   return <PluginRegistryContext.Provider value={context}>{children}</PluginRegistryContext.Provider>;
 }

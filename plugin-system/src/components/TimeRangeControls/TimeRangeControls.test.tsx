@@ -73,7 +73,7 @@ describe('TimeRangeControls', () => {
           </TimeRangeProviderBasic>
         )}
       </>,
-      undefined
+      undefined,
     );
   };
 
@@ -94,7 +94,7 @@ describe('TimeRangeControls', () => {
         initialTimeRange={{ pastDuration: '3h' as DurationString }}
       >
         <ControlsWithTZ />
-      </TimeRangeProviderBasic>
+      </TimeRangeProviderBasic>,
     );
     const dateButton = await screen.findByLabelText(/time range/i, { selector: '[role="combobox"]' });
     userEvent.click(dateButton);

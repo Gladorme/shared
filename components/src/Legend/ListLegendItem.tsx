@@ -57,7 +57,7 @@ export interface ListLegendItemProps extends Omit<ListItemProps<'div'>, 'onClick
 
 const ListLegendItemBase = forwardRef<HTMLDivElement, ListLegendItemProps>(function ListLegendItem(
   { item, sx, truncateLabel, onClick, isVisuallySelected, onMouseOver, onMouseOut, index, ...others },
-  ref
+  ref,
 ): ReactElement {
   const [noWrap, setNoWrap] = useState(truncateLabel);
 
@@ -89,7 +89,7 @@ const ListLegendItemBase = forwardRef<HTMLDivElement, ListLegendItemProps>(funct
           padding: 0,
           cursor: 'pointer',
         },
-        sx
+        sx,
       )}
       dense={true}
       onClick={handleClick}

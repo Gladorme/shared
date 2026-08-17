@@ -47,7 +47,7 @@ export const Drawer = ({
             width: isSmaller ? '100%' : `${DRAWER_DEFAULT_WIDTH}px`,
             overflow: 'hidden',
           },
-          PaperProps?.sx
+          PaperProps?.sx,
         ),
       }}
       aria-hidden={!isOpen} // Ensure the drawer is not focusable when closed + disable console.error about focusable elements

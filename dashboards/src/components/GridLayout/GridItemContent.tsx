@@ -45,7 +45,7 @@ export function GridItemContent(props: GridItemContentProps): ReactElement {
 
   // Panel focus tracking for keyboard shortcuts
   const { onMouseEnter, onMouseLeave } = usePanelFocusHandlers(
-    `${panelGroupItemId.panelGroupId}-${panelGroupItemId.panelGroupItemLayoutId}`
+    `${panelGroupItemId.panelGroupId}-${panelGroupItemId.panelGroupItemLayoutId}`,
   );
 
   const { ref: queryRef, inView: shouldQuery } = useInView({

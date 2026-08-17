@@ -21,7 +21,7 @@ import { ExternalVariableDefinition } from '../../model/VariableDefinition';
  */
 export function checkSavedDefaultVariableStatus(
   definitions: VariableDefinition[],
-  varState: VariableStoreStateMap
+  varState: VariableStoreStateMap,
 ): {
   modifiedVariableNames: string[];
   isSavedVariableModified: boolean;
@@ -56,7 +56,7 @@ export function checkSavedDefaultVariableStatus(
  */
 export function mergeVariableDefinitions(
   locals: VariableDefinition[],
-  externals: ExternalVariableDefinition[]
+  externals: ExternalVariableDefinition[],
 ): VariableDefinition[] {
   const pushed: Record<string, boolean> = {};
   const result: VariableDefinition[] = [];
@@ -81,7 +81,7 @@ export function mergeVariableDefinitions(
 export function findVariableDefinitionByName(
   name: string,
   localDefinitions: VariableDefinition[],
-  externalDefinitions: ExternalVariableDefinition[]
+  externalDefinitions: ExternalVariableDefinition[],
 ): VariableDefinition | undefined {
   return mergeVariableDefinitions(localDefinitions, externalDefinitions).find((d) => d.spec.name === name);
 }
@@ -97,7 +97,7 @@ export function findVariableDefinitionByName(
 export function forEachVariableDefinition(
   locals: VariableDefinition[],
   externals: ExternalVariableDefinition[],
-  callbackFn: (varDef: VariableDefinition, name: string, source?: string) => void
+  callbackFn: (varDef: VariableDefinition, name: string, source?: string) => void,
 ): void {
   locals.forEach((v) => callbackFn(v, v.spec.name));
   externals.forEach((ext) => ext.definitions.forEach((v) => callbackFn(v, v.spec.name, ext.source)));

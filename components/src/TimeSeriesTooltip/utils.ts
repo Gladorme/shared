@@ -34,7 +34,7 @@ export function assembleTransform(
   pinnedPos: CursorCoordinates | null,
   tooltipHeight: number,
   tooltipWidth: number,
-  containerElement?: Element | null
+  containerElement?: Element | null,
 ): string | undefined {
   if (mousePos === null) {
     return undefined;
@@ -98,7 +98,7 @@ export function assembleTransform(
 export function getTooltipStyles(
   theme: Theme,
   pinnedPos: CursorCoordinates | null,
-  maxHeight?: number
+  maxHeight?: number,
 ): Record<string, unknown> {
   const adjustedMaxHeight = maxHeight ? maxHeight - TOOLTIP_PADDING : undefined;
   return {
@@ -144,7 +144,7 @@ export function calculateVisualYForSeries(
   seriesIdx: number,
   yValue: number,
   seriesMapping: TimeChartSeriesMapping,
-  stackTotals: Map<string, number>
+  stackTotals: Map<string, number>,
 ): number {
   const currentSeries = seriesMapping[seriesIdx];
   if (!currentSeries) return yValue;
@@ -207,7 +207,7 @@ export function calculateBarSegmentBounds(
   barRelativeIdx: number,
   bandwidth: number,
   centerPixelX: number,
-  barCount: number
+  barCount: number,
 ): { left: number; right: number } {
   const count = Math.max(1, barCount);
   const segmentWidth = bandwidth / count;
@@ -221,7 +221,7 @@ export function calculateBarSegmentBounds(
 export function calculateBarYBounds(
   visualYBottom: number,
   visualYTop: number,
-  chart: EChartsInstance
+  chart: EChartsInstance,
 ): { top: number; bottom: number } | null {
   try {
     const bottomPixel = chart.convertToPixel('grid', [0, visualYBottom]);

@@ -51,7 +51,7 @@ export const createSaveChangesDialogSlice: StateCreator<
         state.saveChangesConfirmationDialog = dialog;
       },
       false,
-      'openSaveChangesConfirmationDialog'
+      'openSaveChangesConfirmationDialog',
     );
   },
 
@@ -61,7 +61,7 @@ export const createSaveChangesDialogSlice: StateCreator<
         state.saveChangesConfirmationDialog = undefined;
       },
       false,
-      'closeSaveChangesConfirmationDialog'
+      'closeSaveChangesConfirmationDialog',
     );
   },
 });

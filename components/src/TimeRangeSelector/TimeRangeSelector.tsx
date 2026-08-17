@@ -82,7 +82,7 @@ export function TimeRangeSelector({
 
   const lastOption = useMemo(
     () => buildCustomTimeOption(isRelativeTimeRange(value) ? undefined : value, timeZone),
-    [value, timeZone]
+    [value, timeZone],
   );
 
   const [open, setOpen] = useState(false);

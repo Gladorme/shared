@@ -163,7 +163,7 @@ export function useAllVariableValues(names?: string[]): VariableStateMap {
 export function replaceVariablesInString(
   text: string,
   variableValues: VariableStateMap,
-  extraVariables?: Record<string, string>
+  extraVariables?: Record<string, string>,
 ): string {
   const vars = { ...variableValues }; // shallow clone to avoid modifying the original object
   for (const [key, value] of Object.entries(extraVariables ?? {})) {

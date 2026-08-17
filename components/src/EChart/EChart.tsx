@@ -84,7 +84,7 @@ export interface MouseEventsParameters<T> {
 type OnEventFunction<T> = (
   params: MouseEventsParameters<T>,
   // This is potentially undefined for testing purposes
-  instance?: ECharts
+  instance?: ECharts,
 ) => void;
 
 const mouseEvents = [
@@ -249,7 +249,7 @@ export const EChart = memo(function EChart<T>({
       200,
       {
         leading: true,
-      }
+      },
     );
     updateSize();
   }, [sx, style]);

@@ -19,5 +19,5 @@ export const HeaderIconButton: StyledComponent<IconButtonProps & { theme?: Theme
   ({ theme }) => ({
     borderRadius: theme.shape.borderRadius,
     padding: '4px',
-  })
+  }),
 );

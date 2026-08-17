@@ -10,7 +10,7 @@ Before editing:
 
 - Read `CONTRIBUTING.md` for DCO and pull-request conventions.
 - Read `README.md` and the affected package's `README.md` and public `src/index.ts` entry point.
-- For TypeScript or React work, also follow `.github/instructions/ui.instructions.md`.
+- For TypeScript or React work, also follow `STYLEGUIDE.md`.
 
 ## Architecture map
 

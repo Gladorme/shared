@@ -62,7 +62,7 @@ const renderTableLegend = ({
         onItemMouseOver={onItemMouseOver}
         onItemMouseOut={onItemMouseOut}
       />
-    </VirtuosoMockContext.Provider>
+    </VirtuosoMockContext.Provider>,
   );
 };
 
@@ -421,7 +421,7 @@ describe('TableLegend', () => {
         {
           id: 'two',
           index: 1,
-        }
+        },
       );
     });
   });
@@ -447,7 +447,7 @@ describe('TableLegend', () => {
         {
           id: 'two',
           index: 1,
-        }
+        },
       );
     });
   });

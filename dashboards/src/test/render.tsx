@@ -57,7 +57,7 @@ const CustomRouter: React.FC<CustomRouterProps> = ({ history, children }) => {
 export function renderWithContext(
   ui: React.ReactElement,
   options?: Omit<RenderOptions, 'queries'>,
-  history?: MemoryHistory
+  history?: MemoryHistory,
 ): RenderResult {
   // Create a new QueryClient for each test to avoid caching issues
   const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false, retry: false } } });

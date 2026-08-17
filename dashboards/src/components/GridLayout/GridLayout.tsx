@@ -60,7 +60,7 @@ export function GridLayout(props: GridLayoutProps): ReactElement {
     containerWidth: number,
     margin: [number, number],
     cols: number,
-    containerPadding: [number, number]
+    containerPadding: [number, number],
   ): void => {
     const marginX = margin[0];
     const marginWidth = marginX * (cols - 1);

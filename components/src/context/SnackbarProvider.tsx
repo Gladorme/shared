@@ -84,7 +84,7 @@ export function useSnackbar(): SnackbarContext {
 
       return errorSnackbar(message, options);
     },
-    [errorSnackbar]
+    [errorSnackbar],
   );
 
   return {
@@ -101,7 +101,7 @@ export function useSnackbar(): SnackbarContext {
 // Helper to create a variant-specific enqueue function
 function useEnqueueFunction(
   enqueueSnackbar: NotistackContext['enqueueSnackbar'],
-  variant: OptionsObject['variant']
+  variant: OptionsObject['variant'],
 ): EnqueueFunction {
   return useCallback(
     (message, options) => {
@@ -111,6 +111,6 @@ function useEnqueueFunction(
       };
       return enqueueSnackbar(message, allOptions);
     },
-    [enqueueSnackbar, variant]
+    [enqueueSnackbar, variant],
   );
 }

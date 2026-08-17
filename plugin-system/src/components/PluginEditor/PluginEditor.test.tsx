@@ -158,7 +158,7 @@ describe('PluginEditor', () => {
               value={{ selection: { type: type as PluginType, kind: '' }, spec: {} }}
               onChange={jest.fn}
               onRunQuery={onRunQueryHandler}
-            />
+            />,
           );
           const queryButton = screen.getByTestId('run_query_button');
           expect(queryButton).toBeInTheDocument();

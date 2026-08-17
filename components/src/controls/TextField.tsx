@@ -19,7 +19,7 @@ type TextFieldProps = Omit<MuiTextFieldProps, 'onChange'> & { debounceMs?: numbe
 
 export const TextField = forwardRef(function (
   { debounceMs = 250, value, onChange, ...props }: TextFieldProps,
-  ref: ForwardedRef<HTMLDivElement>
+  ref: ForwardedRef<HTMLDivElement>,
 ) {
   const [currentValue, setCurrentValue] = useState(value);
 
@@ -32,7 +32,7 @@ export const TextField = forwardRef(function (
     (inputValue: string) => {
       onChange?.(inputValue);
     },
-    [onChange]
+    [onChange],
   );
 
   const debounceFn = useMemo(() => debounce(handleDebounceFn, debounceMs), [debounceMs, handleDebounceFn]);

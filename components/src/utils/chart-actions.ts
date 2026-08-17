@@ -98,7 +98,7 @@ export function batchDispatchNearbySeriesActions(
   emphasizedSeriesIndexes: number[],
   nonEmphasizedSeriesIndexes: number[],
   emphasizedDatapoints: DatapointInfo[],
-  duplicateDatapoints: DatapointInfo[]
+  duplicateDatapoints: DatapointInfo[],
 ): void {
   // Accounts for multiple series that are rendered direct on top of eachother.
   // Only applies select state to the datapoint that is visible to avoid color mismatch.

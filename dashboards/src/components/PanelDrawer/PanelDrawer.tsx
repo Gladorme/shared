@@ -54,7 +54,7 @@ export const PanelDrawer = (): ReactElement => {
       panelEditor.applyChanges(values);
       setIsClosing(true);
     },
-    [panelEditor]
+    [panelEditor],
   );
 
   const handleClose = (): void => {

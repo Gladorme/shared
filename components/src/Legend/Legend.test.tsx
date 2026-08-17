@@ -62,7 +62,7 @@ const renderLegend = ({
         onItemMouseOver={onItemMouseOver}
         onItemMouseOut={onItemMouseOut}
       />
-    </VirtuosoMockContext.Provider>
+    </VirtuosoMockContext.Provider>,
   );
 };
 
@@ -222,7 +222,7 @@ describe('Legend', () => {
           {
             id: '3',
             index: 2,
-          }
+          },
         );
       });
     });
@@ -250,7 +250,7 @@ describe('Legend', () => {
           {
             id: '2',
             index: 1,
-          }
+          },
         );
       });
     });

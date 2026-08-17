@@ -59,7 +59,7 @@ export function ViewExplore(props: ViewExploreProps): ReactElement {
                 position: 'relative',
                 overflow: 'hidden',
               },
-              sx
+              sx,
             )}
             {...others}
           >

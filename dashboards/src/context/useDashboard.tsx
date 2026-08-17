@@ -68,7 +68,7 @@ export function useDashboard(): {
       datasources,
       links,
       ttl,
-    })
+    }),
   );
   const { setVariableDefinitions } = useVariableDefinitionActions();
   const { setAnnotationSpecs } = useAnnotationActions();
@@ -127,7 +127,7 @@ export function useDashboard(): {
 
 function convertPanelGroupsToLayouts(
   panelGroups: Record<number, PanelGroupDefinition>,
-  panelGroupOrder: PanelGroupId[]
+  panelGroupOrder: PanelGroupId[],
 ): GridDefinition[] {
   const layouts: GridDefinition[] = [];
   panelGroupOrder.map((groupOrderId) => {

@@ -91,7 +91,7 @@ export function interpolateHeaders(headers: Record<string, string>, variableStat
 
 export function interpolateQueryParams(
   queryParams: QueryParamValues,
-  variableState: VariableStateMap
+  variableState: VariableStateMap,
 ): QueryParamValues {
   const result: QueryParamValues = {};
   for (const [key, value] of Object.entries(queryParams)) {

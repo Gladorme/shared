@@ -115,7 +115,7 @@ const renderTable = ({
         sorting={sorting}
         onSortingChange={onSortingChange}
       />
-    </VirtuosoMockContext.Provider>
+    </VirtuosoMockContext.Provider>,
   );
 };
 
@@ -1098,7 +1098,7 @@ describe('table', () => {
         {
           id: '1',
           index: 1,
-        }
+        },
       );
     });
   });
@@ -1124,7 +1124,7 @@ describe('table', () => {
         {
           id: '2',
           index: 2,
-        }
+        },
       );
     });
   });

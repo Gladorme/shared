@@ -158,7 +158,7 @@ export function isBitsUnit(formatOptions: FormatOptions): formatOptions is BitsF
 }
 
 export function isUnitWithDecimalPlaces(
-  formatOptions: FormatOptions
+  formatOptions: FormatOptions,
 ): formatOptions is HasDecimalPlaces<FormatOptions> {
   const groupConfig = getUnitGroupConfig(formatOptions);
 

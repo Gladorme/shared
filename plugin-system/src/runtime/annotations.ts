@@ -74,7 +74,7 @@ export function useAnnotations(definitions: AnnotationSpec[]): Array<UseQueryRes
 
   const pluginLoaderResponse = usePlugins(
     'Annotation',
-    definitions.map((d) => ({ kind: d.plugin.kind }))
+    definitions.map((d) => ({ kind: d.plugin.kind })),
   );
 
   // useQueries() handles data fetching from query plugins
@@ -129,7 +129,7 @@ export function useAnnotationData(spec: AnnotationSpec): UseQueryResult<Annotati
       const resp = await annotationPlugin?.getAnnotationData(
         spec.plugin.spec,
         { ...variablePluginCtx, variableState: variables },
-        signal
+        signal,
       );
       if (!resp?.length) {
         return [];

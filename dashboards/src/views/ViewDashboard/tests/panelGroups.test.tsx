@@ -38,7 +38,7 @@ describe('Panel Groups', () => {
             </AnnotationProvider>
           </VariableProvider>
         </TimeRangeProviderBasic>
-      </DatasourceStoreProvider>
+      </DatasourceStoreProvider>,
     );
   };
 

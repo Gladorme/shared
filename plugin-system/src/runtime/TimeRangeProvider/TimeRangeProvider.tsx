@@ -76,7 +76,7 @@ export function TimeRangeProvider(props: TimeRangeProviderProps): ReactElement {
 
   const queryClient = useQueryClient();
   const [absoluteTimeRange, setAbsoluteTimeRange] = useState<AbsoluteTimeRange>(
-    isRelativeTimeRange(timeRange) ? toAbsoluteTimeRange(timeRange) : timeRange
+    isRelativeTimeRange(timeRange) ? toAbsoluteTimeRange(timeRange) : timeRange,
   );
 
   const handleSetTimeRange = useCallback(
@@ -84,7 +84,7 @@ export function TimeRangeProvider(props: TimeRangeProviderProps): ReactElement {
       setTimeRange(value);
       setAbsoluteTimeRange(isRelativeTimeRange(value) ? toAbsoluteTimeRange(value) : value);
     },
-    [setTimeRange]
+    [setTimeRange],
   );
 
   // Refresh is called when clicking on the refresh button, it refreshes all queries including variables

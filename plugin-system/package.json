@@ -25,6 +25,7 @@
     "start": "concurrently -P \"npm:build:* -- {*}\" -- --watch",
     "test": "cross-env TZ=UTC jest",
     "lint": "oxlint src",
+    "lint:ci": "oxlint src",
     "lint:fix": "oxlint --fix src"
   },
   "dependencies": {

@@ -56,7 +56,7 @@ export function TimeZoneSelector({
       ...(height && { lineHeight: height, paddingY: 0 }),
       ...selectProps.sx,
     }),
-    [variant, height, selectProps.sx]
+    [variant, height, selectProps.sx],
   );
 
   return (

@@ -71,7 +71,7 @@ function executeEventBatch<Id>(
   action: EventAction,
   selectionMap: Map<Id, SelectionItem>,
   variableState: VariableStateMap | undefined,
-  setActionStatus: ExecuteActionParams<Id>['setActionStatus']
+  setActionStatus: ExecuteActionParams<Id>['setActionStatus'],
 ): ActionExecutionResult {
   try {
     setActionStatus(action.name, { loading: true });
@@ -111,7 +111,7 @@ function executeEventIndividual<Id>(
   action: EventAction,
   selectionMap: Map<Id, SelectionItem>,
   variableState: VariableStateMap | undefined,
-  setActionStatus: ExecuteActionParams<Id>['setActionStatus']
+  setActionStatus: ExecuteActionParams<Id>['setActionStatus'],
 ): ActionExecutionResult {
   const entries = Array.from(selectionMap.entries());
   const count = entries.length;
@@ -167,7 +167,7 @@ async function executeWebhookIndividual<Id>(
   selectionMap: Map<Id, SelectionItem>,
   variableState: VariableStateMap | undefined,
   setActionStatus: ExecuteActionParams<Id>['setActionStatus'],
-  fetchFn: FetchFn
+  fetchFn: FetchFn,
 ): Promise<ActionExecutionResult> {
   const entries = Array.from(selectionMap.entries());
   const count = entries.length;
@@ -242,7 +242,7 @@ async function executeWebhookBatch<Id>(
   selectionMap: Map<Id, SelectionItem>,
   variableState: VariableStateMap | undefined,
   setActionStatus: ExecuteActionParams<Id>['setActionStatus'],
-  fetchFn: FetchFn
+  fetchFn: FetchFn,
 ): Promise<ActionExecutionResult> {
   const items = Array.from(selectionMap.values());
 
@@ -289,7 +289,7 @@ async function executeWebhookAction<Id>(
   selectionMap: Map<Id, SelectionItem>,
   variableState: VariableStateMap | undefined,
   setActionStatus: ExecuteActionParams<Id>['setActionStatus'],
-  fetchFn: FetchFn
+  fetchFn: FetchFn,
 ): Promise<ActionExecutionResult> {
   if (action.batchMode === 'batch') {
     return executeWebhookBatch(action, selectionMap, variableState, setActionStatus, fetchFn);
@@ -305,7 +305,7 @@ async function executeEventAction<Id>(
   action: EventAction,
   selectionMap: Map<Id, SelectionItem>,
   variableState: VariableStateMap | undefined,
-  setActionStatus: ExecuteActionParams<Id>['setActionStatus']
+  setActionStatus: ExecuteActionParams<Id>['setActionStatus'],
 ): Promise<ActionExecutionResult> {
   if (action.batchMode === 'batch') {
     return executeEventBatch(action, selectionMap, variableState, setActionStatus);

@@ -21,7 +21,7 @@ describe('getInitalValuesFromQueryParameters', () => {
       getInitalValuesFromQueryParameters({
         'var-foo': 'bar',
         'var-baz': ['qux', 'quux'],
-      })
+      }),
     ).toEqual({
       foo: 'bar',
       baz: ['qux', 'quux'],

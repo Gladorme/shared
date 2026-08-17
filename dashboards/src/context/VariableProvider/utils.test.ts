@@ -96,7 +96,7 @@ describe('checkSavedDefaultVariableStatus', () => {
             value: '5m',
           },
         ],
-      }
+      },
     );
     variableState.set(
       { name: 'NewListVariable' },
@@ -118,14 +118,14 @@ describe('checkSavedDefaultVariableStatus', () => {
           },
         ],
         defaultValue: 'test list value',
-      }
+      },
     );
     variableState.set(
       { name: 'NewTextVariable' },
       {
         value: 'New text value',
         loading: false,
-      }
+      },
     );
     const { isSavedVariableModified } = checkSavedDefaultVariableStatus(savedVariables, variableState);
     expect(isSavedVariableModified).toBe(true);
@@ -166,7 +166,7 @@ describe('checkSavedDefaultVariableStatus', () => {
             value: '5m',
           },
         ],
-      }
+      },
     );
     const { isSavedVariableModified } = checkSavedDefaultVariableStatus(savedVariables, variableState);
     expect(isSavedVariableModified).toBe(false);
@@ -196,7 +196,7 @@ describe('checkSavedDefaultVariableStatus', () => {
         value: null,
         loading: false,
         options: [],
-      }
+      },
     );
     const { isSavedVariableModified } = checkSavedDefaultVariableStatus(savedVariables, variableState);
     expect(isSavedVariableModified).toBe(false);
@@ -223,7 +223,7 @@ describe('checkSavedDefaultVariableStatus', () => {
       {
         value: 'first text value',
         loading: false,
-      }
+      },
     );
     const { isSavedVariableModified } = checkSavedDefaultVariableStatus(savedVariables, variableState);
     expect(isSavedVariableModified).toBe(false);
@@ -245,7 +245,7 @@ describe('checkSavedDefaultVariableStatus', () => {
       {
         value: 'updated text value',
         loading: false,
-      }
+      },
     );
     const { isSavedVariableModified } = checkSavedDefaultVariableStatus(savedVariables, variableState);
     expect(isSavedVariableModified).toBe(true);

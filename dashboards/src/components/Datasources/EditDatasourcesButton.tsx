@@ -57,7 +57,7 @@ export function EditDatasourcesButton(): ReactElement {
 
           return obj;
         },
-        {} as Record<string, DatasourceSpec>
+        {} as Record<string, DatasourceSpec>,
       );
 
     setDashboard({

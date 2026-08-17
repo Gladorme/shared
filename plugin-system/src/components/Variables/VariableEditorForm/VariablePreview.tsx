@@ -111,7 +111,7 @@ export function VariableListPreview(props: VariableListPreviewProps): ReactEleme
         error={errorMessage}
       />
     ),
-    [errorMessage, isFetching, result]
+    [errorMessage, isFetching, result],
   );
 
   return variablePreview;

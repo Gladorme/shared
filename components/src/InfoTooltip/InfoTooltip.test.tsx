@@ -24,7 +24,7 @@ describe('InfoTooltip', () => {
     render(
       <InfoTooltip title={title} description={description}>
         <div>tooltipAnchor</div>
-      </InfoTooltip>
+      </InfoTooltip>,
     );
     const tooltipAnchor = screen.getByText('tooltipAnchor');
     userEvent.hover(tooltipAnchor);

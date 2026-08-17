@@ -87,7 +87,7 @@ describe('DateTimeRangePicker', () => {
           onChange={jest.fn()}
           onCancel={onCancel}
           initialTimeRange={initialTimeRange}
-        />
+        />,
       );
 
       Object.keys(expected).forEach((k) => {
@@ -107,7 +107,7 @@ describe('DateTimeRangePicker', () => {
           onChange={onChange}
           onCancel={onCancel}
           initialTimeRange={initialTimeRange}
-        />
+        />,
       );
       const applyButton = screen.getByRole('button', { name: /apply/i });
       expect(applyButton).toBeInTheDocument();

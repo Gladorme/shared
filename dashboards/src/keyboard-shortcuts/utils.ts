@@ -18,7 +18,7 @@ import { PersesShortcutDef } from './types';
 
 export function buildShortcutOptions(
   def: PersesShortcutDef,
-  enabled: boolean
+  enabled: boolean,
 ): {
   enabled: boolean;
   meta: HotkeyMeta;

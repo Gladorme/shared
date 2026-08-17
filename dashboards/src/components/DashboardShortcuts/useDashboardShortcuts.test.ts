@@ -253,7 +253,7 @@ describe('useDashboardShortcuts paste time range behavior', () => {
     await waitFor(() => {
       expect(mockSetTimeRange).not.toHaveBeenCalled();
       expect(mockWarningSnackbar).toHaveBeenCalledWith(
-        'Clipboard does not contain a valid time range. Expected format: "<ISO date format> - <ISO date format>".'
+        'Clipboard does not contain a valid time range. Expected format: "<ISO date format> - <ISO date format>".',
       );
     });
   });

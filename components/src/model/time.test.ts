@@ -310,7 +310,7 @@ describe('intervalToPrometheusDuration', () => {
     (args: IntervalTestCase) => {
       const { timeRange, expected } = args;
       expect(intervalToDuration(timeRange)).toEqual(expected);
-    }
+    },
   );
 });
 
@@ -370,7 +370,7 @@ describe('formatDuration', () => {
     (args: FormatTestCase) => {
       const { duration, expected } = args;
       expect(formatDuration(duration)).toEqual(expected);
-    }
+    },
   );
 
   it('should get identical formatters from cache', () => {

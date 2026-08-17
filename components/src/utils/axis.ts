@@ -75,7 +75,7 @@ export function getFormattedMultipleYAxes(
   baseAxis: YAXisComponentOption | undefined,
   baseFormat: FormatOptions | undefined,
   additionalFormats: FormatOptions[],
-  maxValues?: number[]
+  maxValues?: number[],
 ): YAXisComponentOption[] {
   const axes: YAXisComponentOption[] = [];
 
@@ -93,7 +93,7 @@ export function getFormattedMultipleYAxes(
         overflow: 'truncate',
       },
     },
-    baseAxis
+    baseAxis,
   );
   axes.push(baseAxisConfig);
 

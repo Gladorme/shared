@@ -78,7 +78,7 @@ export function useAnnotationStates(annotationNames?: string[]): AnnotationState
     },
     (left, right) => {
       return JSON.stringify(left) === JSON.stringify(right);
-    }
+    },
   );
 }
 
@@ -92,7 +92,7 @@ export function useAnnotationActions(): AnnotationStoreActions {
         setAnnotationSpecs: s.setAnnotationSpecs,
       };
     },
-    shallow
+    shallow,
   );
 }
 
@@ -146,7 +146,7 @@ function createAnnotationStore({ initialAnnotationSpecs = [] }: AnnotationStoreA
               s.annotationSpecs = definitions;
             },
             false,
-            '[Annotations] setAnnotationSpecs' // Used for action name in Redux devtools
+            '[Annotations] setAnnotationSpecs', // Used for action name in Redux devtools
           );
         },
         setAnnotationState: (name: string, state: AnnotationState): void => {
@@ -155,11 +155,11 @@ function createAnnotationStore({ initialAnnotationSpecs = [] }: AnnotationStoreA
               s.annotationState[name] = state;
             },
             false,
-            '[Annotations] setAnnotationState' // Used for action name in Redux devtools
+            '[Annotations] setAnnotationState', // Used for action name in Redux devtools
           );
         },
-      }))
-    )
+      })),
+    ),
   );
   return store;
 }

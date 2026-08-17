@@ -93,7 +93,7 @@ export const QueryEditorContainer = forwardRef<PluginEditorRef, QueryEditorConta
         index,
         produce(query, (draft) => {
           draft.spec.name = name;
-        })
+        }),
       );
     }
 
@@ -202,7 +202,7 @@ export const QueryEditorContainer = forwardRef<PluginEditorRef, QueryEditorConta
         )}
       </Stack>
     );
-  }
+  },
 );
 
 QueryEditorContainer.displayName = 'QueryEditorContainer';
@@ -277,7 +277,7 @@ const QueryEditor = forwardRef<PluginEditorRef, QueryEditorProps>((props, ref): 
         draft.kind = next.selection.type;
         draft.spec.plugin.kind = next.selection.kind;
         draft.spec.plugin.spec = next.spec;
-      })
+      }),
     );
   };
 

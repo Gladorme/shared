@@ -53,7 +53,7 @@ function handleGlobalSelectToggle(
   isIndeterminate: boolean,
   isAllSelected: boolean,
   allowAllValue: boolean,
-  onChange: (selectedOptions: VariableOption[]) => void
+  onChange: (selectedOptions: VariableOption[]) => void,
 ): void {
   if (isAllSelected) {
     if (filteredOptions.length !== options.length) {
@@ -109,7 +109,7 @@ export function ListVariableListBoxProvider({
 
 export const ListVariableListBox = forwardRef(function ListVariableListBox(
   props: HTMLAttributes<HTMLUListElement>,
-  ref: ForwardedRef<HTMLUListElement>
+  ref: ForwardedRef<HTMLUListElement>,
 ) {
   const { children, ...rest } = props;
   const { options, selectedOptions, filteredOptions, allowAllValue, onChange } = useListVariableListBoxContext();
@@ -118,7 +118,7 @@ export const ListVariableListBox = forwardRef(function ListVariableListBox(
   const selectedCount = useMemo(() => selectedOptions.length, [selectedOptions]);
   const isIndeterminate = useMemo(
     () => options.length > 0 && selectedCount > 0 && selectedCount !== options.length,
-    [selectedCount, options]
+    [selectedCount, options],
   );
   const isAllSelected = useMemo(() => options.length > 0 && selectedCount === options.length, [selectedCount, options]);
 
@@ -139,7 +139,7 @@ export const ListVariableListBox = forwardRef(function ListVariableListBox(
               isIndeterminate,
               isAllSelected,
               allowAllValue,
-              onChange
+              onChange,
             )
           }
         />

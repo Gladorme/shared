@@ -34,7 +34,7 @@ export function useTraceQueries(definitions: TraceQueryDefinition[]): Array<UseQ
 
   const pluginLoaderResponse = usePlugins(
     'TraceQuery',
-    definitions.map((d) => ({ kind: d.spec.plugin.kind }))
+    definitions.map((d) => ({ kind: d.spec.plugin.kind })),
   );
 
   // useQueries() handles data fetching from query plugins (e.g. traceQL queries, promQL queries)

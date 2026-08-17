@@ -39,7 +39,7 @@ export function ExploreManager(props: ExploreManagerProps): ReactElement {
   const explorerPluginsMap = useMemo(
     () =>
       Object.fromEntries(plugins.data?.map((plugin) => [`${plugin.module.name}-${plugin.spec.name}`, plugin]) ?? []),
-    [plugins.data]
+    [plugins.data],
   );
 
   useEffect(() => {

@@ -74,7 +74,7 @@ export interface DashboardLinksActions {
 }
 
 const selectDashboardLinksActions: (state: DashboardStoreState) => DashboardLinksActions = (
-  state: DashboardStoreState
+  state: DashboardStoreState,
 ) => ({
   setLinks: state.setLinks,
 });
@@ -94,7 +94,7 @@ export function usePanelGroupIds(): number[] {
 }
 
 const selectPanelGroups: (state: DashboardStoreState) => Record<number, PanelGroupDefinition> = (
-  state: DashboardStoreState
+  state: DashboardStoreState,
 ) => state.panelGroups;
 /**
  * Returns an array of PanelGroupDefinitions in the order they appear in the dashboard.
@@ -167,7 +167,7 @@ export function usePanelGroupActions(panelGroupId: PanelGroupId): {
 }
 
 const selectSwapPanelGroups: (state: DashboardStoreState) => (xIndex: number, yIndex: number) => void = (
-  state: DashboardStoreState
+  state: DashboardStoreState,
 ) => state.swapPanelGroups;
 const selectPanelGroupsLength: (state: DashboardStoreState) => number = (state: DashboardStoreState) =>
   state.panelGroupOrder.length;
@@ -180,7 +180,7 @@ function useMovePanelGroup(panelGroupId: PanelGroupId): {
   moveUp: (() => void) | undefined;
 } {
   const currentIndex = useDashboardStore(
-    useCallback((store) => store.panelGroupOrder.findIndex((id) => id === panelGroupId), [panelGroupId])
+    useCallback((store) => store.panelGroupOrder.findIndex((id) => id === panelGroupId), [panelGroupId]),
   );
   const panelGroupsLength = useDashboardStore(selectPanelGroupsLength);
   const swapPanelGroups = useDashboardStore(selectSwapPanelGroups);
@@ -198,7 +198,7 @@ function useMovePanelGroup(panelGroupId: PanelGroupId): {
 }
 
 const selectPanelGroupEditor: (state: DashboardStoreState) => PanelGroupEditor | undefined = (
-  state: DashboardStoreState
+  state: DashboardStoreState,
 ) => state.panelGroupEditor;
 /**
  * Gets the Panel Group editor state.
@@ -257,8 +257,8 @@ export function usePanelKey(panelGroupItemId?: PanelGroupItemId): string | undef
 
         return store.panelGroups[panelGroupItemId.panelGroupId]?.itemPanelKeys[panelGroupItemId.panelGroupItemLayoutId];
       },
-      [panelGroupItemId]
-    )
+      [panelGroupItemId],
+    ),
   );
   return panelKey;
 }
@@ -275,8 +275,8 @@ export function usePanel(panelGroupItemId: PanelGroupItemId): PanelDefinition {
         if (panelKey === undefined) return;
         return store.panels[panelKey];
       },
-      [panelGroupId, panelGroupLayoutId]
-    )
+      [panelGroupId, panelGroupLayoutId],
+    ),
   );
 
   if (panel === undefined) {
@@ -378,7 +378,7 @@ export function useViewPanel(): {
 }
 
 const selectViewPanelGroup: (state: DashboardStoreState) => PanelGroupItemId | undefined = (
-  state: DashboardStoreState
+  state: DashboardStoreState,
 ) => state.getViewPanel();
 /**
  * Gets the Panel Group for the view panel.
@@ -420,7 +420,7 @@ const selectDiscardChangesConfirmationDialog: ({
   discardChangesConfirmationDialog: DiscardChangesConfirmationDialogState | undefined;
   closeDiscardChangesConfirmationDialog: () => void;
   openDiscardChangesConfirmationDialog: (
-    discardChangesConfirmationDialog: DiscardChangesConfirmationDialogState
+    discardChangesConfirmationDialog: DiscardChangesConfirmationDialogState,
   ) => void;
 } = ({
   discardChangesConfirmationDialog,
@@ -435,7 +435,7 @@ export function useDiscardChangesConfirmationDialog(): {
   discardChangesConfirmationDialog: DiscardChangesConfirmationDialogState | undefined;
   closeDiscardChangesConfirmationDialog: () => void;
   openDiscardChangesConfirmationDialog: (
-    discardChangesConfirmationDialog: DiscardChangesConfirmationDialogState
+    discardChangesConfirmationDialog: DiscardChangesConfirmationDialogState,
   ) => void;
 } {
   return useDashboardStore(selectDiscardChangesConfirmationDialog);

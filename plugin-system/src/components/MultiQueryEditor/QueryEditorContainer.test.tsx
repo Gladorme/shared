@@ -22,7 +22,7 @@ describe('QueryEditorContainer', () => {
     globalThis.fetch = jest.fn(() =>
       Promise.resolve({
         json: () => Promise.resolve({ success: true }),
-      })
+      }),
     ) as jest.Mock;
   });
 
@@ -71,7 +71,7 @@ describe('QueryEditorContainer', () => {
           onChange={jest.fn()}
           onQueryRun={jest.fn()}
           onCollapseExpand={jest.fn()}
-        />
+        />,
       );
       const runQuerybutton = screen.getByTestId('run_query_button');
       expect(runQuerybutton).toBeInTheDocument();

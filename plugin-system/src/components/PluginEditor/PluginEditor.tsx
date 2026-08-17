@@ -49,7 +49,7 @@ export function PluginEditor(props: PluginEditorProps): ReactElement {
     (nextSpec: UnknownSpec) => {
       onSpecChange(nextSpec);
     },
-    [onSpecChange]
+    [onSpecChange],
   );
 
   return (

@@ -32,7 +32,7 @@ export function VariableList(): ReactElement {
         .map((def) =>
           def.definitions.map((v) => (
             <VariableListItem key={v.spec.name + def.source} spec={v.spec} source={def.source} />
-          ))
+          )),
         )}
       {variableDefinitions.map((v) => (
         <VariableListItem key={v.spec.name} spec={v.spec} />

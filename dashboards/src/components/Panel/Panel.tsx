@@ -198,7 +198,7 @@ export const Panel = memo(function Panel(props: PanelProps) {
               flexFlow: 'column nowrap',
               ':hover': { '--panel-hover': 'block' },
             },
-            sx
+            sx,
           )}
           variant="outlined"
           onMouseEnter={handleMouseEnter}

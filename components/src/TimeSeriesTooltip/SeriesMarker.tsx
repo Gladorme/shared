@@ -33,7 +33,7 @@ export function SeriesMarker(props: SeriesMarkerProps): ReactElement {
           marginRight: 1,
           verticalAlign: 'top',
         },
-        sx
+        sx,
       )}
       style={{ backgroundColor: markerColor }}
     ></Box>

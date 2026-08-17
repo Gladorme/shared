@@ -134,7 +134,7 @@ export function ViewDashboard(props: ViewDashboardProps): ReactElement {
                     position: 'relative',
                     overflow: 'hidden',
                   },
-                  sx
+                  sx,
                 )}
                 {...others}
               >

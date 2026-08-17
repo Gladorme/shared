@@ -34,7 +34,7 @@ export function useAlertsQueries(definitions: AlertsQueryDefinition[]): Array<Us
 
   const pluginLoaderResponse = usePlugins(
     'AlertsQuery',
-    definitions.map((d) => ({ kind: d.spec.plugin.kind }))
+    definitions.map((d) => ({ kind: d.spec.plugin.kind })),
   );
 
   return useQueries({

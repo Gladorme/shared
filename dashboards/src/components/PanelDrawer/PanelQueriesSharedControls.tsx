@@ -56,7 +56,7 @@ export function PanelQueriesSharedControls({
       typeof pluginPreview?.queryOptions === 'function'
         ? pluginPreview?.queryOptions(panelDefinition.spec.plugin.spec)
         : pluginPreview?.queryOptions,
-    [panelDefinition.spec.plugin.spec, pluginPreview]
+    [panelDefinition.spec.plugin.spec, pluginPreview],
   );
 
   const [previewDefinition, setPreviewDefinition] = useState<QueryDefinition[]>(panelDefinition.spec.queries ?? []);
@@ -70,7 +70,7 @@ export function PanelQueriesSharedControls({
         setPreviewDefinition(queries);
       }
     },
-    [onQueriesChange, previewDefinition.length]
+    [onQueriesChange, previewDefinition.length],
   );
 
   const handleRunQuery = useCallback((index: number, newDef: QueryDefinition) => {

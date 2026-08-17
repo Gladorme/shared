@@ -71,7 +71,7 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
       tooltipElementRef.current = node;
       tooltipRef(node);
     },
-    [tooltipRef]
+    [tooltipRef],
   );
 
   const containerElement = containerId ? document.querySelector(containerId) : undefined;

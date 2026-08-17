@@ -13,6 +13,18 @@
       "dependsOn": [],
       "outputs": []
     },
+    "lint:ci": {
+      "dependsOn": [],
+      "outputs": []
+    },
+    "//#format:root": {
+      "cache": false,
+      "outputs": []
+    },
+    "//#format:root:check": {
+      "cache": false,
+      "outputs": []
+    },
     "start": {
       "dependsOn": ["^build"],
       "cache": false

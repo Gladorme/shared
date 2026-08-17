@@ -83,7 +83,7 @@ export const LEGEND_VALUE_CONFIG = legendValues.reduce(
 
     return config;
   },
-  {} as Partial<Record<LegendValue, LegendSingleSelectConfig>>
+  {} as Partial<Record<LegendValue, LegendSingleSelectConfig>>,
 );
 
 export function validateLegendSpec(legend?: LegendOptionsBase): boolean {

@@ -22,7 +22,7 @@ describe('FormatControls', () => {
     render(
       <div>
         <FormatControls value={value} onChange={onChange} />
-      </div>
+      </div>,
     );
   };
 

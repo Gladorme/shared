@@ -39,7 +39,7 @@ export function QueryViewerDialog({ open, queryDefinitions, onClose }: QueryView
               isReadonly
             />
             {index < queryDefinitions.length - 1 && <Divider sx={{ my: 2 }} />}
-          </React.Fragment>
+          </React.Fragment>,
         );
       }
     });

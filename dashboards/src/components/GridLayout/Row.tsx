@@ -39,7 +39,7 @@ export interface RowProps {
     containerWidth: number,
     margin: [number, number],
     cols: number,
-    containerPadding: [number, number]
+    containerPadding: [number, number],
   ) => void;
   repeatVariable?: [string, string];
 }

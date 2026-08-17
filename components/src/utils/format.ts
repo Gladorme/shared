@@ -16,7 +16,7 @@ import { format } from 'date-fns';
 
 export function dateFormatOptionsWithTimeZone(
   dateFormatOptions: Intl.DateTimeFormatOptions,
-  timeZone?: string
+  timeZone?: string,
 ): Intl.DateTimeFormatOptions {
   /*
    * if timeZone is provided, and is not local|browser,
@@ -123,7 +123,7 @@ interface FormattedDateTime {
 
 export const getDateAndTime = (
   timeMs?: number,
-  customFormat?: (date: Date, format: string) => string
+  customFormat?: (date: Date, format: string) => string,
 ): FormattedDateTime => {
   if (!timeMs) {
     return { formattedDate: '', formattedTime: '' };

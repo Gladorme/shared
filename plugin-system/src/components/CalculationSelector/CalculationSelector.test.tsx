@@ -22,7 +22,7 @@ describe('CalculationSelector', () => {
     render(
       <div>
         <CalculationSelector value={value} onChange={onChange} />
-      </div>
+      </div>,
     );
   };
 

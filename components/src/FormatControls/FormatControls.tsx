@@ -34,7 +34,7 @@ const DECIMAL_PLACES_OPTIONS: Array<{ id: string; label: string; decimalPlaces?:
 ];
 
 function getOptionByDecimalPlaces(
-  decimalPlaces?: number
+  decimalPlaces?: number,
 ): { id: string; label: string; decimalPlaces?: number } | undefined {
   return DECIMAL_PLACES_OPTIONS.find((o) => o.decimalPlaces === decimalPlaces);
 }

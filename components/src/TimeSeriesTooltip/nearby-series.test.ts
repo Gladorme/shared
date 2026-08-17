@@ -73,7 +73,7 @@ describe('legacyCheckforNearbySeries', () => {
       decimalPlaces: 2,
     };
     expect(legacyCheckforNearbySeries(chartData, pointInGrid, yBuffer, undefined, decimalUnit)).toEqual(
-      nearbySeriesOutput
+      nearbySeriesOutput,
     );
   });
 
@@ -87,7 +87,7 @@ describe('legacyCheckforNearbySeries', () => {
       decimalPlaces: 0,
     };
     expect(legacyCheckforNearbySeries(chartData, pointInGrid, yBuffer, undefined, percentFormattedUnit)).toEqual(
-      percentFormattedOutput
+      percentFormattedOutput,
     );
   });
 });

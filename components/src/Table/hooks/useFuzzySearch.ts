@@ -41,7 +41,7 @@ export function useFuzzySearch<TableData>(
   isSearchEnabled: boolean | undefined,
   threshold: FuzzyMatchThreshold,
   expanded: ExpandedState,
-  setExpanded: (value: SetStateAction<ExpandedState>) => void
+  setExpanded: (value: SetStateAction<ExpandedState>) => void,
 ): UseFuzzySearchResult<TableData> {
   const [globalFilter, setGlobalFilter] = useState('');
   const [prevExpandedState, setPrevExpandedState] = useState<ExpandedState>(expanded);
@@ -59,7 +59,7 @@ export function useFuzzySearch<TableData>(
         return value;
       });
     },
-    [expanded, prevExpandedState, setExpanded]
+    [expanded, prevExpandedState, setExpanded],
   );
   return {
     globalFilter,

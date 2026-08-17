@@ -74,7 +74,7 @@ export function useDragAndDropMonitor({
             indexOfTarget,
             closestEdgeOfTarget,
             axis: axis,
-          })
+          }),
         );
       },
     });
@@ -154,7 +154,7 @@ export function DragAndDropElement({ children, data }: DragAndDropElementProps):
         onDrop() {
           setState(idle);
         },
-      })
+      }),
     );
   }, [data]);
 

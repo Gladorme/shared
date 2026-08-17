@@ -50,7 +50,7 @@ const getModalBackgroundStyle = ({
 export function getTheme(
   mode: PaletteMode,
   options: Parameters<typeof createTheme>[0] = {},
-  disableBodyOverride: boolean = false
+  disableBodyOverride: boolean = false,
 ): Theme {
   return createTheme({
     palette: getPaletteOptions(mode),

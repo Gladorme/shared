@@ -89,12 +89,12 @@ export function TimeRangeControls({
   ) {
     const durationMs = milliseconds(parseDurationString(timeRange['pastDuration']));
     const insertionIndex = timePresetsValue.findIndex(
-      (option) => milliseconds(parseDurationString(option.value.pastDuration)) > durationMs
+      (option) => milliseconds(parseDurationString(option.value.pastDuration)) > durationMs,
     );
     timePresetsValue.splice(
       insertionIndex === -1 ? timePresetsValue.length : insertionIndex,
       0,
-      buildRelativeTimeOption(timeRange['pastDuration'])
+      buildRelativeTimeOption(timeRange['pastDuration']),
     );
   }
 
@@ -103,7 +103,7 @@ export function TimeRangeControls({
     (duration: DurationString) => {
       setRefreshInterval(duration);
     },
-    [setRefreshInterval]
+    [setRefreshInterval],
   );
 
   const fromDurationToMillis = (strDuration: string): number => {
@@ -176,7 +176,7 @@ export function TimeRangeControls({
     (tz: TimeZoneOption) => {
       onTimeZoneChange(tz);
     },
-    [onTimeZoneChange]
+    [onTimeZoneChange],
   );
 
   return (

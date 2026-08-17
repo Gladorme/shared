@@ -48,7 +48,7 @@ export function PanelContent(props: PanelContentProps): ReactElement {
   // Render the panel if any query has data, or the panel doesn't have a query attached (for example MarkdownPanel).
   // Loading indicator or errors of other queries are shown in the panel header.
   const queryResultsWithData = queryResults.flatMap((q) =>
-    q.data ? [{ data: q.data, definition: q.definition }] : []
+    q.data ? [{ data: q.data, definition: q.definition }] : [],
   );
   if (queryResultsWithData.length > 0 || queryResults.length === 0) {
     return (

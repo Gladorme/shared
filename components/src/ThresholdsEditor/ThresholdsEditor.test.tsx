@@ -25,7 +25,7 @@ describe('ThresholdsEditor', () => {
     render(
       <ChartsProvider chartsTheme={testChartsTheme}>
         <ThresholdsEditor thresholds={thresholds} onChange={onChange} />
-      </ChartsProvider>
+      </ChartsProvider>,
     );
   };
 
@@ -55,7 +55,7 @@ describe('ThresholdsEditor', () => {
     expect(onChange).toHaveBeenCalledWith(
       produce(thresholds, (draft) => {
         draft.steps?.push({ value: 75, color: '#d32f2f' });
-      })
+      }),
     );
   });
 
@@ -78,7 +78,7 @@ describe('ThresholdsEditor', () => {
     expect(onChange).toHaveBeenCalledWith(
       produce(thresholds, (draft) => {
         draft.steps?.splice(0, 1);
-      })
+      }),
     );
   });
 
@@ -94,7 +94,7 @@ describe('ThresholdsEditor', () => {
           if (draft.steps && draft.steps[0]) {
             draft.steps[0].value = 25;
           }
-        })
+        }),
       );
     });
   });
@@ -112,7 +112,7 @@ describe('ThresholdsEditor', () => {
           if (draft.steps && draft.steps[0]) {
             draft.steps[0].color = '#d32f2f';
           }
-        })
+        }),
       );
     });
   });
@@ -130,12 +130,12 @@ describe('ThresholdsEditor', () => {
       expect(onChange.mock.calls[0][0]).toStrictEqual(
         produce(thresholds, (draft) => {
           draft.defaultColor = '#6a4';
-        })
+        }),
       );
       expect(onChange.mock.calls[1][0]).toStrictEqual(
         produce(thresholds, (draft) => {
           draft.defaultColor = '#6a44eb';
-        })
+        }),
       );
     });
   });
@@ -147,7 +147,7 @@ describe('ThresholdsEditor', () => {
     expect(onChange).toHaveBeenCalledWith(
       produce(thresholds, (draft) => {
         draft.mode = 'percent';
-      })
+      }),
     );
 
     const absoluteButton = screen.getByLabelText('absolute');
@@ -155,7 +155,7 @@ describe('ThresholdsEditor', () => {
     expect(onChange).toHaveBeenCalledWith(
       produce(thresholds, (draft) => {
         draft.mode = undefined;
-      })
+      }),
     );
   });
 });

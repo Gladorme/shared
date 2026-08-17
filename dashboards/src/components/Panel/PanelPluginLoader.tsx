@@ -51,7 +51,7 @@ export function PanelPluginLoader(props: PanelPluginProps): ReactElement {
   for (const queryResult of supportedQueryResults) {
     if (!supportedQueryTypes.includes(queryResult.definition.kind)) {
       throw new Error(
-        `This panel does not support queries of type '${queryResult.definition.kind}'. Supported query types: ${supportedQueryTypes.join(', ')}.`
+        `This panel does not support queries of type '${queryResult.definition.kind}'. Supported query types: ${supportedQueryTypes.join(', ')}.`,
       );
     }
   }

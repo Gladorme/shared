@@ -39,7 +39,7 @@ export function useFetch(): {
       const response = await fetch(...args);
       return await response.json();
     },
-    [fetch]
+    [fetch],
   );
 
   return { fetch, fetchJson };

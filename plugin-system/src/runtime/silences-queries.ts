@@ -34,7 +34,7 @@ export function useSilencesQueries(definitions: SilencesQueryDefinition[]): Arra
 
   const pluginLoaderResponse = usePlugins(
     'SilencesQuery',
-    definitions.map((d) => ({ kind: d.spec.plugin.kind }))
+    definitions.map((d) => ({ kind: d.spec.plugin.kind })),
   );
 
   return useQueries({

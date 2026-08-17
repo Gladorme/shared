@@ -22,7 +22,7 @@ describe('LegendOptionsEditor', () => {
     render(
       <div>
         <LegendOptionsEditor value={value} onChange={onChange} />
-      </div>
+      </div>,
     );
   };
 

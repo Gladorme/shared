@@ -32,7 +32,7 @@ export interface MultiQueryEditorProps {
 
 function useDefaultQueryDefinition(
   queryTypes: QueryPluginType[],
-  filteredQueryPlugins?: string[]
+  filteredQueryPlugins?: string[],
 ): {
   defaultInitialQueryDefinition: QueryDefinition;
   isLoading: boolean;
@@ -96,7 +96,7 @@ export const MultiQueryEditor = forwardRef<PluginEditorRef, MultiQueryEditorProp
         } else {
           draft = [queryDef];
         }
-      })
+      }),
     );
   };
 
@@ -112,7 +112,7 @@ export const MultiQueryEditor = forwardRef<PluginEditorRef, MultiQueryEditorProp
         } else {
           draft = [...queries, defaultInitialQueryDefinition];
         }
-      })
+      }),
     );
     setQueriesCollapsed((queriesCollapsed) => {
       queriesCollapsed.push(false);
@@ -124,7 +124,7 @@ export const MultiQueryEditor = forwardRef<PluginEditorRef, MultiQueryEditorProp
     onChange(
       produce(queries, (draft) => {
         draft.splice(index, 1);
-      })
+      }),
     );
     setQueriesCollapsed((queriesCollapsed) => {
       queriesCollapsed.splice(index, 1);

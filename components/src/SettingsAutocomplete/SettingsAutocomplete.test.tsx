@@ -35,7 +35,7 @@ describe('SettingsAutocomplete', () => {
           id: '2',
           label: 'Two',
         }}
-      />
+      />,
     );
 
     const dropdown = screen.getByRole('combobox');

@@ -26,6 +26,7 @@
     "test": "cross-env TZ=UTC jest",
     "test:watch": "npm run test -- --watch",
     "lint": "oxlint src",
+    "lint:ci": "oxlint src",
     "lint:fix": "oxlint --fix src"
   },
   "dependencies": {

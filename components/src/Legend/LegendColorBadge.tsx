@@ -34,7 +34,7 @@ export const LegendColorBadge = memo(function LegendColorBadge({
           width: 16,
           margin: (theme) => theme.spacing(0.5),
         },
-        sx
+        sx,
       )}
       style={{ backgroundColor: color }}
     />

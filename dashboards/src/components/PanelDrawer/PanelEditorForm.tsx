@@ -90,7 +90,7 @@ export function PanelEditorForm(props: PanelEditorFormProps): ReactElement {
     (data) => {
       onSave(data);
     },
-    [onSave]
+    [onSave],
   );
 
   // When user click on cancel, several possibilities:

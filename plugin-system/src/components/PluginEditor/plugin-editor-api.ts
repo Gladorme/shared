@@ -192,7 +192,7 @@ export function usePluginEditor(props: UsePluginEditorProps): {
     onChange(
       produce(value, (draft) => {
         draft.spec = next;
-      })
+      }),
     );
   };
 

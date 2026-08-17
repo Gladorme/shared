@@ -207,8 +207,8 @@ function initStore(props: DashboardProviderProps): StoreApi<DashboardStoreState>
             });
           },
         };
-      })
-    )
+      }),
+    ),
   );
 
   return store;

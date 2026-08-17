@@ -51,7 +51,7 @@ function gatherCandidates(
   cursorPixelY: number | undefined,
   yBuffer: number,
   yBufferPixels: number | null,
-  chart: EChartsInstance
+  chart: EChartsInstance,
 ): Candidate[] {
   const candidates: Candidate[] = [];
   const totalSeries = data.length;
@@ -156,7 +156,7 @@ function gatherCandidates(
         barRelativeIdx,
         barBandwidth,
         barCenterPixelX,
-        barSeriesIndexes.length
+        barSeriesIndexes.length,
       );
 
       const isWithinXBounds = cursorXPixel >= segmentBounds.left && cursorXPixel <= segmentBounds.right;
@@ -224,7 +224,7 @@ function processCandidates(
   format: FormatOptions | undefined,
   seriesFormatMap: Map<string, FormatOptions> | undefined,
   chart: EChartsInstance,
-  nonCandidateSeriesIndexes: number[]
+  nonCandidateSeriesIndexes: number[],
 ): NearbySeriesArray {
   const nearbySeriesIndexes: number[] = [];
   const emphasizedSeriesIndexes: number[] = [];
@@ -287,7 +287,7 @@ function processCandidates(
     emphasizedSeriesIndexes,
     nonEmphasizedSeriesIndexes,
     emphasizedDatapoints,
-    duplicateDatapoints
+    duplicateDatapoints,
   );
 
   return result;
@@ -307,7 +307,7 @@ export function checkforNearbyTimeSeries(
   seriesFormatMap?: Map<string, FormatOptions>,
   // in the case of multi-axis, we need the cursor Y position in pixel space
   cursorPixelY?: number,
-  cursorXPixel?: number | null
+  cursorXPixel?: number | null,
 ): NearbySeriesArray {
   const cursorX: number | null = pointInGrid[0] ?? null;
   const cursorY: number | null = pointInGrid[1] ?? null;
@@ -342,7 +342,7 @@ export function checkforNearbyTimeSeries(
     cursorPixelY,
     yBuffer,
     yBufferPixels,
-    chart
+    chart,
   );
 
   const winner = findClosestCandidate(candidates);
@@ -366,7 +366,7 @@ export function legacyCheckforNearbySeries(
   pointInGrid: number[],
   yBuffer: number,
   chart?: EChartsInstance,
-  format?: FormatOptions
+  format?: FormatOptions,
 ): NearbySeriesArray {
   const currentNearbySeriesData: NearbySeriesArray = [];
   const cursorX: number | null = pointInGrid[0] ?? null;
@@ -549,7 +549,7 @@ export function getNearbySeriesData({
       format,
       seriesFormatMap,
       hasMultipleYAxes ? cursorPixelY : undefined,
-      cursorXPixel
+      cursorXPixel,
     );
   }
 

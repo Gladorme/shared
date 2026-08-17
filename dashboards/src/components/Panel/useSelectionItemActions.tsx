@@ -71,7 +71,7 @@ export function useSelectionItemActions<Id extends string | number = string>({
         });
       }
     },
-    [selectionMap, variableState, setActionStatus, fetch]
+    [selectionMap, variableState, setActionStatus, fetch],
   );
 
   const handleActionClick = useCallback(
@@ -82,7 +82,7 @@ export function useSelectionItemActions<Id extends string | number = string>({
         handleExecuteAction(action, item);
       }
     },
-    [handleExecuteAction]
+    [handleExecuteAction],
   );
 
   const closeConfirm = useCallback(() => setConfirmState((prev) => ({ ...prev, open: false })), []);
@@ -133,7 +133,7 @@ export function useSelectionItemActions<Id extends string | number = string>({
           >
             {actionIcon}
           </HeaderIconButton>
-        </InfoTooltip>
+        </InfoTooltip>,
       );
     }
 
@@ -178,13 +178,13 @@ export function useSelectionItemActions<Id extends string | number = string>({
             >
               {actionIcon}
             </HeaderIconButton>
-          </InfoTooltip>
+          </InfoTooltip>,
         );
       }
 
       return buttons;
     },
-    [actions, actionStatuses, areButtonsDisabled, handleActionClick]
+    [actions, actionStatuses, areButtonsDisabled, handleActionClick],
   );
 
   const confirmDialog = useMemo(
@@ -202,7 +202,7 @@ export function useSelectionItemActions<Id extends string | number = string>({
         </Dialog.Actions>
       </Dialog>
     ),
-    [confirmState.open, confirmState.action, closeConfirm, handleConfirm]
+    [confirmState.open, confirmState.action, closeConfirm, handleConfirm],
   );
 
   return { actionButtons, confirmDialog, getItemActionButtons };

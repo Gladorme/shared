@@ -130,7 +130,7 @@ export function PanelHeader({
                 overflow: 'hidden',
               },
             }),
-            sx
+            sx,
           )}
           {...rest}
         />
@@ -148,7 +148,7 @@ export function PanelHeader({
               containerType: 'inline-size',
               containerName: HEADER_ACTIONS_CONTAINER_NAME,
             },
-            sx
+            sx,
           )}
           {...rest}
         >

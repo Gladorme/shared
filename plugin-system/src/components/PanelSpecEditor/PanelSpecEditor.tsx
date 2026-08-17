@@ -114,7 +114,7 @@ export const PanelSpecEditor = forwardRef<PluginEditorRef, PanelSpecEditorProps>
             )}
           />
         ),
-      }))
+      })),
     );
   }
 

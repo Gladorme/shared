@@ -44,7 +44,7 @@ describe('PanelFocusProvider', () => {
       render(
         <PanelFocusProvider>
           <PanelFocusTest panelKey="panel-1" />
-        </PanelFocusProvider>
+        </PanelFocusProvider>,
       );
       expect(screen.getByTestId('focused-panel').textContent).toBe('none');
     });
@@ -63,7 +63,7 @@ describe('PanelFocusProvider', () => {
       render(
         <PanelFocusProvider>
           <PanelFocusTest panelKey="panel-1" />
-        </PanelFocusProvider>
+        </PanelFocusProvider>,
       );
 
       act(() => {
@@ -85,7 +85,7 @@ describe('PanelFocusProvider', () => {
       render(
         <PanelFocusProvider>
           <PanelFocusTest panelKey="panel-1" />
-        </PanelFocusProvider>
+        </PanelFocusProvider>,
       );
 
       const panelTarget = screen.getByTestId('panel-target');
@@ -109,7 +109,7 @@ describe('PanelFocusProvider', () => {
       render(
         <PanelFocusProvider>
           <PanelFocusTest panelKey="panel-1" />
-        </PanelFocusProvider>
+        </PanelFocusProvider>,
       );
 
       // First activate
@@ -132,7 +132,7 @@ describe('PanelFocusProvider', () => {
       render(
         <PanelFocusProvider>
           <PanelFocusTest panelKey="panel-1" />
-        </PanelFocusProvider>
+        </PanelFocusProvider>,
       );
 
       act(() => {

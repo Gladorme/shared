@@ -94,7 +94,7 @@ describe('remotePluginLoader', () => {
 
       expect(result).toEqual([]);
       expect(mockConsoleError).toHaveBeenCalledWith(
-        'RemotePluginLoader: Error loading plugins, response is not an array'
+        'RemotePluginLoader: Error loading plugins, response is not an array',
       );
     });
 

@@ -195,8 +195,8 @@ describe('useListVariableState', () => {
         {
           isFetching: params.input.isFetchingOptions,
           data: params.input.fetchedOptions,
-        }
-      )
+        },
+      ),
     );
 
     expect(result.current).toStrictEqual({

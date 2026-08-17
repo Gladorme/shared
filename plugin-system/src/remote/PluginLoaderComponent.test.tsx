@@ -94,13 +94,13 @@ describe('PluginLoaderComponent', () => {
       render(
         <SimpleErrorBoundary>
           <PluginLoaderComponent plugin={mockPlugin} />
-        </SimpleErrorBoundary>
+        </SimpleErrorBoundary>,
       );
     });
 
     await waitFor(() => {
       expect(
-        screen.getByText('PluginLoaderComponent: Plugin module test-module does not have a test-plugin export')
+        screen.getByText('PluginLoaderComponent: Plugin module test-module does not have a test-plugin export'),
       ).toBeInTheDocument();
     });
   });
@@ -116,13 +116,13 @@ describe('PluginLoaderComponent', () => {
       render(
         <SimpleErrorBoundary>
           <PluginLoaderComponent plugin={mockPlugin} />
-        </SimpleErrorBoundary>
+        </SimpleErrorBoundary>,
       );
     });
 
     await waitFor(() => {
       expect(
-        screen.getByText('PluginLoaderComponent: Plugin test-plugin export is not a function')
+        screen.getByText('PluginLoaderComponent: Plugin test-plugin export is not a function'),
       ).toBeInTheDocument();
     });
   });

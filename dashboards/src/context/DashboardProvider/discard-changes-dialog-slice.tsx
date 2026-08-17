@@ -18,7 +18,7 @@ import { Middleware } from './common';
 export interface DiscardChangesConfirmationDialogSlice {
   discardChangesConfirmationDialog?: DiscardChangesConfirmationDialogState;
   openDiscardChangesConfirmationDialog: (
-    discardChangesConfirmationDialog: DiscardChangesConfirmationDialogState
+    discardChangesConfirmationDialog: DiscardChangesConfirmationDialogState,
   ) => void;
   closeDiscardChangesConfirmationDialog: () => void;
 }

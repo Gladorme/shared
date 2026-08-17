@@ -35,7 +35,7 @@ const TABLE_DENSITY_CONFIG: Record<TableDensity, MuiTableProps['size']> = {
 
 export const InnerTable = forwardRef<HTMLTableElement, InnerTableProps>(function InnerTable(
   { density, ...otherProps },
-  ref
+  ref,
 ) {
   return (
     <StyledMuiTable

@@ -86,11 +86,11 @@ export function Table<TableData>({
     tableToolbarConfig?.isSearchEnabled,
     tableToolbarConfig?.fuzzyMatchThreshold ?? 'CONTAINS',
     expanded,
-    setExpanded
+    setExpanded,
   );
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    hiddenColumns?.reduce((acc, columnId) => ({ ...acc, [columnId]: false }), {}) ?? {}
+    hiddenColumns?.reduce((acc, columnId) => ({ ...acc, [columnId]: false }), {}) ?? {},
   );
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (rowSelectionUpdater) => {
@@ -118,7 +118,7 @@ export function Table<TableData>({
         }
       }
     },
-    [onRowSelectionChange, rowSelectionVariant]
+    [onRowSelectionChange, rowSelectionVariant],
   );
 
   const handleCheckboxChange = useCallback(
@@ -130,7 +130,7 @@ export function Table<TableData>({
       const isModifed = !!nativePointerEvent?.metaKey || !!nativePointerEvent?.shiftKey;
       handleRowSelectionEvent(table, row, isModifed);
     },
-    [handleRowSelectionEvent]
+    [handleRowSelectionEvent],
   );
 
   const handleSortingChange: OnChangeFn<SortingState> = (sortingUpdater) => {
@@ -239,7 +239,7 @@ export function Table<TableData>({
       const isModifiedClick = e.metaKey || e.shiftKey;
       handleRowSelectionEvent(table, row, isModifiedClick);
     },
-    [handleRowSelectionEvent, table]
+    [handleRowSelectionEvent, table],
   );
 
   return (

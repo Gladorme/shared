@@ -46,7 +46,7 @@ function renderPanelHook(panelAnnotations?: AnnotationSpec[]): { current: string
     () => usePanelAnnotationsWithData(panelAnnotations).map((a) => a.definition.display.name),
     {
       wrapper,
-    }
+    },
   );
   return result;
 }

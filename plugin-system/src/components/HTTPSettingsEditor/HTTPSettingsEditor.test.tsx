@@ -215,7 +215,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
         () => {
           expect(onChange).toHaveBeenCalled();
         },
-        { timeout: 2000 }
+        { timeout: 2000 },
       );
 
       const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1][0];
@@ -251,7 +251,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
           expect(lastCall.proxy?.spec.headers).toEqual({ Authorization: 'Bearer token' });
           expect(lastCall.proxy?.spec.headers).not.toHaveProperty('X-Custom');
         },
-        { timeout: 2000 }
+        { timeout: 2000 },
       );
     });
   });

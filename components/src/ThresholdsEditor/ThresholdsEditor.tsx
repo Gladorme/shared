@@ -63,7 +63,7 @@ export function ThresholdsEditor({
           if (step) {
             step.value = Number(e.target.value);
           }
-        })
+        }),
       );
     }
   };
@@ -78,7 +78,7 @@ export function ThresholdsEditor({
               step.color = color;
             }
           }
-        })
+        }),
       );
     }
   };
@@ -88,7 +88,7 @@ export function ThresholdsEditor({
       onChange(
         produce(thresholds, (draft) => {
           draft.defaultColor = color;
-        })
+        }),
       );
     } else {
       onChange({
@@ -106,7 +106,7 @@ export function ThresholdsEditor({
         onChange(
           produce(thresholds, (draft) => {
             draft.steps = sortedSteps;
-          })
+          }),
         );
       }
     }
@@ -133,7 +133,7 @@ export function ThresholdsEditor({
       onChange(
         produce(thresholds, (draft) => {
           draft.steps = [{ value: DEFAULT_STEP }];
-        })
+        }),
       );
     } else {
       onChange(
@@ -146,7 +146,7 @@ export function ThresholdsEditor({
           } else if (steps) {
             steps.push({ value: DEFAULT_STEP });
           }
-        })
+        }),
       );
     }
   };
@@ -157,7 +157,7 @@ export function ThresholdsEditor({
       onChange(
         produce(thresholds, (draft) => {
           draft.mode = mode;
-        })
+        }),
       );
     } else {
       onChange({ mode });

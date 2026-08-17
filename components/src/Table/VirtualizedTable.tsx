@@ -330,7 +330,7 @@ export function VirtualizedTable<TableData>({
                       ...acc,
                       [key]: String(value),
                     }),
-                    {}
+                    {},
                   );
 
                 return (

@@ -24,6 +24,7 @@
     "type-check": "tsc --noEmit",
     "start": "concurrently -P \"npm:build:* -- {*}\" -- --watch",
     "lint": "oxlint src",
+    "lint:ci": "oxlint src",
     "lint:fix": "oxlint --fix src"
   },
   "dependencies": {

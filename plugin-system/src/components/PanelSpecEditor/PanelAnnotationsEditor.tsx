@@ -106,7 +106,7 @@ export function PanelAnnotationsEditor({ value, onChange, isReadonly }: PanelAnn
 
   const toggleAnnotationVisibility = (index: number, visible: boolean): void => {
     onChange(
-      value.map((spec, i) => (i === index ? { ...spec, display: { ...spec.display, hidden: !visible } } : spec))
+      value.map((spec, i) => (i === index ? { ...spec, display: { ...spec.display, hidden: !visible } } : spec)),
     );
   };
 

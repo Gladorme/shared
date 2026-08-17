@@ -48,7 +48,7 @@ export interface PanelGroupSlice {
  * Curried function for creating a PanelGroupSlice.
  */
 export function createPanelGroupSlice(
-  layouts: LayoutDefinition[]
+  layouts: LayoutDefinition[],
 ): StateCreator<PanelGroupSlice, Middleware, [], PanelGroupSlice> {
   const { panelGroups, panelGroupOrder } = convertLayoutsToPanelGroups(layouts);
 
@@ -86,7 +86,7 @@ export function createPanelGroupSlice(
 }
 
 export function convertLayoutsToPanelGroups(
-  layouts: LayoutDefinition[]
+  layouts: LayoutDefinition[],
 ): Pick<PanelGroupSlice, 'panelGroups' | 'panelGroupOrder'> {
   // Convert the initial layouts from the JSON
   const panelGroups: PanelGroupSlice['panelGroups'] = {};
