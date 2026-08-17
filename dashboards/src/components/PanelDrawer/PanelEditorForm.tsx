@@ -23,7 +23,7 @@ import {
 } from '@perses-dev/components';
 import type { PanelEditorValues } from '@perses-dev/plugin-system';
 import { PluginKindSelect, usePluginEditor, useValidationSchemas } from '@perses-dev/plugin-system';
-import type { PanelDefinition } from '@perses-dev/spec';
+import type { Definition, PanelDefinition, UnknownSpec } from '@perses-dev/spec';
 import type { ReactElement } from 'react';
 import { useCallback, useEffect, useState } from 'react';
 import type { SubmitHandler } from 'react-hook-form';
@@ -68,11 +68,16 @@ export function PanelEditorForm(props: PanelEditorFormProps): ReactElement {
     pluginTypes: ['Panel'],
     value: { selection: { kind: plugin.kind, type: 'Panel' }, spec: plugin.spec },
     onChange: (plugin) => {
-      form.setValue('panelDefinition.spec.plugin', { kind: plugin.selection.kind, spec: plugin.spec });
-      setPlugin({
+      // Persist the selected version (if any) as plugin metadata so the panel uses that specific version. When no
+      // version is selected (single version available), metadata is omitted so the latest version is used.
+      const version = plugin.selection.version;
+      const nextPlugin: Definition<UnknownSpec> & { metadata?: { version?: string } } = {
         kind: plugin.selection.kind,
+        ...(version ? { metadata: { version } } : {}),
         spec: plugin.spec,
-      });
+      };
+      form.setValue('panelDefinition.spec.plugin', nextPlugin);
+      setPlugin(nextPlugin);
     },
     onHideQueryEditorChange: (isHidden) => {
       setQueries(undefined, isHidden);
@@ -217,13 +222,14 @@ export function PanelEditorForm(props: PanelEditorFormProps): ReactElement {
                   <PluginKindSelect
                     {...field}
                     pluginTypes={['Panel']}
+                    enableVersionSelection
                     required
                     fullWidth
                     label="Type"
                     disabled={pluginEditor.isLoading}
                     error={!!pluginEditor.error || !!fieldState.error}
                     helperText={pluginEditor.error?.message ?? fieldState.error?.message}
-                    value={{ type: 'Panel', kind: watchedPluginKind }}
+                    value={{ type: 'Panel', kind: watchedPluginKind, version: getPinnedPluginVersion(plugin) }}
                     onChange={(event) => {
                       field.onChange(event.kind);
                       pluginEditor.onSelectionChange(event);
@@ -267,3 +273,12 @@ export function PanelEditorForm(props: PanelEditorFormProps): ReactElement {
  * The `id` attribute added to the `PanelEditorForm` component, allowing submit buttons to live outside the form.
  */
 export const panelEditorFormId = 'panel-editor-form';
+
+/**
+ * Reads a pinned plugin version from a panel plugin definition's metadata. The `latest` sentinel is treated as
+ * "unpinned" so the Type select shows the latest version option rather than an out-of-range value.
+ */
+function getPinnedPluginVersion(plugin: Definition<UnknownSpec>): string | undefined {
+  const version = (plugin as { metadata?: { version?: string } }).metadata?.version;
+  return version && version !== 'latest' ? version : undefined;
+}
