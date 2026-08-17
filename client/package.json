@@ -32,7 +32,6 @@
     "test": "cross-env TZ=UTC jest --passWithNoTests",
     "test:watch": "cross-env TZ=UTC jest --watch",
     "lint": "oxlint src",
-    "lint:ci": "oxlint src",
     "lint:fix": "oxlint --fix src"
   },
   "files": [
