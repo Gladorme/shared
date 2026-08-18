@@ -25,9 +25,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ReactElement, ReactNode, useCallback, useMemo, useState } from 'react';
 import { Drawer, ErrorAlert, ErrorBoundary } from '@perses-dev/components';
 import { PanelEditorValues, useVariableValues, VariableContext } from '@perses-dev/plugin-system';
+import { ReactElement, ReactNode, useCallback, useMemo, useState } from 'react';
+
 import { usePanelEditor, usePanelKey } from '../../context';
 import { PanelEditorForm } from './PanelEditorForm';
 
@@ -53,7 +54,7 @@ export const PanelDrawer = (): ReactElement => {
       panelEditor.applyChanges(values);
       setIsClosing(true);
     },
-    [panelEditor]
+    [panelEditor],
   );
 
   const handleClose = (): void => {

@@ -13,13 +13,14 @@
 
 import { ErrorAlert, JSONEditor } from '@perses-dev/components';
 import { AnnotationSpec, PanelDefinition, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
-import { Control, Controller } from 'react-hook-form';
 import { forwardRef, ReactElement } from 'react';
-import { LinksEditor } from '../LinksEditor';
+import { Control, Controller } from 'react-hook-form';
+
 import { PanelEditorValues, PanelPlugin } from '../../model';
 import { useDataQueriesContext, usePlugin } from '../../runtime';
-import { OptionsEditorTabs, OptionsEditorTabsProps } from '../OptionsEditorTabs';
+import { LinksEditor } from '../LinksEditor';
 import { MultiQueryEditor } from '../MultiQueryEditor';
+import { OptionsEditorTabs, OptionsEditorTabsProps } from '../OptionsEditorTabs';
 import { PluginEditorRef } from '../PluginEditor';
 import { PanelAnnotationsEditor } from './PanelAnnotationsEditor';
 
@@ -113,7 +114,7 @@ export const PanelSpecEditor = forwardRef<PluginEditorRef, PanelSpecEditorProps>
             )}
           />
         ),
-      }))
+      })),
     );
   }
 

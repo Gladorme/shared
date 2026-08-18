@@ -11,8 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { screen, cleanup } from '@testing-library/react';
 import { QueryDefinition, QueryPluginType } from '@perses-dev/spec';
+import { screen, cleanup } from '@testing-library/react';
+
 import { renderWithContext } from '../../test';
 import { QueryEditorContainer } from './QueryEditorContainer';
 
@@ -21,7 +22,7 @@ describe('QueryEditorContainer', () => {
     globalThis.fetch = jest.fn(() =>
       Promise.resolve({
         json: () => Promise.resolve({ success: true }),
-      })
+      }),
     ) as jest.Mock;
   });
 
@@ -70,7 +71,7 @@ describe('QueryEditorContainer', () => {
           onChange={jest.fn()}
           onQueryRun={jest.fn()}
           onCollapseExpand={jest.fn()}
-        />
+        />,
       );
       const runQuerybutton = screen.getByTestId('run_query_button');
       expect(runQuerybutton).toBeInTheDocument();

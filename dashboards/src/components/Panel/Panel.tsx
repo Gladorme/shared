@@ -20,10 +20,11 @@ import {
   combineSx,
   useId,
 } from '@perses-dev/components';
-import { PanelDefinition } from '@perses-dev/spec';
 import { ActionOptions, useDataQueriesContext, usePluginRegistry } from '@perses-dev/plugin-system';
+import { PanelDefinition } from '@perses-dev/spec';
 import { ReactNode, memo, useEffect, useMemo, useState } from 'react';
 import useResizeObserver from 'use-resize-observer';
+
 import { PanelGroupItemId } from '../../model';
 import { PanelContent } from './PanelContent';
 import { PanelHeader, PanelHeaderProps } from './PanelHeader';
@@ -197,7 +198,7 @@ export const Panel = memo(function Panel(props: PanelProps) {
               flexFlow: 'column nowrap',
               ':hover': { '--panel-hover': 'block' },
             },
-            sx
+            sx,
           )}
           variant="outlined"
           onMouseEnter={handleMouseEnter}

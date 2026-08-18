@@ -12,13 +12,14 @@
 // limitations under the License.
 
 import { Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
-import React, { Fragment, ReactElement, useState } from 'react';
+import { RequestHeaders } from '@perses-dev/client';
+import { HTTPDatasourceSpec } from '@perses-dev/spec';
 import { produce } from 'immer';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import MinusIcon from 'mdi-material-ui/Minus';
 import PlusIcon from 'mdi-material-ui/Plus';
-import { HTTPDatasourceSpec } from '@perses-dev/spec';
-import { RequestHeaders } from '@perses-dev/client';
+import React, { Fragment, ReactElement, useState } from 'react';
+import { Controller, useFieldArray, useForm } from 'react-hook-form';
+
 import { OptionsEditorRadios } from '../OptionsEditorRadios';
 
 type HeaderEntry = {
@@ -97,7 +98,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
         if (draft.proxy !== undefined) {
           draft.proxy.spec.headers = Object.keys(headersObject).length > 0 ? headersObject : undefined;
         }
-      })
+      }),
     );
   };
 
@@ -127,7 +128,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                       if (draft.proxy !== undefined) {
                         draft.proxy.spec.url = e.target.value;
                       }
-                    })
+                    }),
                   );
                 }}
                 sx={{ mb: 2 }}
@@ -172,10 +173,10 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                                         } else {
                                           return item;
                                         }
-                                      }
+                                      },
                                     );
                                   }
-                                })
+                                }),
                               );
                             }}
                           />
@@ -213,10 +214,10 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                                         } else {
                                           return item;
                                         }
-                                      }
+                                      },
                                     );
                                   }
-                                })
+                                }),
                               );
                             }}
                           >
@@ -248,7 +249,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                                       }) || []),
                                     ];
                                   }
-                                })
+                                }),
                               );
                             }}
                           >
@@ -278,7 +279,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                           { endpointPattern: '', method: '' },
                         ];
                       }
-                    })
+                    }),
                   )
                 }
               >
@@ -398,7 +399,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                       if (draft.proxy !== undefined) {
                         draft.proxy.spec.secret = e.target.value;
                       }
-                    })
+                    }),
                   );
                 }}
               />
@@ -429,7 +430,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                 onChange(
                   produce(value, (draft) => {
                     draft.directUrl = e.target.value;
-                  })
+                  }),
                 );
               }}
             />

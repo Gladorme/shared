@@ -20,6 +20,7 @@ import {
 } from '@perses-dev/plugin-system';
 import { ListVariableDefinition, VariableDefinition } from '@perses-dev/spec';
 import { waitFor } from '@testing-library/react';
+
 import { renderHookWithContext } from '../../test/render-hook';
 import { filterVariableList, useListVariablePluginValues, useResolveListVariableValues } from './variable-model';
 
@@ -110,7 +111,7 @@ describe('useListVariablePluginValues', () => {
     });
 
     (useAllVariableValues as jest.Mock).mockImplementation((names?: string[]) =>
-      names ? Object.fromEntries(Object.entries(variables).filter(([k]) => names.includes(k))) : variables
+      names ? Object.fromEntries(Object.entries(variables).filter(([k]) => names.includes(k))) : variables,
     );
 
     renderHookWithContext(() => useListVariablePluginValues(definition));
@@ -124,7 +125,7 @@ describe('useListVariablePluginValues', () => {
     expect(getVariableOptionsMock).toHaveBeenCalledWith(
       definition.spec.plugin.spec,
       expectedCtx,
-      expect.any(AbortSignal)
+      expect.any(AbortSignal),
     );
   });
 
@@ -147,13 +148,13 @@ describe('useListVariablePluginValues', () => {
     });
 
     (useAllVariableValues as jest.Mock).mockImplementation((names?: string[]) =>
-      names ? Object.fromEntries(Object.entries(variables).filter(([k]) => names.includes(k))) : variables
+      names ? Object.fromEntries(Object.entries(variables).filter(([k]) => names.includes(k))) : variables,
     );
 
     renderHookWithContext(() => useListVariablePluginValues(definition));
 
     const allVariableDepsWithoutSelf = Object.fromEntries(
-      Object.entries(variables).filter(([key]) => dependsOnVariables.includes(key) && key !== definition.spec.name)
+      Object.entries(variables).filter(([key]) => dependsOnVariables.includes(key) && key !== definition.spec.name),
     );
 
     const expectedCtx = {
@@ -165,7 +166,7 @@ describe('useListVariablePluginValues', () => {
     expect(getVariableOptionsMock).toHaveBeenCalledWith(
       definition.spec.plugin.spec,
       expectedCtx,
-      expect.any(AbortSignal)
+      expect.any(AbortSignal),
     );
   });
 });
@@ -190,7 +191,7 @@ describe('useResolveListVariableValues', () => {
 
   function mockOuterVariables(variables: VariableStateMap): void {
     (useAllVariableValues as jest.Mock).mockImplementation((names?: string[]) =>
-      names ? Object.fromEntries(Object.entries(variables).filter(([k]) => names.includes(k))) : variables
+      names ? Object.fromEntries(Object.entries(variables).filter(([k]) => names.includes(k))) : variables,
     );
   }
 
@@ -208,7 +209,7 @@ describe('useResolveListVariableValues', () => {
       definitions.map(() => ({
         data: { getVariableOptions: getVariableOptionsMock },
         isLoading: false,
-      }))
+      })),
     );
 
     mockOuterVariables({});

@@ -11,8 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { act, renderHook, waitFor } from '@testing-library/react';
 import { DashboardResource } from '@perses-dev/client';
+import { act, renderHook, waitFor } from '@testing-library/react';
+
 import { useDashboardShortcuts } from './useDashboardShortcuts';
 
 const mockInfoSnackbar = jest.fn();
@@ -252,7 +253,7 @@ describe('useDashboardShortcuts paste time range behavior', () => {
     await waitFor(() => {
       expect(mockSetTimeRange).not.toHaveBeenCalled();
       expect(mockWarningSnackbar).toHaveBeenCalledWith(
-        'Clipboard does not contain a valid time range. Expected format: "<ISO date format> - <ISO date format>".'
+        'Clipboard does not contain a valid time range. Expected format: "<ISO date format> - <ISO date format>".',
       );
     });
   });

@@ -14,6 +14,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ReactNode } from 'react';
+
 import { SelectionProvider, useSelection } from './SelectionProvider';
 
 interface TestItem {
@@ -258,7 +259,7 @@ describe('SelectionProvider', () => {
             onRender={(state) => {
               capturedState = state;
             }}
-          />
+          />,
         );
 
         userEvent.click(screen.getByTestId('toggle-item-1'));
@@ -298,7 +299,7 @@ describe('SelectionProvider', () => {
         <SelectionProvider>
           <Consumer1 />
           <Consumer2 />
-        </SelectionProvider>
+        </SelectionProvider>,
       );
 
       expect(screen.getByTestId('consumer1-count')).toHaveTextContent('0');

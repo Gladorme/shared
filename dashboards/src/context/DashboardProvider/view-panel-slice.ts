@@ -11,8 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { StateCreator } from 'zustand';
 import { PanelGroupId } from '@perses-dev/plugin-system';
+import { StateCreator } from 'zustand';
+
 import { PanelGroupDefinition, PanelGroupItemId } from '../../model';
 import { Middleware } from './common';
 import { PanelGroupSlice } from './panel-group-slice';
@@ -45,7 +46,7 @@ export interface ViewPanelState {
  */
 export function createViewPanelSlice(
   viewPanelRef?: VirtualPanelRef,
-  setViewPanelRef?: (ref: VirtualPanelRef | undefined) => void
+  setViewPanelRef?: (ref: VirtualPanelRef | undefined) => void,
 ): StateCreator<ViewPanelSlice & PanelGroupSlice, Middleware, [], ViewPanelSlice> {
   return (set, get) => ({
     viewPanel: {
@@ -75,7 +76,7 @@ export function createViewPanelSlice(
 function getViewPanelGroupId(
   panelGroups: Record<PanelGroupId, PanelGroupDefinition>,
   panelGroupItemId?: PanelGroupItemId,
-  panelRef?: VirtualPanelRef
+  panelRef?: VirtualPanelRef,
 ): PanelGroupItemId | undefined {
   if (panelGroupItemId) {
     return panelGroupItemId;
@@ -91,7 +92,7 @@ function getViewPanelGroupId(
 // Find the PanelGroupItemId of a Panel from a PanelRef
 function findPanelGroupItemIdOfPanelRef(
   panelGroups: Record<PanelGroupId, PanelGroupDefinition>,
-  panelRef: VirtualPanelRef
+  panelRef: VirtualPanelRef,
 ): PanelGroupItemId | undefined {
   for (const panelGroup of Object.values(panelGroups)) {
     const itemPanel = Object.entries(panelGroup.itemPanelKeys ?? []).find(([_, value]) => value === panelRef.ref);
@@ -110,7 +111,7 @@ function findPanelGroupItemIdOfPanelRef(
 // Find the PanelRef from a PanelGroupItemId
 function findPanelRefOfPanelGroupItemId(
   panelGroups: Record<PanelGroupId, PanelGroupDefinition>,
-  panelGroupItemId?: PanelGroupItemId
+  panelGroupItemId?: PanelGroupItemId,
 ): VirtualPanelRef | undefined {
   if (!panelGroupItemId) {
     return undefined;

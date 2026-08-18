@@ -14,6 +14,7 @@
 import { ModuleFederation } from '@module-federation/enhanced/runtime';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
+
 import { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
 import { PluginLoaderComponent } from './PluginLoaderComponent';
 import * as PluginRuntime from './PluginRuntime';
@@ -93,13 +94,13 @@ describe('PluginLoaderComponent', () => {
       render(
         <SimpleErrorBoundary>
           <PluginLoaderComponent plugin={mockPlugin} />
-        </SimpleErrorBoundary>
+        </SimpleErrorBoundary>,
       );
     });
 
     await waitFor(() => {
       expect(
-        screen.getByText('PluginLoaderComponent: Plugin module test-module does not have a test-plugin export')
+        screen.getByText('PluginLoaderComponent: Plugin module test-module does not have a test-plugin export'),
       ).toBeInTheDocument();
     });
   });
@@ -115,13 +116,13 @@ describe('PluginLoaderComponent', () => {
       render(
         <SimpleErrorBoundary>
           <PluginLoaderComponent plugin={mockPlugin} />
-        </SimpleErrorBoundary>
+        </SimpleErrorBoundary>,
       );
     });
 
     await waitFor(() => {
       expect(
-        screen.getByText('PluginLoaderComponent: Plugin test-plugin export is not a function')
+        screen.getByText('PluginLoaderComponent: Plugin test-plugin export is not a function'),
       ).toBeInTheDocument();
     });
   });

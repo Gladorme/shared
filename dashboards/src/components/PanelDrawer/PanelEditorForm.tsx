@@ -11,10 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ReactElement, useCallback, useEffect, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Grid, MenuItem, Stack, TextField, Typography } from '@mui/material';
-import { PanelDefinition } from '@perses-dev/spec';
-import { PanelEditorValues, PluginKindSelect, usePluginEditor, useValidationSchemas } from '@perses-dev/plugin-system';
+import { Action } from '@perses-dev/client';
 import {
   DiscardChangesConfirmationDialog,
   ErrorAlert,
@@ -22,13 +21,15 @@ import {
   getSubmitText,
   getTitleAction,
 } from '@perses-dev/components';
+import { PanelEditorValues, PluginKindSelect, usePluginEditor, useValidationSchemas } from '@perses-dev/plugin-system';
+import { PanelDefinition } from '@perses-dev/spec';
+import { ReactElement, useCallback, useEffect, useState } from 'react';
 import { Controller, FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Action } from '@perses-dev/client';
+
 import { useListPanelGroups } from '../../context';
 import { PanelEditorProvider } from '../../context/PanelEditorProvider/PanelEditorProvider';
-import { usePanelEditor } from './usePanelEditor';
 import { PanelQueriesSharedControls } from './PanelQueriesSharedControls';
+import { usePanelEditor } from './usePanelEditor';
 
 export interface PanelEditorFormProps {
   initialValues: PanelEditorValues;
@@ -89,7 +90,7 @@ export function PanelEditorForm(props: PanelEditorFormProps): ReactElement {
     (data) => {
       onSave(data);
     },
-    [onSave]
+    [onSave],
   );
 
   // When user click on cancel, several possibilities:

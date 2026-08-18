@@ -12,6 +12,7 @@
 // limitations under the License.
 
 import { render, screen, waitFor } from '@testing-library/react';
+
 import { FetchProvider, useFetch, FetchFn } from './FetchContext';
 
 function TestConsumer(): React.ReactElement {
@@ -57,7 +58,7 @@ describe('FetchContext', () => {
       render(
         <FetchProvider fetchFn={customFetch}>
           <TestConsumer />
-        </FetchProvider>
+        </FetchProvider>,
       );
 
       screen.getByText('fire').click();
@@ -76,7 +77,7 @@ describe('FetchContext', () => {
       render(
         <FetchProvider fetchFn={customFetch}>
           <TestJsonConsumer url="/api/data" />
-        </FetchProvider>
+        </FetchProvider>,
       );
 
       screen.getByText('json').click();

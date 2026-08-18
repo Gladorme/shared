@@ -11,9 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import userEvent from '@testing-library/user-event';
 import { render, RenderResult, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { VirtuosoMockContext } from 'react-virtuoso';
+
 import { TableLegend, TableLegendProps } from './TableLegend';
 
 const MOCK_VIEWPORT_HEIGHT = 1000;
@@ -61,7 +62,7 @@ const renderTableLegend = ({
         onItemMouseOver={onItemMouseOver}
         onItemMouseOut={onItemMouseOut}
       />
-    </VirtuosoMockContext.Provider>
+    </VirtuosoMockContext.Provider>,
   );
 };
 
@@ -420,7 +421,7 @@ describe('TableLegend', () => {
         {
           id: 'two',
           index: 1,
-        }
+        },
       );
     });
   });
@@ -446,7 +447,7 @@ describe('TableLegend', () => {
         {
           id: 'two',
           index: 1,
-        }
+        },
       );
     });
   });

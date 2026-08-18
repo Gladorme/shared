@@ -11,11 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { HTTPDatasourceSpec } from '@perses-dev/spec';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { FormProvider, useForm } from 'react-hook-form';
 import { ReactElement } from 'react';
-import { HTTPDatasourceSpec } from '@perses-dev/spec';
+import { FormProvider, useForm } from 'react-hook-form';
+
 import { HTTPSettingsEditor } from './HTTPSettingsEditor';
 
 describe('HTTPSettingsEditor - Request Headers', () => {
@@ -214,7 +215,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
         () => {
           expect(onChange).toHaveBeenCalled();
         },
-        { timeout: 2000 }
+        { timeout: 2000 },
       );
 
       const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1][0];
@@ -250,7 +251,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
           expect(lastCall.proxy?.spec.headers).toEqual({ Authorization: 'Bearer token' });
           expect(lastCall.proxy?.spec.headers).not.toHaveProperty('X-Custom');
         },
-        { timeout: 2000 }
+        { timeout: 2000 },
       );
     });
   });

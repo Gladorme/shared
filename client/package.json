@@ -31,8 +31,8 @@
     "start": "concurrently -P \"npm:build:* -- {*}\" -- --watch",
     "test": "cross-env TZ=UTC jest --passWithNoTests",
     "test:watch": "cross-env TZ=UTC jest --watch",
-    "lint": "eslint src --ext .ts,.tsx",
-    "lint:fix": "eslint --fix src --ext .ts,.tsx"
+    "lint": "oxlint src",
+    "lint:fix": "oxlint --fix src"
   },
   "files": [
     "dist"

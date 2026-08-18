@@ -21,8 +21,8 @@ import {
   MOCK_PARTIAL_FAILURE_MODULE,
   MOCK_EMPTY_PLUGIN_MODULE,
 } from '../test/mock-data';
-import { remotePluginLoader } from './remotePluginLoader';
 import { loadPlugin } from './PluginRuntime';
+import { remotePluginLoader } from './remotePluginLoader';
 
 // Mock the loadPlugin function
 jest.mock('./PluginRuntime', () => ({
@@ -94,7 +94,7 @@ describe('remotePluginLoader', () => {
 
       expect(result).toEqual([]);
       expect(mockConsoleError).toHaveBeenCalledWith(
-        'RemotePluginLoader: Error loading plugins, response is not an array'
+        'RemotePluginLoader: Error loading plugins, response is not an array',
       );
     });
 

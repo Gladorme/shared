@@ -11,13 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { DataQueriesProvider, TimeRangeProviderBasic, useDataQueriesContext } from '@perses-dev/plugin-system';
+import { PanelDefinition } from '@perses-dev/spec';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { PanelDefinition } from '@perses-dev/spec';
-import { DataQueriesProvider, TimeRangeProviderBasic, useDataQueriesContext } from '@perses-dev/plugin-system';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { renderWithContext } from '../../test';
+
 import { VariableProvider } from '../../context';
+import { renderWithContext } from '../../test';
 import { Panel, PanelProps } from './Panel';
 
 const testTheme = createTheme({
@@ -114,7 +115,7 @@ describe('Panel', () => {
   const renderPanel = async (
     definition?: PanelDefinition,
     editHandlers?: PanelProps['editHandlers'],
-    panelOptions?: PanelProps['panelOptions']
+    panelOptions?: PanelProps['panelOptions'],
   ): Promise<void> => {
     definition ??= createTestPanel();
 
@@ -137,7 +138,7 @@ describe('Panel', () => {
             </DataQueriesProvider>
           </VariableProvider>
         </TimeRangeProviderBasic>
-      </ThemeProvider>
+      </ThemeProvider>,
     );
 
     // Wait for async effects (plugin actions loading) to complete
@@ -281,7 +282,7 @@ describe('Panel', () => {
       { onEditPanelClick, onDeletePanelClick, onDuplicatePanelClick },
       {
         extra: () => <div>Extra content</div>,
-      }
+      },
     );
     const panel = getPanel();
     expect(panel).not.toHaveTextContent('Extra content');
