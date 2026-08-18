@@ -50,6 +50,8 @@ const DEFAULT_SORTING: NonNullable<TableProps<unknown>['sorting']> = [];
  *
  * **Note: This component is currently experimental and is likely to have significant breaking changes in the near future. Use with caution outside of the core Perses codebase.**
  */
+// TanStack Table returns functions that React Compiler cannot safely memoize.
+// oxlint-disable-next-line react/react-compiler
 export function Table<TableData>({
   data,
   columns,

@@ -19,7 +19,7 @@ import {
   AbsoluteTimeRange,
 } from '@perses-dev/spec';
 import { getUnixTime, isDate } from 'date-fns';
-import { useMemo, useCallback, useEffect, useState } from 'react';
+import { useMemo, useCallback, useEffect, useRef } from 'react';
 import { QueryParamConfig, useQueryParams, StringParam } from 'use-query-params';
 
 import { TimeRange } from './TimeRangeProvider';
@@ -126,19 +126,19 @@ export function useInitialTimeRange(dashboardDuration: DurationString): TimeRang
 export function useTimeRangeParams(initialTimeRange: TimeRangeValue): Pick<TimeRange, 'timeRange' | 'setTimeRange'> {
   const [query, setQuery] = useQueryParams(timeRangeQueryConfig, { updateType: 'replaceIn' });
   // determine whether initial param had previously been populated to fix back btn
-  const [paramsLoaded, setParamsLoaded] = useState<boolean>(false);
+  const paramsLoaded = useRef(false);
 
   const { start } = query;
 
   useEffect(() => {
     // when dashboard loaded with no params, default to dashboard duration
-    if (!paramsLoaded && !start) {
+    if (!paramsLoaded.current && !start) {
       if (isRelativeTimeRange(initialTimeRange)) {
         setQuery({ start: initialTimeRange.pastDuration, end: undefined });
-        setParamsLoaded(true);
+        paramsLoaded.current = true;
       }
     }
-  }, [initialTimeRange, paramsLoaded, start, setQuery]);
+  }, [initialTimeRange, start, setQuery]);
 
   const setTimeRange: TimeRange['setTimeRange'] = useCallback(
     (value: TimeRangeValue) => {
@@ -183,17 +183,17 @@ export function useSetRefreshIntervalParams(
   const [query, setQuery] = useQueryParams(refreshIntervalQueryConfig, { updateType: 'replaceIn' });
 
   // determine whether initial param had previously been populated to fix back btn
-  const [paramsLoaded, setParamsLoaded] = useState<boolean>(false);
+  const paramsLoaded = useRef(false);
 
   const { refresh } = query;
 
   useEffect(() => {
     // when dashboard loaded with no params, default to dashboard refresh interval
-    if (!paramsLoaded && !refresh) {
+    if (!paramsLoaded.current && !refresh) {
       setQuery({ refresh: initialRefreshInterval });
-      setParamsLoaded(true);
+      paramsLoaded.current = true;
     }
-  }, [initialRefreshInterval, paramsLoaded, refresh, setQuery]);
+  }, [initialRefreshInterval, refresh, setQuery]);
 
   const setRefreshInterval: TimeRange['setRefreshInterval'] = useCallback(
     (refresh: DurationString) => setQuery({ refresh }),

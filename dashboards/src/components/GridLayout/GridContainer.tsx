@@ -22,10 +22,9 @@ export interface GridContainerProps {
 export function GridContainer(props: GridContainerProps): ReactElement {
   const [isFirstRender, setIsFirstRender] = useState(true);
   useEffect(() => {
-    if (isFirstRender) {
-      setIsFirstRender(false);
-    }
-  }, [isFirstRender]);
+    const animationFrame = window.requestAnimationFrame((): void => setIsFirstRender(false));
+    return (): void => window.cancelAnimationFrame(animationFrame);
+  }, []);
 
   return (
     <ReactGridLayoutContainer

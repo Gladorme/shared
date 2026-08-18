@@ -18,7 +18,7 @@ import { produce } from 'immer';
 import MinusIcon from 'mdi-material-ui/Minus';
 import PlusIcon from 'mdi-material-ui/Plus';
 import React, { Fragment, ReactElement, useState } from 'react';
-import { Controller, useFieldArray, useForm } from 'react-hook-form';
+import { Controller, useFieldArray, useForm, useWatch } from 'react-hook-form';
 
 import { OptionsEditorRadios } from '../OptionsEditorRadios';
 
@@ -40,14 +40,13 @@ export interface HTTPSettingsEditor {
 }
 
 export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
-  const { value, onChange, isReadonly, initialSpecDirect, initialSpecProxy } = props;
+  const { value: providedValue, onChange, isReadonly, initialSpecDirect, initialSpecProxy } = props;
   const strDirect = 'Direct access';
   const strProxy = 'Proxy';
 
   // Initialize Proxy mode by default, if neither direct nor proxy mode is selected.
-  if (value.directUrl === undefined && value.proxy === undefined) {
-    Object.assign(value, initialSpecProxy);
-  }
+  const value =
+    providedValue.directUrl === undefined && providedValue.proxy === undefined ? initialSpecProxy : providedValue;
 
   // Use local state to maintain an array of header entries during editing, instead of
   // manipulating a map directly which causes weird UX.
@@ -66,7 +65,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
   });
 
   // Watch the headers array for changes to detect duplicates
-  const watchedHeaders = headersForm.watch('headers');
+  const watchedHeaders = useWatch({ control: headersForm.control, name: 'headers' });
 
   // Check for duplicate header names
   // TODO: duplication detection logic to be replaced by proper zod schema validation in the future

@@ -78,6 +78,10 @@ const ConditionalBox = styled(Box)({
   justifyContent: 'flex-end',
 });
 
+function OnHover({ children, showIcons }: PropsWithChildren<{ showIcons: PanelOptions['showIcons'] }>): ReactNode {
+  return showIcons === 'hover' ? <Box sx={{ display: 'var(--panel-hover, none)' }}>{children}</Box> : <>{children}</>;
+}
+
 export const PanelActions: React.FC<PanelActionsProps> = ({
   editHandlers,
   readHandlers,
@@ -257,10 +261,6 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
 
   const divider = <Box sx={{ flexGrow: 1 }}></Box>;
 
-  // By default, the panel header shows certain icons only on hover if the panel is in non-editing, non-fullscreen mode
-  const OnHover = ({ children }: PropsWithChildren): ReactNode =>
-    showIcons === 'hover' ? <Box sx={{ display: 'var(--panel-hover, none)' }}>{children}</Box> : <>{children}</>;
-
   return (
     <>
       {/* small panel width: move all icons except move/grab to overflow menu */}
@@ -270,7 +270,7 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
         })}
       >
         {divider}
-        <OnHover>
+        <OnHover showIcons={showIcons}>
           <OverflowMenu title={title}>
             {descriptionAction} {linksAction} {queryStateIndicator} {noticesIndicator} {extraActions} {viewQueryAction}
             {readActions} {pluginActions} {itemActions}
@@ -288,12 +288,12 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
           },
         })}
       >
-        <OnHover>
+        <OnHover showIcons={showIcons}>
           {descriptionAction} {linksAction}
         </OnHover>
         {divider} {queryStateIndicator}
         {noticesIndicator}
-        <OnHover>
+        <OnHover showIcons={showIcons}>
           {extraActions}
           {readActions}
           <OverflowMenu title={title}>
@@ -311,12 +311,12 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
           [theme.containerQueries(HEADER_ACTIONS_CONTAINER_NAME).down(HEADER_MEDIUM_WIDTH)]: { display: 'none' },
         })}
       >
-        <OnHover>
+        <OnHover showIcons={showIcons}>
           {descriptionAction} {linksAction}
         </OnHover>
         {divider} {queryStateIndicator}
         {noticesIndicator}
-        <OnHover>
+        <OnHover showIcons={showIcons}>
           {extraActions}
           {viewQueryAction}
           {readActions} {editActions}

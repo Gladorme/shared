@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import isEqual from 'lodash/isEqual';
-import { useRef, DependencyList } from 'react';
+import { DependencyList, useState } from 'react';
 
 type MemoRef<T> = {
   value: T;
@@ -25,21 +25,15 @@ type MemoRef<T> = {
  * useMemo does not offer this guarantee, it's only a performance optimization).
  */
 export function useMemoized<T>(factory: () => T, deps: DependencyList): T {
-  const ref = useRef<MemoRef<T>>();
+  const [memo, setMemo] = useState<MemoRef<T>>(() => ({ value: factory(), deps }));
 
-  let areEqual = true;
-  for (let i = 0; i < deps.length; i++) {
-    if (ref.current?.deps[i] !== deps[i]) {
-      areEqual = false;
-      break;
-    }
+  if (!areDependenciesEqual(deps, memo.deps)) {
+    const nextMemo = { value: factory(), deps };
+    setMemo(nextMemo);
+    return nextMemo.value;
   }
 
-  if (ref.current === undefined || areEqual === false) {
-    ref.current = { value: factory(), deps: deps };
-  }
-
-  return ref.current.value;
+  return memo.value;
 }
 
 /**
@@ -47,9 +41,15 @@ export function useMemoized<T>(factory: () => T, deps: DependencyList): T {
  * isEqual on the dependency list.
  */
 export function useDeepMemo<T>(factory: () => T, deps: DependencyList): T {
-  const ref = useRef<MemoRef<T>>();
-  if (ref.current === undefined || isEqual(deps, ref.current.deps) === false) {
-    ref.current = { value: factory(), deps };
+  const [memo, setMemo] = useState<MemoRef<T>>(() => ({ value: factory(), deps }));
+  if (!isEqual(deps, memo.deps)) {
+    const nextMemo = { value: factory(), deps };
+    setMemo(nextMemo);
+    return nextMemo.value;
   }
-  return ref.current.value;
+  return memo.value;
+}
+
+function areDependenciesEqual(current: DependencyList, previous: DependencyList): boolean {
+  return current.length === previous.length && current.every((dependency, index) => dependency === previous[index]);
 }

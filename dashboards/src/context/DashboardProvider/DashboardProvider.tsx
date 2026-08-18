@@ -14,7 +14,7 @@
 import { DashboardKind, DashboardResource, ProjectMetadata } from '@perses-dev/client';
 import { usePlugin, usePluginRegistry } from '@perses-dev/plugin-system';
 import { Display, DurationString, DatasourceSpec } from '@perses-dev/spec';
-import { createContext, ReactElement, ReactNode, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, ReactElement, ReactNode, useContext, useEffect, useState } from 'react';
 import { createStore } from 'zustand';
 import type { StoreApi } from 'zustand';
 import { devtools } from 'zustand/middleware';
@@ -88,9 +88,8 @@ export interface DashboardProviderProps {
 }
 
 export function DashboardProvider(props: DashboardProviderProps): ReactElement {
-  // Prevent calling createDashboardStore every time it rerenders
-  const createDashboardStore = useCallback(initStore, [props]);
-  const [store] = useState(createDashboardStore(props));
+  // Create the store only for the provider's initial props.
+  const [store] = useState(() => initStore(props));
 
   // load plugin to retrieve initial spec if default panel kind is defined
   const { defaultPluginKinds } = usePluginRegistry();

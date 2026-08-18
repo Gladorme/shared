@@ -37,15 +37,17 @@ function TestJsonConsumer({ url }: { url: string }): React.ReactElement {
 describe('FetchContext', () => {
   describe('useFetch without provider', () => {
     it('returns the default fetch wrapper from @perses-dev/client', () => {
-      let hookResult: ReturnType<typeof useFetch> | undefined;
       function Capture(): React.ReactNode {
-        hookResult = useFetch();
-        return null;
+        const hookResult = useFetch();
+        return (
+          <div>
+            <span>{typeof hookResult.fetch}</span>
+            <span>{typeof hookResult.fetchJson}</span>
+          </div>
+        );
       }
       render(<Capture />);
-      expect(hookResult).toBeDefined();
-      expect(typeof hookResult!.fetch).toBe('function');
-      expect(typeof hookResult!.fetchJson).toBe('function');
+      expect(screen.getAllByText('function')).toHaveLength(2);
     });
   });
 

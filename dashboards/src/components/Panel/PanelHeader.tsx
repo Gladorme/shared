@@ -15,7 +15,7 @@ import { CardHeader, CardHeaderProps, Stack, Typography, Tooltip } from '@mui/ma
 import { combineSx } from '@perses-dev/components';
 import { ItemAction, QueryData, useAllVariableValues, useReplaceVariablesInString } from '@perses-dev/plugin-system';
 import { Link } from '@perses-dev/spec';
-import { ReactElement, ReactNode, useRef } from 'react';
+import { ReactElement, ReactNode, useCallback, useState } from 'react';
 
 import { HEADER_ACTIONS_CONTAINER_NAME } from '../../constants';
 import { PanelOptions } from './Panel';
@@ -64,10 +64,13 @@ export function PanelHeader({
   const description = useReplaceVariablesInString(rawDescription);
   const variableState = useAllVariableValues();
 
-  const textRef = useRef<HTMLDivElement>(null);
-
-  const isEllipsisActive =
-    textRef.current && dimension?.width ? textRef.current.scrollWidth > textRef.current.clientWidth : false;
+  const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+  const measureTitle = useCallback(
+    (node: HTMLDivElement | null): void => {
+      setIsEllipsisActive(Boolean(node && dimension?.width && node.scrollWidth > node.clientWidth));
+    },
+    [dimension?.width],
+  );
 
   const { actionButtons, confirmDialog } = useSelectionItemActions({
     actions: itemActionsListConfig,
@@ -90,7 +93,7 @@ export function PanelHeader({
                 <Typography
                   id={titleElementId}
                   variant="subtitle1"
-                  ref={textRef}
+                  ref={measureTitle}
                   sx={{
                     // `minHeight` guarantees that the header has the correct height
                     // when there is no title (i.e. in the preview)

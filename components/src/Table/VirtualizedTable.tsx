@@ -182,18 +182,7 @@ export function VirtualizedTable<TableData>({
    * and pass the column sizes down as CSS variables to the <table> element.
    */
   const columnSizeVars = useMemo(() => {
-    const colSizes: { [key: string]: number } = {};
-    headers.forEach((headerGroup) => {
-      headerGroup.headers
-        .filter((header) => header.column.getCanResize())
-        .forEach((header) => {
-          colSizes[`--header-${header.id}-size`] = header.getSize();
-          colSizes[`--col-${header.column.id}-size`] = header.column.getSize();
-        });
-    });
-    return colSizes;
-    // We want to recalculate column sizes whenever column sizes or column resizing info changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return calculateColumnSizeVars(headers, columnSizing, columnSizingInfo);
   }, [columnSizingInfo, columnSizing, headers]);
 
   return (
@@ -366,4 +355,21 @@ export function VirtualizedTable<TableData>({
       />
     </Box>
   );
+}
+
+function calculateColumnSizeVars<TableData>(
+  headers: Array<HeaderGroup<TableData>>,
+  _columnSizing: ColumnSizingState,
+  _columnSizingInfo: ColumnSizingInfoState,
+): { [key: string]: number } {
+  const colSizes: { [key: string]: number } = {};
+  headers.forEach((headerGroup) => {
+    headerGroup.headers
+      .filter((header) => header.column.getCanResize())
+      .forEach((header) => {
+        colSizes[`--header-${header.id}-size`] = header.getSize();
+        colSizes[`--col-${header.column.id}-size`] = header.column.getSize();
+      });
+  });
+  return colSizes;
 }

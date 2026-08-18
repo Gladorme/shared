@@ -26,6 +26,7 @@ import { GridTitle } from './GridTitle';
 
 const DEFAULT_MARGIN = 10;
 const ROW_HEIGHT = 30;
+const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export interface RowProps {
   panelGroupId: PanelGroupId;
@@ -55,11 +56,10 @@ export function Row({
   onWidthChange,
   repeatVariable,
 }: RowProps): ReactElement {
-  const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
   const theme = useTheme();
   const viewPanelItemId = useViewPanelGroup();
 
-  const [isOpen, setIsOpen] = useState(!groupDefinition.isCollapsed);
+  const [isOpenByUser, setIsOpenByUser] = useState(!groupDefinition.isCollapsed);
 
   const hasViewPanel =
     viewPanelItemId?.panelGroupId === panelGroupId &&
@@ -67,15 +67,15 @@ export function Row({
     viewPanelItemId.repeatVariable?.[0] === repeatVariable?.[0] &&
     viewPanelItemId.repeatVariable?.[1] === repeatVariable?.[1];
   const itemLayoutViewed = viewPanelItemId?.panelGroupItemLayoutId;
+  const isOpen = hasViewPanel || isOpenByUser;
 
   // If there is a panel in view mode, we should hide the grid if the panel is not in the current group.
   const isGridDisplayed = !viewPanelItemId || hasViewPanel;
 
-  // TODO: handle it without useEffect
   useEffect(() => {
-    if (hasViewPanel) {
-      setIsOpen(true);
-    }
+    if (!hasViewPanel) return;
+    const animationFrame = window.requestAnimationFrame((): void => setIsOpenByUser(true));
+    return (): void => window.cancelAnimationFrame(animationFrame);
   }, [hasViewPanel]);
 
   // Item layout is override if there is a panel in view mode
@@ -113,7 +113,7 @@ export function Row({
           collapse={
             groupDefinition.isCollapsed === undefined
               ? undefined
-              : { isOpen: isOpen, onToggleOpen: () => setIsOpen((current) => !current) }
+              : { isOpen: isOpen, onToggleOpen: () => setIsOpenByUser((current) => !current) }
           }
         />
       )}

@@ -25,8 +25,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { useEvent } from '../utils';
 import { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
 import { usePluginRuntime } from './PluginRuntime';
 
@@ -48,42 +49,56 @@ function PluginContainer<P>({
 
 export function PluginLoaderComponent<P>({ plugin, props, field }: PluginLoaderProps<P>): JSX.Element | null {
   const { loadPlugin } = usePluginRuntime({ plugin });
-  const [pluginModule, setPluginModule] = useState<RemotePluginModule | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-
+  const loadPluginEvent = useEvent(loadPlugin);
   const name = `${plugin.moduleName}-${plugin.name}`;
-  const previousPluginName = useRef<string>(name);
+  const [loadResult, setLoadResult] = useState<{
+    name: string;
+    pluginModule: RemotePluginModule | null;
+    error: Error | null;
+  }>({ name, pluginModule: null, error: null });
 
   useEffect(() => {
-    previousPluginName.current = name;
-    setError(null);
+    let cancelled = false;
 
-    loadPlugin()
-      .then((module) => {
-        setPluginModule(module);
+    loadPluginEvent()
+      .then((module): void => {
+        if (!cancelled) {
+          setLoadResult({ name, pluginModule: module, error: null });
+        }
       })
-      .catch((error) => {
-        setPluginModule(null);
+      .catch((error): void => {
         console.error(
           `PluginLoaderComponent: Error loading plugin ${plugin.name} from module ${plugin.moduleName}:`,
           error,
         );
-        setError(
-          new Error(`PluginLoaderComponent: Error loading plugin ${plugin.name} from module ${plugin.moduleName}`),
-        );
+        if (!cancelled) {
+          setLoadResult({
+            name,
+            pluginModule: null,
+            error: new Error(
+              `PluginLoaderComponent: Error loading plugin ${plugin.name} from module ${plugin.moduleName}`,
+            ),
+          });
+        }
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name]);
+    return (): void => {
+      cancelled = true;
+    };
+  }, [loadPluginEvent, name, plugin.moduleName, plugin.name]);
 
-  if (error) {
-    throw error;
-  }
-
-  if (!pluginModule) {
+  if (loadResult.name !== name) {
     return null;
   }
 
-  let pluginFunction = pluginModule[plugin.name];
+  if (loadResult.error) {
+    throw loadResult.error;
+  }
+
+  if (!loadResult.pluginModule) {
+    return null;
+  }
+
+  let pluginFunction = loadResult.pluginModule[plugin.name];
 
   if (field && pluginFunction && typeof pluginFunction === 'object' && field in pluginFunction) {
     pluginFunction = (pluginFunction as Record<string, unknown>)[field];
@@ -95,11 +110,6 @@ export function PluginLoaderComponent<P>({ plugin, props, field }: PluginLoaderP
 
   if (typeof pluginFunction !== 'function') {
     throw new Error(`PluginLoaderComponent: Plugin ${plugin.name} export is not a function`);
-  }
-
-  // make sure to re mount the plugin when changes, to avoid mismatch in hooks ordering when re rendering
-  if (previousPluginName.current !== name) {
-    return null;
   }
 
   return (

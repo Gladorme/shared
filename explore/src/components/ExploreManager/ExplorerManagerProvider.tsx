@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createContext, ReactElement, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactElement, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
 interface ExplorerState<T> {
   explorer?: string;
@@ -47,27 +47,33 @@ export function ExplorerManagerProvider({
   const [explorerState, setExplorerState] = externalStore ? externalStore : localStore;
   const { explorer, data } = explorerState;
 
-  function setExplorer(newExplorer: string): void {
-    if (explorer) {
-      // store current explorer state
-      explorerStateCache[explorer] = { data };
-      setExplorerStateCache(explorerStateCache);
-    }
+  const setExplorer = useCallback(
+    (newExplorer: string): void => {
+      if (explorer) {
+        // Store the current explorer state without mutating React state.
+        setExplorerStateCache((cache) => ({ ...cache, [explorer]: { data } }));
+      }
 
-    // restore previous explorer state (if any)
-    const state = explorerStateCache[newExplorer] ?? { data: {} };
-    setExplorerState({ explorer: newExplorer, data: state.data });
-  }
-
-  function setData(newData: unknown): void {
-    setExplorerState({ explorer, data: newData });
-  }
-
-  return (
-    <ExplorerManagerContext.Provider value={{ explorer, data, setExplorer, setData }}>
-      {children}
-    </ExplorerManagerContext.Provider>
+      // Restore the previous explorer state (if any).
+      const state = explorerStateCache[newExplorer] ?? { data: {} };
+      setExplorerState({ explorer: newExplorer, data: state.data });
+    },
+    [data, explorer, explorerStateCache, setExplorerState],
   );
+
+  const setData = useCallback(
+    (newData: unknown): void => {
+      setExplorerState({ explorer, data: newData });
+    },
+    [explorer, setExplorerState],
+  );
+
+  const contextValue = useMemo(
+    () => ({ explorer, data, setExplorer, setData }),
+    [data, explorer, setData, setExplorer],
+  );
+
+  return <ExplorerManagerContext.Provider value={contextValue}>{children}</ExplorerManagerContext.Provider>;
 }
 
 export function useExplorerManagerContext<T>(): ExplorerManagerContextType<T> {

@@ -38,7 +38,7 @@ import { ECharts, EChartsCoreOption, init, connect, use as registerEChartsCompon
 import { CanvasRenderer } from 'echarts/renderers';
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
-import { CSSProperties, memo, useEffect, useLayoutEffect, useRef } from 'react';
+import { CSSProperties, memo, useEffect, useImperativeHandle, useLayoutEffect, useRef } from 'react';
 
 import { EChartsTheme } from '../model';
 
@@ -182,15 +182,14 @@ export const EChart = memo(function EChart<T>({
     if (chartElement.current === undefined) return;
     chartElement.current.setOption(initialOption.current, true);
     onChartInitialized?.(chartElement.current);
-    if (_instance !== undefined) {
-      _instance.current = chartElement.current;
-    }
     return (): void => {
       if (chartElement.current === null) return;
       chartElement.current.dispose();
       chartElement.current = null;
     };
-  }, [_instance, onChartInitialized, theme, renderer]);
+  }, [onChartInitialized, theme, renderer]);
+
+  useImperativeHandle(_instance, (): ECharts | undefined => chartElement.current ?? undefined);
 
   // When syncGroup is explicitly set, charts within same group share interactions such as crosshair
   useEffect(() => {

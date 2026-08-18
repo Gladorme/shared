@@ -11,24 +11,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { useRef } from 'react';
+import { useState } from 'react';
 
-declare global {
-  // eslint-disable-next-line no-var
-  var useIdValue: number;
-}
+const componentIdGlobal = globalThis as typeof globalThis & { useIdValue?: number };
 
 /**
  * Generates a unique (stable) ID for a component. Should be replaced with React.useId once we support only React 18.
  */
 export function useId(prefix: string): string {
-  if (globalThis.useIdValue === undefined) {
-    globalThis.useIdValue = 0;
-  }
+  const [id] = useState(() => `${prefix}-${getNextComponentId()}`);
+  return id;
+}
 
-  const id = useRef<string | undefined>(undefined);
-  if (id.current === undefined) {
-    id.current = `${prefix}-${globalThis.useIdValue++}`;
-  }
-  return id.current;
+function getNextComponentId(): number {
+  // Keep the existing global key so multiple copies of the components package share the same counter.
+  componentIdGlobal['useIdValue'] ??= 0;
+  return componentIdGlobal['useIdValue']++;
 }

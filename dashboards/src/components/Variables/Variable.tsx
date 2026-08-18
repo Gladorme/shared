@@ -83,13 +83,15 @@ export function useListVariableState(
   const sort = spec?.sort;
   const loading = useMemo(() => variablesOptionsQuery.isFetching ?? false, [variablesOptionsQuery.isFetching]);
   const options = useMemo(() => variablesOptionsQuery.data ?? [], [variablesOptionsQuery.data]);
+  const stateValue = state?.value;
 
-  let value = state?.value;
-
-  // Make sure value is an array if allowMultiple is true
-  if (allowMultiple && !Array.isArray(value)) {
-    value = typeof value === 'string' ? [value] : [];
-  }
+  // Make sure value is an array if allowMultiple is true.
+  const normalizedValue = useMemo((): VariableValue | undefined => {
+    if (!allowMultiple || Array.isArray(stateValue)) {
+      return stateValue;
+    }
+    return typeof stateValue === 'string' ? [stateValue] : [];
+  }, [allowMultiple, stateValue]);
 
   // Sort the provided list of options according to the method defined
   const sortedOptions = useMemo((): VariableOption[] => {
@@ -115,26 +117,26 @@ export function useListVariableState(
       Boolean(
         viewOptions.find((v) => {
           if (allowMultiple) {
-            return (value as string[]).includes(v.value);
+            return (normalizedValue as string[]).includes(v.value);
           }
-          return value === v.value;
+          return normalizedValue === v.value;
         }),
       ),
-    [viewOptions, value, allowMultiple],
+    [viewOptions, normalizedValue, allowMultiple],
   );
 
-  value = useMemo(() => {
+  const value = useMemo(() => {
     const firstOptionValue = viewOptions?.[allowAllValue ? 1 : 0]?.value;
 
     // If there is no value but there are options, or the value is not in options, we set the value to the first option.
     if (firstOptionValue) {
-      if (!valueIsInOptions || !value || value.length === 0) {
+      if (!valueIsInOptions || !normalizedValue || normalizedValue.length === 0) {
         return allowMultiple ? [firstOptionValue] : firstOptionValue;
       }
     }
 
-    return value;
-  }, [viewOptions, value, valueIsInOptions, allowMultiple, allowAllValue]);
+    return normalizedValue;
+  }, [viewOptions, normalizedValue, valueIsInOptions, allowMultiple, allowAllValue]);
 
   const selectedOptions = useMemo(() => {
     // In the case Autocomplete.multiple equals false, Autocomplete.value expects a single object, not
@@ -345,15 +347,23 @@ function ListVariable({ name, source }: VariableProps): ReactElement {
 
 function TextVariable({ name, source }: VariableProps): ReactElement {
   const ctx = useVariableDefinitionAndState(name, source);
-  const state = ctx.state;
   const definition = ctx.definition as TextVariableDefinition;
-  const [tempValue, setTempValue] = useState(state?.value ?? '');
+  const value = ctx.state?.value ?? '';
+
+  return (
+    <TextVariableInput key={String(value)} initialValue={value} name={name} source={source} definition={definition} />
+  );
+}
+
+function TextVariableInput({
+  initialValue,
+  name,
+  source,
+  definition,
+}: VariableProps & { initialValue: VariableValue; definition: TextVariableDefinition }): ReactElement {
+  const [tempValue, setTempValue] = useState(initialValue);
   const [inputWidth, setInputWidth] = useState(getWidthPx(tempValue as string, 'text'));
   const { setVariableValue } = useVariableDefinitionActions();
-
-  useEffect(() => {
-    setTempValue(state?.value ?? '');
-  }, [state?.value]);
 
   return (
     <TextField

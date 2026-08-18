@@ -13,7 +13,7 @@
 
 import { Box, BoxProps } from '@mui/material';
 import { ErrorBoundary, ErrorAlert } from '@perses-dev/components';
-import { ReactElement, useRef } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 
 import { usePanelGroupIds } from '../../context';
 import { EmptyDashboard, EmptyDashboardProps } from '../EmptyDashboard';
@@ -36,13 +36,21 @@ const HEADER_HEIGHT = 165; // Approximate height of the header in dashboard view
  */
 export function Dashboard({ emptyDashboardProps, panelOptions, ...boxProps }: DashboardProps): ReactElement {
   const panelGroupIds = usePanelGroupIds();
-  const boxRef = useRef<HTMLDivElement>(null);
   const isEmpty = !panelGroupIds.length;
-  const dashboardTopPosition = boxRef.current?.getBoundingClientRect().top ?? HEADER_HEIGHT;
+  const [dashboardElement, setDashboardElement] = useState<HTMLDivElement | null>(null);
+  const [dashboardTopPosition, setDashboardTopPosition] = useState(HEADER_HEIGHT);
+  useEffect(() => {
+    const animationFrame = window.requestAnimationFrame((): void => {
+      if (dashboardElement) {
+        setDashboardTopPosition(dashboardElement.getBoundingClientRect().top);
+      }
+    });
+    return (): void => window.cancelAnimationFrame(animationFrame);
+  });
   const panelFullHeight = window.innerHeight - dashboardTopPosition - window.scrollY;
 
   return (
-    <Box {...boxProps} sx={{ height: '100%' }} ref={boxRef}>
+    <Box {...boxProps} sx={{ height: '100%' }} ref={setDashboardElement}>
       <ErrorBoundary FallbackComponent={ErrorAlert}>
         {isEmpty && (
           <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>
