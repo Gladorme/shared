@@ -45,7 +45,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
     },
   };
 
-  const renderComponent = (value: HTTPDatasourceSpec, onChange = jest.fn()): ReturnType<typeof render> => {
+  const renderComponent = (value: HTTPDatasourceSpec, onChange = vi.fn()): ReturnType<typeof render> => {
     const Wrapper = (): ReactElement => {
       const methods = useForm();
       return (
@@ -64,7 +64,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
 
   describe('Adding headers', () => {
     it('should add a new empty header when clicking the add button', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const value: HTTPDatasourceSpec = {
         proxy: {
           kind: 'HTTPProxy',
@@ -90,7 +90,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
     });
 
     it('should allow adding multiple headers', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const value: HTTPDatasourceSpec = {
         proxy: {
           kind: 'HTTPProxy',
@@ -122,7 +122,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
 
   describe('Editing headers', () => {
     it('should update header name', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const value: HTTPDatasourceSpec = {
         proxy: {
           kind: 'HTTPProxy',
@@ -143,13 +143,13 @@ describe('HTTPSettingsEditor - Request Headers', () => {
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalled();
-        const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1][0];
-        expect(lastCall.proxy?.spec.headers).toHaveProperty('Authorization');
+        const lastCall = onChange.mock.lastCall?.[0];
+        expect(lastCall?.proxy?.spec.headers).toHaveProperty('Authorization');
       });
     });
 
     it('should update header value', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const value: HTTPDatasourceSpec = {
         proxy: {
           kind: 'HTTPProxy',
@@ -170,8 +170,8 @@ describe('HTTPSettingsEditor - Request Headers', () => {
 
       await waitFor(() => {
         expect(onChange).toHaveBeenCalled();
-        const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1][0];
-        expect(lastCall.proxy?.spec.headers?.['X-Custom']).toBe('Bearer token123');
+        const lastCall = onChange.mock.lastCall?.[0];
+        expect(lastCall?.proxy?.spec.headers?.['X-Custom']).toBe('Bearer token123');
       });
     });
 
@@ -201,7 +201,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
 
   describe('Removing headers', () => {
     it('should remove a header when clicking the remove button', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const value: HTTPDatasourceSpec = {
         proxy: {
           kind: 'HTTPProxy',
@@ -230,12 +230,12 @@ describe('HTTPSettingsEditor - Request Headers', () => {
         { timeout: 2000 },
       );
 
-      const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1][0];
-      expect(lastCall.proxy?.spec.headers).toBeUndefined();
+      const lastCall = onChange.mock.lastCall?.[0];
+      expect(lastCall?.proxy?.spec.headers).toBeUndefined();
     });
 
     it('should sync removed headers to parent immediately', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const value: HTTPDatasourceSpec = {
         proxy: {
           kind: 'HTTPProxy',
@@ -259,9 +259,9 @@ describe('HTTPSettingsEditor - Request Headers', () => {
       await waitFor(
         () => {
           expect(onChange).toHaveBeenCalled();
-          const lastCall = onChange.mock.calls[onChange.mock.calls.length - 1][0];
-          expect(lastCall.proxy?.spec.headers).toEqual({ Authorization: 'Bearer token' });
-          expect(lastCall.proxy?.spec.headers).not.toHaveProperty('X-Custom');
+          const lastCall = onChange.mock.lastCall?.[0];
+          expect(lastCall?.proxy?.spec.headers).toEqual({ Authorization: 'Bearer token' });
+          expect(lastCall?.proxy?.spec.headers).not.toHaveProperty('X-Custom');
         },
         { timeout: 2000 },
       );
@@ -270,7 +270,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
 
   describe('Duplicate header detection', () => {
     it('should show warning when duplicate header names exist', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const value: HTTPDatasourceSpec = {
         proxy: {
           kind: 'HTTPProxy',
@@ -301,7 +301,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
     });
 
     it('should highlight duplicate header names with error state', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const value: HTTPDatasourceSpec = {
         proxy: {
           kind: 'HTTPProxy',
@@ -344,7 +344,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
     });
 
     it('should preserve order when header names start with numbers', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const value: HTTPDatasourceSpec = {
         proxy: {
           kind: 'HTTPProxy',
@@ -398,7 +398,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
     });
 
     it('should not sync empty headers to parent', async () => {
-      const onChange = jest.fn();
+      const onChange = vi.fn();
       const value: HTTPDatasourceSpec = {
         proxy: {
           kind: 'HTTPProxy',
@@ -446,7 +446,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
           <FormProvider {...methods}>
             <HTTPSettingsEditor
               value={value}
-              onChange={jest.fn()}
+              onChange={vi.fn()}
               isReadonly={true}
               initialSpecDirect={initialSpecDirect}
               initialSpecProxy={initialSpecProxy}
@@ -482,7 +482,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
           <FormProvider {...methods}>
             <HTTPSettingsEditor
               value={value}
-              onChange={jest.fn()}
+              onChange={vi.fn()}
               isReadonly={true}
               initialSpecDirect={initialSpecDirect}
               initialSpecProxy={initialSpecProxy}
