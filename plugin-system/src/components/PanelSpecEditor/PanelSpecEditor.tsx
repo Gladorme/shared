@@ -18,6 +18,7 @@ import { Control, Controller } from 'react-hook-form';
 
 import { PanelEditorValues, PanelPlugin } from '../../model';
 import { useDataQueriesContext, usePlugin } from '../../runtime';
+import { LayoutEditor, PanelGroup, VariableDefinitionGroup } from '../LayoutEditor';
 import { LinksEditor } from '../LinksEditor';
 import { MultiQueryEditor } from '../MultiQueryEditor';
 import { OptionsEditorTabs, OptionsEditorTabsProps } from '../OptionsEditorTabs';
@@ -27,6 +28,8 @@ import { PanelAnnotationsEditor } from './PanelAnnotationsEditor';
 export interface PanelSpecEditorProps {
   control: Control<PanelEditorValues>;
   panelDefinition: PanelDefinition;
+  variableDefinitionGroups: VariableDefinitionGroup[];
+  panelGroups?: PanelGroup[];
   onQueriesChange: (queries: QueryDefinition[]) => void;
   onQueryRun: (index: number, query: QueryDefinition) => void;
   onPluginSpecChange: (spec: UnknownSpec) => void;
@@ -38,6 +41,8 @@ export const PanelSpecEditor = forwardRef<PluginEditorRef, PanelSpecEditorProps>
   const {
     control,
     panelDefinition,
+    variableDefinitionGroups,
+    panelGroups,
     onQueriesChange,
     onQueryRun,
     onPluginSpecChange,
@@ -140,7 +145,7 @@ export const PanelSpecEditor = forwardRef<PluginEditorRef, PanelSpecEditorProps>
     });
   }
 
-  // always show json editor and links editor by default
+  // Always show the JSON editor, Links editor, and Layout editor by default.
   tabs.push({
     label: 'Links',
     content: <LinksEditor control={control} />,
@@ -162,6 +167,12 @@ export const PanelSpecEditor = forwardRef<PluginEditorRef, PanelSpecEditorProps>
           />
         )}
       />
+    ),
+  });
+  tabs.push({
+    label: 'Layout',
+    content: (
+      <LayoutEditor control={control} variableDefinitionGroups={variableDefinitionGroups} panelGroups={panelGroups} />
     ),
   });
 

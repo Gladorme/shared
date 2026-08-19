@@ -19,6 +19,7 @@ import {
   VariableOption,
   BuiltinVariableContext,
   useTimeRange,
+  VariableDefinitionGroup,
 } from '@perses-dev/plugin-system';
 import {
   DEFAULT_ALL_VALUE as ALL_VALUE,
@@ -153,6 +154,38 @@ export function useVariableDefinitionStates(variableNames?: string[]): VariableS
     (left, right) => {
       return JSON.stringify(left) === JSON.stringify(right);
     },
+  );
+}
+
+/**
+ * Returns all non-overridden variable definitions grouped by source.
+ */
+export function useAllVariableDefinitions(): VariableDefinitionGroup[] {
+  const store = useVariableDefinitionStoreCtx();
+  return useStoreWithEqualityFn(
+    store,
+    (s) => {
+      const groups: VariableDefinitionGroup[] = [];
+
+      const dashboardDefinitions = s.variableDefinitions.filter(
+        (v) => !s.variableState.get({ name: v.spec.name })?.overridden,
+      );
+      if (dashboardDefinitions.length > 0) {
+        groups.push({ source: undefined, definitions: dashboardDefinitions });
+      }
+
+      [...s.externalVariableDefinitions].forEach((def) => {
+        const definitions = def.definitions.filter(
+          (v) => !s.variableState.get({ name: v.spec.name, source: def.source })?.overridden,
+        );
+        if (definitions.length > 0) {
+          groups.push({ source: def.source, definitions });
+        }
+      });
+
+      return groups;
+    },
+    shallow,
   );
 }
 
