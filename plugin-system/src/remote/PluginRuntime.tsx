@@ -91,11 +91,11 @@ const getPluginRuntime = (): ModuleFederation => {
           },
         },
         '@perses-dev/spec': {
-          version: '0.3.0-beta.2',
+          version: '0.3.0-beta.4',
           lib: () => require('@perses-dev/spec'),
           shareConfig: {
             singleton: true,
-            requiredVersion: '^0.3.0-beta.2',
+            requiredVersion: '^0.3.0-beta.4',
           },
         },
         '@perses-dev/core': {
