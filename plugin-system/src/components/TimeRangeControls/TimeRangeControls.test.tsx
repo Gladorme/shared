@@ -12,7 +12,11 @@
 // limitations under the License.
 
 import { SnackbarProvider } from '@perses-dev/components';
-import { TimeRangeProviderBasic, TimeRangeProviderWithQueryParams } from '@perses-dev/plugin-system';
+import {
+  TimeRangeProviderBasic,
+  TimeRangeProviderWithQueryParams,
+  TimeRangeSettingsProvider,
+} from '@perses-dev/plugin-system';
 import { DurationString } from '@perses-dev/spec';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { screen, RenderOptions, render, RenderResult } from '@testing-library/react';
@@ -103,6 +107,20 @@ describe('TimeRangeControls', () => {
     expect(insertedIndex).toBeGreaterThan(-1);
     expect(options[insertedIndex - 1]).toBe('Last 1 hour');
     expect(options[insertedIndex + 1]).toBe('Last 6 hours');
+  });
+
+  it('should hide the entire auto refresh selection when disableAutoRefresh is enabled', () => {
+    renderWithContext(
+      <TimeRangeSettingsProvider disableAutoRefresh={true}>
+        <TimeRangeProviderBasic
+          initialRefreshInterval={testDefaultRefreshInterval}
+          initialTimeRange={testDefaultTimeRange}
+        >
+          <ControlsWithTZ />
+        </TimeRangeProviderBasic>
+      </TimeRangeSettingsProvider>,
+    );
+    expect(screen.queryByLabelText(/Select refresh interval/i)).not.toBeInTheDocument();
   });
 
   // TODO: add additional tests for absolute time selection, other inputs, form validation, etc.

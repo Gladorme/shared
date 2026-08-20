@@ -23,6 +23,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import React, { createContext, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { getRefreshIntervalInMs } from './refresh-interval';
+import { useDisableAutoRefreshSetting } from './TimeRangeSettingsProvider';
 
 export interface TimeRangeProviderProps {
   timeRange: TimeRangeValue;
@@ -73,6 +74,7 @@ export function useSuggestedStepMs(width?: number): number {
  */
 export function TimeRangeProvider(props: TimeRangeProviderProps): ReactElement {
   const { timeRange, refreshInterval, children, setTimeRange, setRefreshInterval } = props;
+  const disableAutoRefresh = useDisableAutoRefreshSetting();
 
   const queryClient = useQueryClient();
   const [absoluteTimeRange, setAbsoluteTimeRange] = useState<AbsoluteTimeRange>(
@@ -85,6 +87,17 @@ export function TimeRangeProvider(props: TimeRangeProviderProps): ReactElement {
       setAbsoluteTimeRange(isRelativeTimeRange(value) ? toAbsoluteTimeRange(value) : value);
     },
     [setTimeRange],
+  );
+
+  // When auto-refresh is disabled by admin, leave URL/spec values untouched and no-op changes.
+  const handleSetRefreshInterval = useCallback(
+    (value: DurationString) => {
+      if (disableAutoRefresh) {
+        return;
+      }
+      setRefreshInterval(value);
+    },
+    [disableAutoRefresh, setRefreshInterval],
   );
 
   // Refresh is called when clicking on the refresh button, it refreshes all queries including variables
@@ -107,7 +120,11 @@ export function TimeRangeProvider(props: TimeRangeProviderProps): ReactElement {
     });
   }, [queryClient, timeRange]);
 
-  const refreshIntervalInMs = useMemo(() => getRefreshIntervalInMs(refreshInterval), [refreshInterval]);
+  // Gate the timer only — do not rewrite refreshInterval / ?refresh= so re-enabling restores them.
+  const refreshIntervalInMs = useMemo(
+    () => (disableAutoRefresh ? 0 : getRefreshIntervalInMs(refreshInterval)),
+    [disableAutoRefresh, refreshInterval],
+  );
   useEffect(() => {
     if (refreshIntervalInMs > 0) {
       const interval = setInterval(() => {
@@ -126,7 +143,7 @@ export function TimeRangeProvider(props: TimeRangeProviderProps): ReactElement {
       refresh,
       refreshInterval: refreshInterval,
       refreshIntervalInMs: refreshIntervalInMs,
-      setRefreshInterval: setRefreshInterval,
+      setRefreshInterval: handleSetRefreshInterval,
     };
   }, [
     absoluteTimeRange,
@@ -134,7 +151,7 @@ export function TimeRangeProvider(props: TimeRangeProviderProps): ReactElement {
     refresh,
     refreshInterval,
     refreshIntervalInMs,
-    setRefreshInterval,
+    handleSetRefreshInterval,
     timeRange,
   ]);
 

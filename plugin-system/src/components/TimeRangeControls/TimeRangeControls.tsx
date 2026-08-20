@@ -37,6 +37,7 @@ import {
   useShowCustomTimeRangeSetting,
   useTimeRangeOptionsSetting,
   useShowZoomRangeSetting,
+  useDisableAutoRefreshSetting,
 } from '../../runtime';
 export const DEFAULT_REFRESH_INTERVAL_OPTIONS: TimeOption[] = [
   { value: { pastDuration: '0s' }, display: 'Off' },
@@ -77,6 +78,7 @@ export function TimeRangeControls({
 
   const showCustomTimeRangeValue = useShowCustomTimeRangeSetting(showCustomTimeRange);
   const showZoomInOutButtons = useShowZoomRangeSetting(showZoomButtons);
+  const isAutoRefreshDisabled = useDisableAutoRefreshSetting();
   const timePresetsValue = useTimeRangeOptionsSetting(timePresets);
 
   // Convert height to a string, then use the string for styling
@@ -214,7 +216,7 @@ export function TimeRangeControls({
           </ToolbarIconButton>
         </InfoTooltip>
       )}
-      {showRefreshInterval && (
+      {showRefreshInterval && !isAutoRefreshDisabled && (
         <InfoTooltip description={TOOLTIP_TEXT.refreshInterval}>
           <RefreshIntervalPicker
             timeOptions={DEFAULT_REFRESH_INTERVAL_OPTIONS}
