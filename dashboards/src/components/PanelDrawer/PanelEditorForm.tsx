@@ -22,7 +22,7 @@ import {
   getTitleAction,
 } from '@perses-dev/components';
 import type { PanelEditorValues } from '@perses-dev/plugin-system';
-import { PluginKindSelect, usePluginEditor, useValidationSchemas } from '@perses-dev/plugin-system';
+import { getPluginOverrides, PluginKindSelect, usePluginEditor, useValidationSchemas } from '@perses-dev/plugin-system';
 import type { Definition, PanelDefinition, UnknownSpec } from '@perses-dev/spec';
 import type { ReactElement } from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -63,18 +63,24 @@ export function PanelEditorForm(props: PanelEditorFormProps): ReactElement {
     defaultValues: initialValues,
   });
 
+  // The version/registry the panel is currently pinned to, if any. `latest` is not a pin, so it is filtered out.
+  const pinnedPluginMetadata = getPluginOverrides(plugin);
+
   // Use common plugin editor logic even though we've split the inputs up in this form
   const pluginEditor = usePluginEditor({
     pluginTypes: ['Panel'],
-    value: { selection: { kind: plugin.kind, type: 'Panel' }, spec: plugin.spec },
-    onChange: (plugin) => {
-      // Persist the selected version (if any) as plugin metadata so the panel uses that specific version. When no
-      // version is selected (single version available), metadata is omitted so the latest version is used.
-      const version = plugin.selection.version;
-      const nextPlugin: Definition<UnknownSpec> & { metadata?: { version?: string } } = {
-        kind: plugin.selection.kind,
-        ...(version ? { metadata: { version } } : {}),
-        spec: plugin.spec,
+    // Carry the current pin so that editing the options doesn't silently drop it, and so the options editor is loaded
+    // from the pinned implementation.
+    value: { selection: { kind: plugin.kind, type: 'Panel', metadata: pinnedPluginMetadata }, spec: plugin.spec },
+    onChange: (next) => {
+      // Persist the selected version/registry (if any) as plugin metadata so the panel uses that exact implementation.
+      // When nothing is selected (a single version/registry is available), metadata is omitted so the latest version
+      // of the default registry is used.
+      const metadata = next.selection.metadata;
+      const nextPlugin: Definition<UnknownSpec> = {
+        kind: next.selection.kind,
+        ...(metadata?.version || metadata?.registry ? { metadata } : {}),
+        spec: next.spec,
       };
       form.setValue('panelDefinition.spec.plugin', nextPlugin);
       setPlugin(nextPlugin);
@@ -223,16 +229,17 @@ export function PanelEditorForm(props: PanelEditorFormProps): ReactElement {
                     {...field}
                     pluginTypes={['Panel']}
                     enableVersionSelection
+                    enableRegistrySelection
                     required
                     fullWidth
                     label="Type"
                     disabled={pluginEditor.isLoading}
                     error={!!pluginEditor.error || !!fieldState.error}
                     helperText={pluginEditor.error?.message ?? fieldState.error?.message}
-                    value={{ type: 'Panel', kind: watchedPluginKind, version: getPinnedPluginVersion(plugin) }}
-                    onChange={(event) => {
-                      field.onChange(event.kind);
-                      pluginEditor.onSelectionChange(event);
+                    value={{ type: 'Panel', kind: watchedPluginKind, metadata: pinnedPluginMetadata }}
+                    onChange={(selection) => {
+                      field.onChange(selection.kind);
+                      pluginEditor.onSelectionChange(selection);
                     }}
                   />
                 )}
@@ -273,12 +280,3 @@ export function PanelEditorForm(props: PanelEditorFormProps): ReactElement {
  * The `id` attribute added to the `PanelEditorForm` component, allowing submit buttons to live outside the form.
  */
 export const panelEditorFormId = 'panel-editor-form';
-
-/**
- * Reads a pinned plugin version from a panel plugin definition's metadata. The `latest` sentinel is treated as
- * "unpinned" so the Type select shows the latest version option rather than an out-of-range value.
- */
-function getPinnedPluginVersion(plugin: Definition<UnknownSpec>): string | undefined {
-  const version = (plugin as { metadata?: { version?: string } }).metadata?.version;
-  return version && version !== 'latest' ? version : undefined;
-}
