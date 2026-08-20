@@ -19,7 +19,7 @@ import type { Control } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
 
 import type { PanelEditorValues, PanelPlugin } from '../../model';
-import { useDataQueriesContext, usePlugin } from '../../runtime';
+import { getPluginOverrides, useDataQueriesContext, usePlugin } from '../../runtime';
 import type { PanelGroup, VariableDefinitionGroup } from '../LayoutEditor';
 import { LayoutEditor } from '../LayoutEditor';
 import { LinksEditor } from '../LinksEditor';
@@ -54,7 +54,11 @@ export const PanelSpecEditor = forwardRef<PluginEditorRef, PanelSpecEditorProps>
     onJSONChange,
   } = props;
   const { kind } = panelDefinition.spec.plugin;
-  const { data: plugin, isLoading, error } = usePlugin('Panel', kind);
+  const {
+    data: plugin,
+    isLoading,
+    error,
+  } = usePlugin('Panel', kind, undefined, getPluginOverrides(panelDefinition.spec.plugin));
 
   const { queryResults } = useDataQueriesContext();
 
