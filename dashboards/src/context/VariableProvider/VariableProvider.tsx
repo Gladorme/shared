@@ -33,7 +33,7 @@ import {
   intervalToDuration,
 } from '@perses-dev/spec';
 import { produce } from 'immer';
-import { createContext, ReactElement, ReactNode, useContext, useMemo, useState } from 'react';
+import { createContext, ReactElement, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
 import { createStore, StoreApi, useStore } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
@@ -103,6 +103,7 @@ type VariableDefinitionStore = {
    */
   setVariableLoading: (name: VariableName, loading: boolean, source?: string) => void;
   setVariableDefinitions: (definitions: VariableDefinition[]) => void;
+  setVariableValuesFromQueryParams: (values: Record<string, VariableValue>) => void;
   setVariableDefaultValues: () => VariableDefinition[];
   getSavedVariablesStatus: () => { isSavedVariableModified: boolean; modifiedVariableNames: string[] };
 };
@@ -401,6 +402,26 @@ function createVariableDefinitionStore({
             '[Variables] setVariableDefinitions', // Used for action name in Redux devtools
           );
         },
+        setVariableValuesFromQueryParams(values: Record<string, VariableValue>): void {
+          set(
+            (state) => {
+              const updateValue = (definition: VariableDefinition, source?: string): void => {
+                const currentState = state.variableState.get({ name: definition.spec.name, source });
+                const nextValue = getVariableValueFromQueryParams(definition, values);
+                if (currentState && !areVariableValuesEqual(currentState.value, nextValue)) {
+                  currentState.value = nextValue;
+                }
+              };
+
+              state.variableDefinitions.forEach((definition) => updateValue(definition));
+              state.externalVariableDefinitions.forEach(({ source, definitions }) => {
+                definitions.forEach((definition) => updateValue(definition, source));
+              });
+            },
+            false,
+            '[Variables] setVariableValuesFromQueryParams',
+          );
+        },
         setVariableOptions(name, options, source?: string): void {
           set(
             (state) => {
@@ -552,10 +573,41 @@ export function VariableProviderWithQueryParams({
   const [store] = useState(() =>
     createVariableDefinitionStore({ initialVariableDefinitions, externalVariableDefinitions, queryParams }),
   );
+  const queryParamValues = queryParams[0];
+
+  useEffect(() => {
+    store.getState().setVariableValuesFromQueryParams(getInitalValuesFromQueryParameters(queryParamValues));
+  }, [queryParamValues, store]);
 
   return (
     <VariableDefinitionStoreContext.Provider value={store}>
       <PluginProvider builtinVariables={builtinVariables}>{children}</PluginProvider>
     </VariableDefinitionStoreContext.Provider>
   );
+}
+
+function areVariableValuesEqual(left: VariableValue, right: VariableValue): boolean {
+  if (Array.isArray(left) && Array.isArray(right)) {
+    return left.length === right.length && left.every((value, index) => value === right[index]);
+  }
+  return left === right;
+}
+
+function getVariableValueFromQueryParams(
+  definition: VariableDefinition,
+  values: Record<string, VariableValue>,
+): VariableValue {
+  const queryParamValue = values[definition.spec.name];
+  if (definition.kind === 'TextVariable') {
+    return queryParamValue ?? definition.spec.value;
+  }
+
+  const value = queryParamValue ?? definition.spec.defaultValue ?? null;
+  if (Array.isArray(value) && value.length === 1 && value[0] === ALL_VALUE) {
+    return ALL_VALUE;
+  }
+  if (definition.spec.allowMultiple && value !== null && value !== ALL_VALUE && !Array.isArray(value)) {
+    return [value];
+  }
+  return value;
 }

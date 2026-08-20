@@ -86,7 +86,7 @@ export function hydrateVariableDefinitionStates(
       externalDef.definitions.forEach((v) => {
         const name = v.spec.name;
         const param = initialValues[name];
-        const initialValue = param ? param : null;
+        const initialValue = param ?? null;
         state.set(
           { source, name },
           {
@@ -107,7 +107,7 @@ export function hydrateVariableDefinitionStates(
   localDefinitions.forEach((v) => {
     const name = v.spec.name;
     const param = initialValues[name];
-    const initialValue = param ? param : null;
+    const initialValue = param ?? null;
     state.set(
       { name },
       {

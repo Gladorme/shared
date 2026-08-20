@@ -36,6 +36,7 @@ export interface ViewPanelSlice {
   viewPanel: ViewPanelState;
   getViewPanel: () => PanelGroupItemId | undefined;
   setViewPanel: (panelGroupItemId?: PanelGroupItemId) => void;
+  setViewPanelFromRef: (panelRef?: VirtualPanelRef) => void;
 }
 
 export interface ViewPanelState {
@@ -73,7 +74,32 @@ export function createViewPanelSlice(
         }
       });
     },
+
+    setViewPanelFromRef(panelRef?: VirtualPanelRef): void {
+      set((state) => {
+        const currentPanelRef =
+          state.viewPanel.panelRef ??
+          findPanelRefOfPanelGroupItemId(state.panelGroups, state.viewPanel.panelGroupItemId);
+        if (areViewPanelRefsEqual(currentPanelRef, panelRef)) {
+          return;
+        }
+        state.viewPanel = {
+          panelGroupItemId: undefined,
+          panelRef,
+        };
+      });
+    },
   });
+}
+
+function areViewPanelRefsEqual(left?: VirtualPanelRef, right?: VirtualPanelRef): boolean {
+  return (
+    left?.ref === right?.ref &&
+    left?.repeatVariable?.group?.[0] === right?.repeatVariable?.group?.[0] &&
+    left?.repeatVariable?.group?.[1] === right?.repeatVariable?.group?.[1] &&
+    left?.repeatVariable?.panel?.[0] === right?.repeatVariable?.panel?.[0] &&
+    left?.repeatVariable?.panel?.[1] === right?.repeatVariable?.panel?.[1]
+  );
 }
 
 function getViewPanelGroupId(
