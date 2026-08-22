@@ -12,6 +12,7 @@
 // limitations under the License.
 
 import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig, mergeConfig } from 'vitest/config';
@@ -22,7 +23,7 @@ type VitestPackageOptions = {
   passWithNoTests?: boolean;
 };
 
-const repoRoot = resolve(__dirname);
+const repoRoot = fileURLToPath(new URL('.', import.meta.url));
 
 const sharedConfig = defineConfig({
   plugins: [tsconfigPaths({ projects: [resolve(repoRoot, 'tsconfig.vitest.json')] })],
