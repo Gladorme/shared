@@ -12,9 +12,9 @@
 // limitations under the License.
 
 import { VariableStoreStateMap } from '@perses-dev/plugin-system';
-import { VariableDefinition } from '@perses-dev/spec';
+import type { VariableDefinition } from '@perses-dev/spec';
 
-import { ExternalVariableDefinition } from '../../model/VariableDefinition';
+import type { ExternalVariableDefinition } from '../../model/VariableDefinition';
 import { checkSavedDefaultVariableStatus, mergeVariableDefinitions } from './utils';
 
 describe('checkSavedDefaultVariableStatus', () => {

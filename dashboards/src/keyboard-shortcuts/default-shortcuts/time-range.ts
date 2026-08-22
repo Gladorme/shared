@@ -20,7 +20,7 @@ import {
   TIME_COPY_EVENT,
   TIME_PASTE_EVENT,
 } from '../events';
-import { PersesShortcutDef } from '../types';
+import type { PersesShortcutDef } from '../types';
 
 export const TIME_ZOOM_OUT_SHORTCUT: PersesShortcutDef = {
   id: 'time-zoom-out',

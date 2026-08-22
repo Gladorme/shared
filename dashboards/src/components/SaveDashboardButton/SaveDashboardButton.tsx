@@ -11,10 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Button, ButtonProps } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ButtonProps } from '@mui/material';
+import { Button } from '@mui/material';
+import type { ReactElement } from 'react';
 
-import { OnSaveDashboard, useSaveDashboard } from '../../context';
+import type { OnSaveDashboard } from '../../context';
+import { useSaveDashboard } from '../../context';
 
 export interface SaveDashboardButtonProps extends Pick<ButtonProps, 'fullWidth'> {
   onSave?: OnSaveDashboard;

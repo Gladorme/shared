@@ -11,9 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PanelPlugin, MockPlugin } from '@perses-dev/plugin-system';
-import { UnknownSpec } from '@perses-dev/spec';
-import { ReactElement } from 'react';
+import type { PanelPlugin, MockPlugin } from '@perses-dev/plugin-system';
+import type { UnknownSpec } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
 
 const FakeTimeSeriesChartOptionEditor = (): ReactElement => {
   return <div>TimeSeriesChart options</div>;

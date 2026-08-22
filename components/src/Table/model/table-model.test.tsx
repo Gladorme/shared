@@ -13,7 +13,8 @@
 
 import { createTheme } from '@mui/material';
 
-import { TableColumnConfig, getTableCellLayout, persesColumnsToTanstackColumns } from './table-model';
+import type { TableColumnConfig } from './table-model';
+import { getTableCellLayout, persesColumnsToTanstackColumns } from './table-model';
 
 const mockMuiTheme = createTheme({});
 

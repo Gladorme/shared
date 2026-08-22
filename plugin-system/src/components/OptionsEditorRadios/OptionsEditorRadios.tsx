@@ -11,8 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FormControl, FormControlLabel, Radio, RadioGroup, RadioGroupProps, Box } from '@mui/material';
-import { ReactElement, ReactNode, useState } from 'react';
+import type { RadioGroupProps } from '@mui/material';
+import { FormControl, FormControlLabel, Radio, RadioGroup, Box } from '@mui/material';
+import type { ReactElement, ReactNode } from 'react';
+import { useState } from 'react';
 
 import { OptionsEditorTabPanel } from '../OptionsEditorTabPanel';
 

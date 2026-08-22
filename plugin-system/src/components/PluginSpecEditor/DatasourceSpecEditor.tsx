@@ -12,11 +12,12 @@
 // limitations under the License.
 
 import { hasHTTPProxy } from '@perses-dev/client';
-import { DatasourceSpec, UnknownSpec } from '@perses-dev/spec';
+import type { DatasourceSpec, UnknownSpec } from '@perses-dev/spec';
 import { produce } from 'immer';
-import { ReactElement, useMemo } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo } from 'react';
 
-import { DatasourcePlugin, OptionsEditorProps } from '../../model';
+import type { DatasourcePlugin, OptionsEditorProps } from '../../model';
 
 export interface DatasourceSpecEditorProps extends OptionsEditorProps<UnknownSpec> {
   plugin: DatasourcePlugin;

@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PluginSchema, panelDefinitionSchema, buildPanelDefinitionSchema } from '@perses-dev/spec';
+import type { PluginSchema } from '@perses-dev/spec';
+import { panelDefinitionSchema, buildPanelDefinitionSchema } from '@perses-dev/spec';
 import { z } from 'zod';
 
-import { PanelEditorValues } from '../model';
+import type { PanelEditorValues } from '../model';
 
 const layoutDefinitionSchema = z
   .object({

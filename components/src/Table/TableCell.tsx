@@ -11,18 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  Box,
-  Link,
-  TableCell as MuiTableCell,
-  TableCellProps as MuiTableCellProps,
-  styled,
-  useTheme,
-} from '@mui/material';
-import { ReactElement, useEffect, useMemo, useRef } from 'react';
+import type { TableCellProps as MuiTableCellProps } from '@mui/material';
+import { Box, Link, TableCell as MuiTableCell, styled, useTheme } from '@mui/material';
+import type { ReactElement } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 import { hasDataFieldPatterns, replaceDataFields } from '../utils/data-field-interpolation';
-import { DataLink, TableCellAlignment, TableDensity, getTableCellLayout } from './model/table-model';
+import type { DataLink, TableCellAlignment, TableDensity } from './model/table-model';
+import { getTableCellLayout } from './model/table-model';
 
 const StyledMuiTableCell = styled(MuiTableCell)(({ theme }) => ({
   padding: 0,

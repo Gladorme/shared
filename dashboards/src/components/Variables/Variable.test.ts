@@ -12,8 +12,8 @@
 // limitations under the License.
 
 import { useListVariableState } from '@perses-dev/dashboards';
-import { VariableOption } from '@perses-dev/plugin-system';
-import { VariableValue } from '@perses-dev/spec';
+import type { VariableOption } from '@perses-dev/plugin-system';
+import type { VariableValue } from '@perses-dev/spec';
 import { renderHook } from '@testing-library/react';
 
 /**

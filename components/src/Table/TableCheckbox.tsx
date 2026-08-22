@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Checkbox, CheckboxProps, alpha } from '@mui/material';
-import { ReactElement } from 'react';
+import type { CheckboxProps } from '@mui/material';
+import { Checkbox, alpha } from '@mui/material';
+import type { ReactElement } from 'react';
 
-import { TableDensity } from './model/table-model';
+import type { TableDensity } from './model/table-model';
 
 export interface TableCheckboxProps extends Pick<CheckboxProps, 'checked' | 'indeterminate' | 'onChange'> {
   color?: string;

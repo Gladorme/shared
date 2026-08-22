@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TimeSeriesValueTuple } from './time-series-queries';
+import type { TimeSeriesValueTuple } from './time-series-queries';
 
 export const DEFAULT_CALCULATION: CalculationType = 'last'; // aligned with cue
 

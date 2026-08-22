@@ -11,11 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DashboardResource } from '@perses-dev/client';
+import type { DashboardResource } from '@perses-dev/client';
 import { useContext } from 'react';
-import { StoreApi } from 'zustand';
+import type { StoreApi } from 'zustand';
 
-import { DashboardContext, DashboardStoreState } from '../context';
+import type { DashboardStoreState } from '../context';
+import { DashboardContext } from '../context';
 import testDashboard from './testDashboard';
 
 /**

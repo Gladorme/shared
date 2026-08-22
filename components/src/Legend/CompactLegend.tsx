@@ -12,10 +12,12 @@
 // limitations under the License.
 
 import { Box } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
-import { LegendItem, SelectedLegendItemState, isLegendItemVisuallySelected } from './legend-model';
-import { ListLegendItem, ListLegendItemProps } from './ListLegendItem';
+import type { LegendItem, SelectedLegendItemState } from './legend-model';
+import { isLegendItemVisuallySelected } from './legend-model';
+import type { ListLegendItemProps } from './ListLegendItem';
+import { ListLegendItem } from './ListLegendItem';
 
 export interface CompactLegendProps {
   height: number;

@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TableRow as MuiTableRow, TableRowProps as MuiTableRowProps, alpha } from '@mui/material';
+import type { TableRowProps as MuiTableRowProps } from '@mui/material';
+import { TableRow as MuiTableRow, alpha } from '@mui/material';
 import { forwardRef } from 'react';
 
-import { TableDensity } from './model/table-model';
+import type { TableDensity } from './model/table-model';
 
 interface TableRowProps extends MuiTableRowProps<'div'> {
   density: TableDensity;

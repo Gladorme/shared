@@ -12,11 +12,12 @@
 // limitations under the License.
 
 import { Box, useTheme } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { Legend } from '../Legend';
 import { getLegendSize } from '../model';
-import { ContentWithLegendProps, getContentWithLegendLayout } from './model/content-with-legend-model';
+import type { ContentWithLegendProps } from './model/content-with-legend-model';
+import { getContentWithLegendLayout } from './model/content-with-legend-model';
 
 /**
  * Component to help lay out content alongside a `Legend` component based on the

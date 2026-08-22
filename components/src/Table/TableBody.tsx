@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TableBody as MuiTableBody, TableBodyProps as MuiTableBodyProps } from '@mui/material';
+import type { TableBodyProps as MuiTableBodyProps } from '@mui/material';
+import { TableBody as MuiTableBody } from '@mui/material';
 import { forwardRef } from 'react';
 
 type TableBodyProps = MuiTableBodyProps;

@@ -11,9 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { QueryDefinition } from '@perses-dev/spec';
+import type { QueryDefinition } from '@perses-dev/spec';
 import { renderHook } from '@testing-library/react';
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 
 import {
   MOCK_TIME_SERIES_DATA,

@@ -11,18 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  useAllVariableValues,
-  usePlugin,
-  usePlugins,
-  VariableOption,
-  VariableStateMap,
-} from '@perses-dev/plugin-system';
-import { ListVariableDefinition, VariableDefinition } from '@perses-dev/spec';
+import type { VariableOption, VariableStateMap } from '@perses-dev/plugin-system';
+import { useAllVariableValues, usePlugin, usePlugins } from '@perses-dev/plugin-system';
+import type { ListVariableDefinition, VariableDefinition } from '@perses-dev/spec';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { waitFor } from '@testing-library/react';
 
 import type { VariablePlugin } from '../../model';
+import type * as RuntimeModule from '../../runtime';
 import { renderHookWithContext } from '../../test/render-hook';
 import { filterVariableList, useListVariablePluginValues, useResolveListVariableValues } from './variable-model';
 
@@ -87,7 +83,7 @@ function makePluginQueryResult(
 }
 
 vi.mock('../../runtime', async () => {
-  const actual = await vi.importActual<typeof import('../../runtime')>('../../runtime');
+  const actual = await vi.importActual<typeof RuntimeModule>('../../runtime');
   return {
     ...actual,
     usePlugin: vi.fn(),

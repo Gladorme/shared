@@ -12,20 +12,18 @@
 // limitations under the License.
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import type * as ComponentsModule from '@perses-dev/components';
 import { DataQueriesProvider, TimeRangeProviderBasic, useDataQueriesContext } from '@perses-dev/plugin-system';
-import {
-  DEFAULT_ALL_VALUE,
-  PanelDefinition,
-  QueryDefinition,
-  VariableDefinition,
-  VariableValue,
-} from '@perses-dev/spec';
+import type * as PluginSystemModule from '@perses-dev/plugin-system';
+import type { PanelDefinition, QueryDefinition, VariableDefinition, VariableValue } from '@perses-dev/spec';
+import { DEFAULT_ALL_VALUE } from '@perses-dev/spec';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { VariableProvider } from '../../context';
 import { renderWithContext } from '../../test';
-import { Panel, PanelProps } from './Panel';
+import type { PanelProps } from './Panel';
+import { Panel } from './Panel';
 
 const testTheme = createTheme({
   components: {
@@ -117,7 +115,7 @@ function makeDataQueriesContext(
 }
 
 vi.mock('@perses-dev/components', async () => {
-  const actual = await vi.importActual<typeof import('@perses-dev/components')>('@perses-dev/components');
+  const actual = await vi.importActual<typeof ComponentsModule>('@perses-dev/components');
   return {
     ...actual,
     InfoTooltip: ({ children, description }: { children: React.ReactNode; description: string }): JSX.Element => (
@@ -136,7 +134,7 @@ vi.mock('@mui/material/CircularProgress', () => {
 });
 
 vi.mock('@perses-dev/plugin-system', async () => {
-  const actual = await vi.importActual<typeof import('@perses-dev/plugin-system')>('@perses-dev/plugin-system');
+  const actual = await vi.importActual<typeof PluginSystemModule>('@perses-dev/plugin-system');
   return {
     ...actual,
     useDataQueriesContext: vi.fn(() => makeDataQueriesContext()),

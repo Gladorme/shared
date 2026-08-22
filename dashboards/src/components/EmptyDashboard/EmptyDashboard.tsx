@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { Typography, Box } from '@mui/material';
-import { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import { useEditMode } from '../../context';
 import { AddPanelButton } from '../AddPanelButton';

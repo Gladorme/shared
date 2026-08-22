@@ -11,8 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DashboardResource } from '@perses-dev/client';
-import { DashboardSpec } from '@perses-dev/spec';
+import type { DashboardResource } from '@perses-dev/client';
+import type { DashboardSpec } from '@perses-dev/spec';
 import { stringify } from 'yaml';
 
 //TODO: Although the previous comment suggests the metadata not should not be used, I keep them. Need to be discussed.

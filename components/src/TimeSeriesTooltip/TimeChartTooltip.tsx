@@ -12,14 +12,16 @@
 // limitations under the License.
 
 import { Box, Portal, Stack } from '@mui/material';
-import { TimeSeries } from '@perses-dev/spec';
-import { ECharts as EChartsInstance } from 'echarts/core';
-import { memo, MutableRefObject, useCallback, useLayoutEffect, useRef, useState } from 'react';
+import type { TimeSeries } from '@perses-dev/spec';
+import type { ECharts as EChartsInstance } from 'echarts/core';
+import type { MutableRefObject } from 'react';
+import { memo, useCallback, useLayoutEffect, useRef, useState } from 'react';
 import useResizeObserver from 'use-resize-observer';
 
-import { FormatOptions, TimeChartSeriesMapping } from '../model';
+import type { FormatOptions, TimeChartSeriesMapping } from '../model';
 import { getNearbySeriesData } from './nearby-series';
-import { CursorCoordinates, useMousePosition } from './tooltip-model';
+import type { CursorCoordinates } from './tooltip-model';
+import { useMousePosition } from './tooltip-model';
 import { TooltipContent } from './TooltipContent';
 import { TooltipHeader } from './TooltipHeader';
 import { assembleTransform, getTooltipStyles } from './utils';

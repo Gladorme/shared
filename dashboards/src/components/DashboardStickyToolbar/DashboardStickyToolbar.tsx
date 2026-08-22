@@ -11,21 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  AppBar,
-  Box,
-  IconButton,
-  Stack,
-  SxProps,
-  Theme,
-  useMediaQuery,
-  useScrollTrigger,
-  useTheme,
-} from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
+import { AppBar, Box, IconButton, Stack, useMediaQuery, useScrollTrigger, useTheme } from '@mui/material';
 import { TimeRangeControls, useTimeZoneParams } from '@perses-dev/plugin-system';
 import PinOffOutline from 'mdi-material-ui/PinOffOutline';
 import PinOutline from 'mdi-material-ui/PinOutline';
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
 import { VariableList } from '../Variables';
 

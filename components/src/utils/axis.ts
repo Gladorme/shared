@@ -14,7 +14,8 @@
 import type { XAXisComponentOption, YAXisComponentOption } from 'echarts';
 import merge from 'lodash/merge';
 
-import { FormatOptions, formatValue } from '../model';
+import type { FormatOptions } from '../model';
+import { formatValue } from '../model';
 
 export interface YAxisConfig {
   format?: FormatOptions;

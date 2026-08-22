@@ -11,9 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Switch, SwitchProps } from '@mui/material';
+import type { SwitchProps } from '@mui/material';
+import { Switch } from '@mui/material';
 import { OptionsEditorControl, OptionsEditorGroup } from '@perses-dev/components';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 export interface SelectionOptions {
   enabled?: boolean;

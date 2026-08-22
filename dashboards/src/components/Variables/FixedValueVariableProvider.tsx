@@ -12,8 +12,8 @@
 // limitations under the License.
 
 import { useVariableValues, VariableContext } from '@perses-dev/plugin-system';
-import { VariableValue } from '@perses-dev/spec';
-import { ReactElement, ReactNode } from 'react';
+import type { VariableValue } from '@perses-dev/spec';
+import type { ReactElement, ReactNode } from 'react';
 
 interface FixedValueVariableProviderProps {
   variableName: string;

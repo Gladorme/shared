@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ProjectMetadata } from './resource';
+import type { ProjectMetadata } from './resource';
 
 export interface FolderDisplay {
   name?: string;

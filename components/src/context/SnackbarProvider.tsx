@@ -12,15 +12,8 @@
 // limitations under the License.
 
 import { styled } from '@mui/material/styles';
-import {
-  SnackbarProvider as NotistackProvider,
-  ProviderContext as NotistackContext,
-  useSnackbar as useNotistack,
-  SnackbarMessage,
-  OptionsObject,
-  SnackbarKey,
-  MaterialDesignContent,
-} from 'notistack';
+import type { ProviderContext as NotistackContext, SnackbarMessage, OptionsObject, SnackbarKey } from 'notistack';
+import { SnackbarProvider as NotistackProvider, useSnackbar as useNotistack, MaterialDesignContent } from 'notistack';
 import React, { useCallback } from 'react';
 
 export interface SnackbarContext extends NotistackContext {

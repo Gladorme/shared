@@ -12,9 +12,10 @@
 // limitations under the License.
 
 import { screen } from '@testing-library/react';
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 
-import { PluginType } from '../../model';
+import type { PluginType } from '../../model';
 import { useListPluginMetadata, usePlugin } from '../../runtime';
 import { renderWithContext } from '../../test';
 

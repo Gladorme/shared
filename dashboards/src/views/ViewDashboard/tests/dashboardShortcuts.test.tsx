@@ -15,7 +15,8 @@ import { TimeRangeProviderBasic } from '@perses-dev/plugin-system';
 import { useHotkeyRegistrations } from '@tanstack/react-hotkeys';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
 // Import to enable declaration merging for HotkeyMeta.category
 import '../../../keyboard-shortcuts/types';

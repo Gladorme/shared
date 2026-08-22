@@ -17,11 +17,13 @@ import {
   TimeRangeProviderWithQueryParams,
   TimeRangeSettingsProvider,
 } from '@perses-dev/plugin-system';
-import { DurationString } from '@perses-dev/spec';
+import type { DurationString } from '@perses-dev/spec';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { screen, RenderOptions, render, RenderResult } from '@testing-library/react';
+import type { RenderOptions, RenderResult } from '@testing-library/react';
+import { screen, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
 import { ReactRouter6Adapter } from 'use-query-params/adapters/react-router-6';

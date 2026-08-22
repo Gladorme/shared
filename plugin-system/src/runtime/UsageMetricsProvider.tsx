@@ -11,9 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FetchFn, useFetch } from '@perses-dev/client';
-import { QueryDefinition } from '@perses-dev/spec';
-import { createContext, ReactElement, ReactNode, useContext } from 'react';
+import type { FetchFn } from '@perses-dev/client';
+import { useFetch } from '@perses-dev/client';
+import type { QueryDefinition } from '@perses-dev/spec';
+import type { ReactElement, ReactNode } from 'react';
+import { createContext, useContext } from 'react';
 
 type QueryState = 'pending' | 'success' | 'error';
 

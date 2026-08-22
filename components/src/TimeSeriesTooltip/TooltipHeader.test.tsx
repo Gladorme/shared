@@ -15,7 +15,8 @@ import { screen } from '@testing-library/dom';
 import { render } from '@testing-library/react';
 
 import { PIN_TOOLTIP_HELP_TEXT, UNPIN_TOOLTIP_HELP_TEXT } from './tooltip-model';
-import { TooltipHeader, TooltipHeaderProps } from './TooltipHeader';
+import type { TooltipHeaderProps } from './TooltipHeader';
+import { TooltipHeader } from './TooltipHeader';
 
 describe('TooltipHeader', () => {
   const renderComponent = (props: TooltipHeaderProps): void => {

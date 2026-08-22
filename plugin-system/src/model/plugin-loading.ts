@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PluginModuleResource, getPluginModuleCompoundKey } from './plugins';
+import type { PluginModuleResource } from './plugins';
+import { getPluginModuleCompoundKey } from './plugins';
 
 /**
  * A component capable of loading the resource/metadata for all available plugins, then loading individual plugins for

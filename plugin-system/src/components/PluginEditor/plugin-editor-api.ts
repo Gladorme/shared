@@ -11,16 +11,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { BoxProps } from '@mui/material';
-import { DatasourceSpec, UnknownSpec } from '@perses-dev/spec';
+import type { BoxProps } from '@mui/material';
+import type { DatasourceSpec, UnknownSpec } from '@perses-dev/spec';
 import { produce } from 'immer';
 import { useState, useRef, useEffect } from 'react';
 
-import { PanelPlugin, PluginType } from '../../model';
+import type { PanelPlugin, PluginType } from '../../model';
 import { usePlugin, usePluginRegistry } from '../../runtime';
 import { useEvent } from '../../utils';
-import { PluginKindSelectProps } from '../PluginKindSelect';
-import { PluginSpecEditorProps } from '../PluginSpecEditor';
+import type { PluginKindSelectProps } from '../PluginKindSelect';
+import type { PluginSpecEditorProps } from '../PluginSpecEditor';
 
 export interface PluginEditorSelection {
   type: PluginType;

@@ -11,20 +11,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import type { StackProps } from '@mui/material';
 import {
   Autocomplete,
   FormControlLabel,
   MenuItem,
   Stack,
-  StackProps,
   Switch,
   Typography,
   TextField as MuiTextField,
 } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { TextField } from '../controls';
-import {
+import type {
   JoinByColumnValueTransform,
   MergeColumnsTransform,
   MergeIndexedColumnsTransform,

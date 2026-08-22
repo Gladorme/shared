@@ -14,7 +14,8 @@
 import { Box, Divider, Typography, Stack, Switch } from '@mui/material';
 import Pin from 'mdi-material-ui/Pin';
 import PinOutline from 'mdi-material-ui/PinOutline';
-import { memo, ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import { memo } from 'react';
 
 import { useTimeZone } from '../context/TimeZoneProvider';
 import {
@@ -23,7 +24,7 @@ import {
   PIN_TOOLTIP_HELP_TEXT,
   UNPIN_TOOLTIP_HELP_TEXT,
 } from './tooltip-model';
-import { NearbySeriesArray } from './types';
+import type { NearbySeriesArray } from './types';
 
 export interface TooltipHeaderProps {
   nearbySeries: NearbySeriesArray;

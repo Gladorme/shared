@@ -11,11 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { UnknownSpec, ProfileData, AbsoluteTimeRange } from '@perses-dev/spec';
-import { Query, QueryKey } from '@tanstack/react-query';
+import type { UnknownSpec, ProfileData, AbsoluteTimeRange } from '@perses-dev/spec';
+import type { Query, QueryKey } from '@tanstack/react-query';
 
-import { DatasourceStore } from '../runtime';
-import { Plugin } from './plugin-base';
+import type { DatasourceStore } from '../runtime';
+import type { Plugin } from './plugin-base';
 
 /**
  * A plugin for running profile queries.

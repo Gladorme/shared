@@ -11,24 +11,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TextField, Popper, PopperProps, Checkbox, Autocomplete, createFilterOptions, Chip, Box } from '@mui/material';
-import {
-  SORT_METHODS,
-  SortMethodName,
-  useListVariablePluginValues,
-  VariableOption,
-  VariableState,
-} from '@perses-dev/plugin-system';
-import {
-  DEFAULT_ALL_VALUE,
+import type { PopperProps } from '@mui/material';
+import { TextField, Popper, Checkbox, Autocomplete, createFilterOptions, Chip, Box } from '@mui/material';
+import type { SortMethodName, VariableOption, VariableState } from '@perses-dev/plugin-system';
+import { SORT_METHODS, useListVariablePluginValues } from '@perses-dev/plugin-system';
+import type {
   ListVariableDefinition,
   ListVariableSpec,
   TextVariableDefinition,
   VariableName,
   VariableValue,
 } from '@perses-dev/spec';
-import { UseQueryResult } from '@tanstack/react-query';
-import { ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { DEFAULT_ALL_VALUE } from '@perses-dev/spec';
+import type { UseQueryResult } from '@tanstack/react-query';
+import type { ReactElement } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { MAX_VARIABLE_WIDTH, MIN_VARIABLE_WIDTH } from '../../constants';
 import { useVariableDefinitionAndState, useVariableDefinitionActions } from '../../context';

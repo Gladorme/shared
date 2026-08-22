@@ -12,13 +12,15 @@
 // limitations under the License.
 
 import { Button, Stack } from '@mui/material';
-import { QueryDefinition, QueryPluginType } from '@perses-dev/spec';
+import type { QueryDefinition, QueryPluginType } from '@perses-dev/spec';
 import { produce } from 'immer';
 import AddIcon from 'mdi-material-ui/Plus';
-import { forwardRef, ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { forwardRef, useState } from 'react';
 
-import { QueryData, useListPluginMetadata, usePlugin, usePluginRegistry } from '../../runtime';
-import { PluginEditorRef } from '../PluginEditor';
+import type { QueryData } from '../../runtime';
+import { useListPluginMetadata, usePlugin, usePluginRegistry } from '../../runtime';
+import type { PluginEditorRef } from '../PluginEditor';
 import { QueryEditorContainer } from './QueryEditorContainer';
 
 export interface MultiQueryEditorProps {

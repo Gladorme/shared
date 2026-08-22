@@ -11,11 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Box, BoxProps } from '@mui/material';
+import type { BoxProps } from '@mui/material';
+import { Box } from '@mui/material';
 import { ErrorAlert, ErrorBoundary, combineSx } from '@perses-dev/components';
+import type { DatasourceStoreProviderProps, VariableProviderProps } from '@perses-dev/dashboards';
 import {
-  DatasourceStoreProviderProps,
-  VariableProviderProps,
   DatasourceStoreProvider,
   VariableProvider,
   DEFAULT_DASHBOARD_DURATION,
@@ -26,7 +26,8 @@ import {
   useInitialRefreshInterval,
   useInitialTimeRange,
 } from '@perses-dev/plugin-system';
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 
 import { ViewExploreApp } from './ViewExploreApp';
 

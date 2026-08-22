@@ -11,11 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
-import { LegendItem, SelectedLegendItemState, isLegendItemVisuallySelected } from './legend-model';
-import { ListLegendItem, ListLegendItemProps } from './ListLegendItem';
+import type { LegendItem, SelectedLegendItemState } from './legend-model';
+import { isLegendItemVisuallySelected } from './legend-model';
+import type { ListLegendItemProps } from './ListLegendItem';
+import { ListLegendItem } from './ListLegendItem';
 
 export interface ListLegendProps {
   items: LegendItem[];

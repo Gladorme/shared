@@ -11,14 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  styled,
-  TooltipProps as MuiTooltipProps,
-  Tooltip as MuiTooltip,
-  tooltipClasses,
-  Typography,
-} from '@mui/material';
-import { ReactElement, ReactNode } from 'react';
+import type { TooltipProps as MuiTooltipProps } from '@mui/material';
+import { styled, Tooltip as MuiTooltip, tooltipClasses, Typography } from '@mui/material';
+import type { ReactElement, ReactNode } from 'react';
 
 export type TooltipPlacement = 'top' | 'left' | 'right' | 'bottom';
 

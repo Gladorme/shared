@@ -13,13 +13,16 @@
 
 import { Box, useForkRef } from '@mui/material';
 import { DataQueriesProvider, usePlugin, useSuggestedStepMs } from '@perses-dev/plugin-system';
-import React, { ReactElement, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { useEditMode, usePanel, usePanelActions, useViewPanelGroup } from '../../context';
 import { usePanelFocusHandlers } from '../../keyboard-shortcuts';
-import { isPanelGroupItemIdEqual, PanelGroupItemId } from '../../model'; // TODO
-import { Panel, PanelProps, PanelOptions } from '../Panel';
+import type { PanelGroupItemId } from '../../model';
+import { isPanelGroupItemIdEqual } from '../../model'; // TODO
+import type { PanelProps, PanelOptions } from '../Panel';
+import { Panel } from '../Panel';
 import { QueryViewerDialog } from '../QueryViewerDialog';
 
 export interface GridItemContentProps {

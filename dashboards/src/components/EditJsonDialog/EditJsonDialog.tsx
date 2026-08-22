@@ -14,7 +14,8 @@
 import { Alert, FormControl } from '@mui/material';
 import { Dialog, JSONEditor } from '@perses-dev/components';
 import { useDatasourceStore, useTimeRange } from '@perses-dev/plugin-system';
-import { FormEvent, ReactElement, useState } from 'react';
+import type { FormEvent, ReactElement } from 'react';
+import { useState } from 'react';
 
 import { useEditJsonDialog, useDashboard } from '../../context';
 

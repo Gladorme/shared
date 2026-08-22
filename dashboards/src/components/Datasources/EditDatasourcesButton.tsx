@@ -14,9 +14,10 @@
 import { Button } from '@mui/material';
 import { Drawer, InfoTooltip } from '@perses-dev/components';
 import { useDatasourceStore } from '@perses-dev/plugin-system';
-import { DatasourceSpec } from '@perses-dev/spec';
+import type { DatasourceSpec } from '@perses-dev/spec';
 import PencilIcon from 'mdi-material-ui/PencilOutline';
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
 import { TOOLTIP_TEXT, editButtonStyle } from '../../constants';
 import { useDashboard } from '../../context';

@@ -14,7 +14,8 @@
 import { screen, render, getAllByRole } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { OptionsEditorTabs, OptionsEditorTabsProps } from './OptionsEditorTabs';
+import type { OptionsEditorTabsProps } from './OptionsEditorTabs';
+import { OptionsEditorTabs } from './OptionsEditorTabs';
 
 describe('OptionsEditorTabs', () => {
   const mockTabs: OptionsEditorTabsProps['tabs'] = [

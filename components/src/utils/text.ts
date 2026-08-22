@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Resource } from '@perses-dev/client';
+import type { Resource } from '@perses-dev/client';
 
 export function getResourceDisplayName<T extends Resource>(resource: T): string {
   // Variables

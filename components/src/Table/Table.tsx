@@ -12,25 +12,29 @@
 // limitations under the License.
 
 import { Stack, useTheme } from '@mui/material';
-import {
+import type {
   ColumnDef,
   ExpandedState,
-  getCoreRowModel,
-  getExpandedRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
   OnChangeFn,
   Row,
   RowSelectionState,
   SortingState,
   Table as TanstackTable,
-  useReactTable,
   VisibilityState,
 } from '@tanstack/react-table';
-import { ReactElement, useCallback, useMemo, useState } from 'react';
+import {
+  getCoreRowModel,
+  getExpandedRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
+} from '@tanstack/react-table';
+import type { ReactElement } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useFuzzySearch } from './hooks/useFuzzySearch';
-import { DEFAULT_COLUMN_WIDTH, persesColumnsToTanstackColumns, TableProps } from './model/table-model';
+import type { TableProps } from './model/table-model';
+import { DEFAULT_COLUMN_WIDTH, persesColumnsToTanstackColumns } from './model/table-model';
 import { TableCheckbox } from './TableCheckbox';
 import { VirtualizedTable } from './VirtualizedTable';
 

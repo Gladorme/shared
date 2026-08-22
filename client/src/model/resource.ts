@@ -11,9 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Display } from '@perses-dev/spec';
+import type { Display } from '@perses-dev/spec';
 
-import { Kind } from './kind';
+import type { Kind } from './kind';
 
 export function isProjectMetadata(metadata: Metadata | ProjectMetadata): metadata is ProjectMetadata {
   return 'project' in metadata;

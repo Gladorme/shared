@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { HotkeySequence, RegisterableHotkey } from '@tanstack/hotkeys';
+import type { HotkeySequence, RegisterableHotkey } from '@tanstack/hotkeys';
 
 /** Extend TanStack's HotkeyMeta with Perses-specific fields. */
 declare module '@tanstack/hotkeys' {

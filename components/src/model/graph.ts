@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TimeSeriesValueTuple } from '@perses-dev/spec';
-import { LineSeriesOption, BarSeriesOption } from 'echarts/charts';
+import type { TimeSeriesValueTuple } from '@perses-dev/spec';
+import type { LineSeriesOption, BarSeriesOption } from 'echarts/charts';
 
-import { LegendItem } from '../Legend';
+import type { LegendItem } from '../Legend';
 
 // adjust display when there are many time series to help with performance
 export const OPTIMIZED_MODE_SERIES_LIMIT = 1000;

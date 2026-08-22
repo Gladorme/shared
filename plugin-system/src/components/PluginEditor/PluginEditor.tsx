@@ -13,13 +13,15 @@
 
 import { Box, Button } from '@mui/material';
 import { ErrorAlert, ErrorBoundary } from '@perses-dev/components';
-import { UnknownSpec } from '@perses-dev/spec';
+import type { UnknownSpec } from '@perses-dev/spec';
 import Reload from 'mdi-material-ui/Reload';
-import { ReactElement, useCallback } from 'react';
+import type { ReactElement } from 'react';
+import { useCallback } from 'react';
 
 import { PluginKindSelect } from '../PluginKindSelect';
 import { PluginSpecEditor } from '../PluginSpecEditor';
-import { PluginEditorProps, usePluginEditor } from './plugin-editor-api';
+import type { PluginEditorProps } from './plugin-editor-api';
+import { usePluginEditor } from './plugin-editor-api';
 
 /**
  * A combination `PluginKindSelect` and `PluginSpecEditor` component. This is meant for editing the `plugin` property

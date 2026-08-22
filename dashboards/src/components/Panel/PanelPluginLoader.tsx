@@ -12,9 +12,10 @@
 // limitations under the License.
 
 import { Skeleton } from '@mui/material';
-import { usePlugin, PanelProps } from '@perses-dev/plugin-system';
-import { UnknownSpec, QueryDataType } from '@perses-dev/spec';
-import { ReactElement } from 'react';
+import type { PanelProps } from '@perses-dev/plugin-system';
+import { usePlugin } from '@perses-dev/plugin-system';
+import type { UnknownSpec, QueryDataType } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
 
 interface PanelPluginProps extends PanelProps<UnknownSpec, QueryDataType> {
   kind: string;

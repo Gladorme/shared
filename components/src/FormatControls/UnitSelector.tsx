@@ -13,9 +13,10 @@
 
 import { IconButton, InputAdornment, TextField } from '@mui/material';
 import ClearIcon from 'mdi-material-ui/Close';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
-import { FormatOptions, UNIT_CONFIG, UnitConfig } from '../model';
+import type { FormatOptions, UnitConfig } from '../model';
+import { UNIT_CONFIG } from '../model';
 import { SettingsAutocomplete } from '../SettingsAutocomplete';
 
 export interface UnitSelectorProps {

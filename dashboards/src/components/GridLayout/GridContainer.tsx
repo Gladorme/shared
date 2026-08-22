@@ -11,8 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { styled, SxProps, Theme } from '@mui/material';
-import { ReactElement, ReactNode, useEffect, useState } from 'react';
+import type { SxProps, Theme } from '@mui/material';
+import { styled } from '@mui/material';
+import type { ReactElement, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
 export interface GridContainerProps {
   children: ReactNode;

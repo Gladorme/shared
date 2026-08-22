@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PanelDefinition } from '@perses-dev/spec';
-import { StateCreator } from 'zustand';
+import type { PanelDefinition } from '@perses-dev/spec';
+import type { StateCreator } from 'zustand';
 
-import { Middleware } from './common';
+import type { Middleware } from './common';
 
 /**
  * Slice with the state of Panels, along with any actions that modify only the Panels state.

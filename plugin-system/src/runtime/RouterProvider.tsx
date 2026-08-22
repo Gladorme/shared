@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { createContext, useContext, ReactNode, ReactElement, useMemo } from 'react';
+import type { ReactNode, ReactElement } from 'react';
+import React, { createContext, useContext, useMemo } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {

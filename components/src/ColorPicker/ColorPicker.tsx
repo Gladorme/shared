@@ -14,7 +14,8 @@
 import { IconButton, Stack, TextField } from '@mui/material';
 import CircleIcon from 'mdi-material-ui/Circle';
 import DeleteIcon from 'mdi-material-ui/Delete';
-import { ChangeEvent, ReactElement, useState } from 'react';
+import type { ChangeEvent, ReactElement } from 'react';
+import { useState } from 'react';
 import { HexColorPicker } from 'react-colorful';
 
 interface ColorPickerProps {

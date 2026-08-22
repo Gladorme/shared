@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { formatDate, DateFormatOptions } from './date';
+import type { DateFormatOptions } from './date';
+import { formatDate } from './date';
 
 // Test timestamp: January 1, 2024, 12:30:45 UTC
 const TEST_TIMESTAMP_MS = 1704112245000; // milliseconds - correct timestamp for 12:30:45

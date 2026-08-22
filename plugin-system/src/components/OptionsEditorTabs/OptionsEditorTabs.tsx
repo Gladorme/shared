@@ -11,8 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Tab, Tabs, TabsProps, Box } from '@mui/material';
-import { ReactElement, ReactNode, useState } from 'react';
+import type { TabsProps } from '@mui/material';
+import { Tab, Tabs, Box } from '@mui/material';
+import type { ReactElement, ReactNode } from 'react';
+import { useState } from 'react';
 
 import { OptionsEditorTabPanel } from '../OptionsEditorTabPanel';
 

@@ -27,15 +27,16 @@ import {
   Alert,
   styled,
 } from '@mui/material';
-import { Action } from '@perses-dev/client';
+import type { Action } from '@perses-dev/client';
 import { ValidationProvider, AnnotationEditorForm } from '@perses-dev/plugin-system';
-import { AnnotationSpec, Definition, UnknownSpec } from '@perses-dev/spec';
+import type { AnnotationSpec, Definition, UnknownSpec } from '@perses-dev/spec';
 import ArrowDown from 'mdi-material-ui/ArrowDown';
 import ArrowUp from 'mdi-material-ui/ArrowUp';
 import PencilIcon from 'mdi-material-ui/Pencil';
 import AddIcon from 'mdi-material-ui/Plus';
 import TrashIcon from 'mdi-material-ui/TrashCan';
-import { useState, useMemo, ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import { useState, useMemo } from 'react';
 import { useImmer } from 'use-immer';
 
 import { useDiscardChangesConfirmationDialog } from '../../context';

@@ -14,9 +14,10 @@
 import { Typography, Stack, Button, Box, useTheme, useMediaQuery, Alert } from '@mui/material';
 import { ErrorBoundary, ErrorAlert } from '@perses-dev/components';
 import { TimeRangeControls, useTimeZoneParams } from '@perses-dev/plugin-system';
-import { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
-import { OnSaveDashboard, useEditMode, useDashboardLinks } from '../../context';
+import type { OnSaveDashboard } from '../../context';
+import { useEditMode, useDashboardLinks } from '../../context';
 import { AddGroupButton } from '../AddGroupButton';
 import { AddPanelButton } from '../AddPanelButton';
 import { EditAnnotationsButton } from '../Annotations/EditAnnotationsButton';

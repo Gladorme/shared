@@ -11,12 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PanelGroupId } from '@perses-dev/plugin-system';
-import { StateCreator } from 'zustand';
+import type { PanelGroupId } from '@perses-dev/plugin-system';
+import type { StateCreator } from 'zustand';
 
-import { PanelGroupDefinition, PanelGroupItemId } from '../../model';
-import { Middleware } from './common';
-import { PanelGroupSlice } from './panel-group-slice';
+import type { PanelGroupDefinition, PanelGroupItemId } from '../../model';
+import type { Middleware } from './common';
+import type { PanelGroupSlice } from './panel-group-slice';
 
 /*
  * A reference to a Panel that can be repeated in a PanelGroup.

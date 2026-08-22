@@ -15,10 +15,12 @@ import { Divider, IconButton, Stack, Typography } from '@mui/material';
 import { LinkEditorForm } from '@perses-dev/components';
 import MinusIcon from 'mdi-material-ui/Minus';
 import PlusIcon from 'mdi-material-ui/Plus';
-import { Fragment, HTMLAttributes, ReactElement } from 'react';
-import { Controller, useFieldArray, Control } from 'react-hook-form';
+import type { HTMLAttributes, ReactElement } from 'react';
+import { Fragment } from 'react';
+import type { Control } from 'react-hook-form';
+import { Controller, useFieldArray } from 'react-hook-form';
 
-import { PanelEditorValues } from '../../model';
+import type { PanelEditorValues } from '../../model';
 
 export interface LinksEditorProps extends HTMLAttributes<HTMLDivElement> {
   control: Control<PanelEditorValues>;

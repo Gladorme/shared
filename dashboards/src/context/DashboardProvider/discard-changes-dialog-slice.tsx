@@ -11,9 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { StateCreator } from 'zustand';
+import type { StateCreator } from 'zustand';
 
-import { Middleware } from './common';
+import type { Middleware } from './common';
 
 export interface DiscardChangesConfirmationDialogSlice {
   discardChangesConfirmationDialog?: DiscardChangesConfirmationDialogState;

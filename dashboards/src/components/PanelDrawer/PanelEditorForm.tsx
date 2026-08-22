@@ -13,7 +13,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Button, Grid, Stack, TextField, Typography } from '@mui/material';
-import { Action } from '@perses-dev/client';
+import type { Action } from '@perses-dev/client';
 import {
   DiscardChangesConfirmationDialog,
   ErrorAlert,
@@ -21,10 +21,13 @@ import {
   getSubmitText,
   getTitleAction,
 } from '@perses-dev/components';
-import { PanelEditorValues, PluginKindSelect, usePluginEditor, useValidationSchemas } from '@perses-dev/plugin-system';
-import { PanelDefinition } from '@perses-dev/spec';
-import { ReactElement, useCallback, useEffect, useState } from 'react';
-import { Controller, FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import type { PanelEditorValues } from '@perses-dev/plugin-system';
+import { PluginKindSelect, usePluginEditor, useValidationSchemas } from '@perses-dev/plugin-system';
+import type { PanelDefinition } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import type { SubmitHandler } from 'react-hook-form';
+import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 
 import { PanelEditorProvider } from '../../context/PanelEditorProvider/PanelEditorProvider';
 import { PanelQueriesSharedControls } from './PanelQueriesSharedControls';

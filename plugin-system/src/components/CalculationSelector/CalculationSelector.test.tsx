@@ -14,7 +14,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { CalculationType } from '../../model'; // TODO to come from the utils lib ?
+import type { CalculationType } from '../../model'; // TODO to come from the utils lib ?
 import { CalculationSelector } from './CalculationSelector';
 
 describe('CalculationSelector', () => {

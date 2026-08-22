@@ -11,16 +11,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Button, ButtonProps } from '@mui/material';
+import type { ButtonProps } from '@mui/material';
+import { Button } from '@mui/material';
 import { Drawer, InfoTooltip } from '@perses-dev/components';
 import { useBuiltinVariableDefinitions } from '@perses-dev/plugin-system';
-import { BuiltinVariableDefinition, VariableDefinition } from '@perses-dev/spec';
+import type { BuiltinVariableDefinition, VariableDefinition } from '@perses-dev/spec';
 import PencilIcon from 'mdi-material-ui/PencilOutline';
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
 import { TOOLTIP_TEXT, editButtonStyle } from '../../constants';
 import { useExternalVariableDefinitions, useVariableDefinitionActions, useVariableDefinitions } from '../../context';
-import { ExternalVariableDefinition } from '../../model/VariableDefinition';
+import type { ExternalVariableDefinition } from '../../model/VariableDefinition';
 import { VariableEditor } from './VariableEditor';
 
 export interface EditVariablesButtonProps extends Pick<ButtonProps, 'fullWidth'> {

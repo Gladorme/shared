@@ -12,8 +12,9 @@
 // limitations under the License.
 
 import { TimeZoneProvider } from '@perses-dev/components';
-import { DurationString, TimeRangeValue } from '@perses-dev/spec';
-import React, { ReactElement } from 'react';
+import type { DurationString, TimeRangeValue } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
+import React from 'react';
 
 import { useSetRefreshIntervalParams, useTimeRangeParams, useTimeZoneParams } from './query-params';
 import { TimeRangeProvider } from './TimeRangeProvider';

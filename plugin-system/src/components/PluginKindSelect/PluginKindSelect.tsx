@@ -11,12 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { MenuItem, TextField, TextFieldProps } from '@mui/material';
-import { forwardRef, ReactElement, useCallback, useMemo } from 'react';
+import type { TextFieldProps } from '@mui/material';
+import { MenuItem, TextField } from '@mui/material';
+import type { ReactElement } from 'react';
+import { forwardRef, useCallback, useMemo } from 'react';
 
-import { PluginType } from '../../model';
+import type { PluginType } from '../../model';
 import { useListPluginMetadata } from '../../runtime';
-import { PluginEditorSelection } from '../PluginEditor';
+import type { PluginEditorSelection } from '../PluginEditor';
 
 export interface PluginKindSelectProps extends Omit<TextFieldProps, 'value' | 'onChange' | 'children'> {
   filteredQueryPlugins?: string[];

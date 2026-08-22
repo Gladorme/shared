@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { createContext, ReactElement, useContext } from 'react';
+import type { ReactElement } from 'react';
+import React, { createContext, useContext } from 'react';
 
 import { formatWithTimeZone, dateFormatOptionsWithTimeZone } from '../utils';
 

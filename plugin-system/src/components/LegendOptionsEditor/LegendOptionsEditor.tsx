@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Switch, SwitchProps, ToggleButtonGroup, ToggleButton } from '@mui/material';
+import type { SwitchProps } from '@mui/material';
+import { Switch, ToggleButtonGroup, ToggleButton } from '@mui/material';
 import {
   ErrorAlert,
   OptionsEditorControl,
@@ -22,19 +23,17 @@ import {
   getLegendMode,
   getLegendPosition,
 } from '@perses-dev/components';
-import { ReactElement, useMemo } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo } from 'react';
 
+import type { LegendSpecOptions, LegendSingleSelectConfig, LegendValue, ComparisonValues } from '../../model';
 import {
   LEGEND_MODE_CONFIG,
   LEGEND_POSITIONS_CONFIG,
-  LegendSpecOptions,
-  LegendSingleSelectConfig,
   validateLegendSpec,
   LEGEND_VALUE_CONFIG,
-  LegendValue,
   LEGEND_SIZE_CONFIG,
   comparisonLegends,
-  ComparisonValues,
 } from '../../model';
 
 type LegendPositionOption = LegendSingleSelectConfig & { id: LegendSpecOptions['position'] };

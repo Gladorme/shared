@@ -11,24 +11,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { QueryType, TimeSeriesQueryDefinition } from '@perses-dev/spec';
-import { createContext, ReactElement, useCallback, useContext, useMemo } from 'react';
+import type { QueryType, TimeSeriesQueryDefinition } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
+import { createContext, useCallback, useContext, useMemo } from 'react';
 
-import { AlertsQueryDefinition, useAlertsQueries } from '../alerts-queries';
-import { JsonQueryDefinition, useJsonQueries } from '../json-queries';
-import { LogQueryDefinition, useLogQueries } from '../log-queries';
-import { ProfileQueryDefinition, useProfileQueries } from '../profile-queries';
-import { SilencesQueryDefinition, useSilencesQueries } from '../silences-queries';
+import type { AlertsQueryDefinition } from '../alerts-queries';
+import { useAlertsQueries } from '../alerts-queries';
+import type { JsonQueryDefinition } from '../json-queries';
+import { useJsonQueries } from '../json-queries';
+import type { LogQueryDefinition } from '../log-queries';
+import { useLogQueries } from '../log-queries';
+import type { ProfileQueryDefinition } from '../profile-queries';
+import { useProfileQueries } from '../profile-queries';
+import type { SilencesQueryDefinition } from '../silences-queries';
+import { useSilencesQueries } from '../silences-queries';
 import { useTimeSeriesQueries } from '../time-series-queries';
-import { TraceQueryDefinition, useTraceQueries } from '../trace-queries';
+import type { TraceQueryDefinition } from '../trace-queries';
+import { useTraceQueries } from '../trace-queries';
 import { useUsageMetrics } from '../UsageMetricsProvider';
-import {
-  DataQueriesContextType,
-  DataQueriesProviderProps,
-  QueryData,
-  transformQueryResults,
-  UseDataQueryResults,
-} from './model';
+import type { DataQueriesProviderProps, UseDataQueryResults, DataQueriesContextType, QueryData } from './model';
+import { transformQueryResults } from './model';
 
 export const DataQueriesContext = createContext<DataQueriesContextType | undefined>(undefined);
 

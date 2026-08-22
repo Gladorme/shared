@@ -13,12 +13,12 @@
 
 import { CircularProgress, Stack } from '@mui/material';
 import { ErrorAlert } from '@perses-dev/components';
-import { DatasourceSpec, UnknownSpec } from '@perses-dev/spec';
-import { ReactElement } from 'react';
+import type { DatasourceSpec, UnknownSpec } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
 
-import { DatasourcePlugin, OptionsEditorProps, Plugin, PluginType } from '../../model';
+import type { DatasourcePlugin, OptionsEditorProps, Plugin, PluginType } from '../../model';
 import { usePlugin } from '../../runtime';
-import { PluginEditorSelection } from '../PluginEditor';
+import type { PluginEditorSelection } from '../PluginEditor';
 import { DatasourceSpecEditor } from './DatasourceSpecEditor';
 
 export interface PluginSpecEditorProps extends OptionsEditorProps<UnknownSpec> {

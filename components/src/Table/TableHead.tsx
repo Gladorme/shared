@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TableHead as MuiTableHead, TableHeadProps as MuiTableHeadProps } from '@mui/material';
+import type { TableHeadProps as MuiTableHeadProps } from '@mui/material';
+import { TableHead as MuiTableHead } from '@mui/material';
 import { forwardRef } from 'react';
 
 type TableHeadProps = MuiTableHeadProps;

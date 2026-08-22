@@ -11,10 +11,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-declare global {
-  interface Window {
-    PERSES_APP_CONFIG?: { api_prefix?: string };
-  }
+interface Window {
+  PERSES_APP_CONFIG?: { api_prefix?: string };
 }
-
-export {};

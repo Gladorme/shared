@@ -11,8 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Skeleton, SkeletonOwnProps, Stack, Typography } from '@mui/material';
-import { ReactElement } from 'react';
+import type { SkeletonOwnProps } from '@mui/material';
+import { Skeleton, Stack, Typography } from '@mui/material';
+import type { ReactElement } from 'react';
 
 interface TextOverlayProps {
   message: string;

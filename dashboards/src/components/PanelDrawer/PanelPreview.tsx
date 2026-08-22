@@ -12,8 +12,9 @@
 // limitations under the License.
 
 import { Box } from '@mui/material';
-import { PanelEditorValues } from '@perses-dev/plugin-system';
-import { ReactElement, useContext, useEffect, useRef } from 'react';
+import type { PanelEditorValues } from '@perses-dev/plugin-system';
+import type { ReactElement } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 
 import { PanelEditorContext } from '../../context';
 import { Panel } from '../Panel';

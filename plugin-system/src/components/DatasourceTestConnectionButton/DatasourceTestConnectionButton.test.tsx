@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { SnackbarContext } from '@perses-dev/components';
+import type { SnackbarContext } from '@perses-dev/components';
+import type * as ComponentsModule from '@perses-dev/components';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -21,7 +22,7 @@ const mockSuccessSnackbar = vi.fn();
 const mockExceptionSnackbar = vi.fn();
 
 vi.mock('@perses-dev/components', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@perses-dev/components')>()),
+  ...(await importOriginal<typeof ComponentsModule>()),
   useSnackbar: (): Partial<SnackbarContext> => ({
     successSnackbar: mockSuccessSnackbar,
     exceptionSnackbar: mockExceptionSnackbar,

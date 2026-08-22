@@ -11,8 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PanelGroupItemLayout } from '../model'; // TODO
-import { insertPanelInLayout, UnpositionedPanelGroupItemLayout } from './panelUtils';
+import type { PanelGroupItemLayout } from '../model'; // TODO
+import type { UnpositionedPanelGroupItemLayout } from './panelUtils';
+import { insertPanelInLayout } from './panelUtils';
 
 describe('insertPanelInLayout', () => {
   describe('inserts the panel to the right when space is available', () => {

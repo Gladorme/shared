@@ -13,7 +13,7 @@
 
 import { Box } from '@mui/material';
 import { ChartsProvider, useChartsTheme } from '@perses-dev/components';
-import { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import { ExploreManager, ExplorerManagerProviderWithQueryParams } from '../../components';
 

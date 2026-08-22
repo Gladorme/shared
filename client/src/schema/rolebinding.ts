@@ -13,7 +13,7 @@
 
 import { z } from 'zod';
 
-import { RoleBinding, RoleBindingSpec, Subject } from '../model';
+import type { RoleBinding, RoleBindingSpec, Subject } from '../model';
 import { nameSchema, metadataSchema, projectMetadataSchema } from './metadata';
 
 export const subjectSchema: z.ZodSchema<Subject> = z.object({

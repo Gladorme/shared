@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createTheme, PaletteMode, ThemeOptions, Theme } from '@mui/material';
+import type { PaletteMode, ThemeOptions, Theme } from '@mui/material';
+import { createTheme } from '@mui/material';
 
 import { MuiAlert } from './component-overrides/alert';
 import { MuiPaper } from './component-overrides/paper';

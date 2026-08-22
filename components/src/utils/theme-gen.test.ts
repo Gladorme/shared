@@ -13,7 +13,7 @@
 
 import { createTheme } from '@mui/material';
 
-import { EChartsTheme, PersesChartsTheme } from '../model';
+import type { EChartsTheme, PersesChartsTheme } from '../model';
 import { generateChartsTheme } from './theme-gen';
 
 describe('generateChartsTheme', () => {

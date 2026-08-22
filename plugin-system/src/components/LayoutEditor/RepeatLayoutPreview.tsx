@@ -14,7 +14,8 @@
 import { Box, IconButton, Typography } from '@mui/material';
 import { InfoTooltip, RepeatGrid } from '@perses-dev/components';
 import InformationOutlineIcon from 'mdi-material-ui/InformationOutline';
-import { ReactElement, useMemo } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo } from 'react';
 
 export interface RepeatLayoutPreviewProps {
   optionCount: number;

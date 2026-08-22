@@ -12,7 +12,8 @@
 // limitations under the License.
 
 import isEqual from 'lodash/isEqual';
-import { useRef, DependencyList } from 'react';
+import type { DependencyList } from 'react';
+import { useRef } from 'react';
 
 type MemoRef<T> = {
   value: T;

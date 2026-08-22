@@ -11,23 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  Grid2Props as GridProps,
-  IconButton,
-  MenuItem,
-  Stack,
-  StackProps,
-  TextField,
-  Tooltip,
-  Typography,
-  Grid2 as Grid,
-} from '@mui/material';
+import type { Grid2Props as GridProps, StackProps } from '@mui/material';
+import { IconButton, MenuItem, Stack, TextField, Tooltip, Typography, Grid2 as Grid } from '@mui/material';
 import DeleteIcon from 'mdi-material-ui/DeleteOutline';
 import PlusIcon from 'mdi-material-ui/Plus';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 import { OptionsColorPicker } from '../ColorPicker/OptionsColorPicker';
-import { ValueMapping } from '../model';
+import type { ValueMapping } from '../model';
 
 interface ValueMappingConditionEditorProps extends Omit<StackProps, 'onChange'> {
   mapping: ValueMapping;

@@ -33,16 +33,16 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { Action } from '@perses-dev/client';
+import type { Action } from '@perses-dev/client';
 import { InfoTooltip } from '@perses-dev/components';
+import type { VariableState } from '@perses-dev/plugin-system';
 import {
   ValidationProvider,
   VARIABLE_TYPES,
   VariableEditorForm,
-  VariableState,
   useResolveListVariableValues,
 } from '@perses-dev/plugin-system';
-import { BuiltinVariableDefinition, VariableDefinition } from '@perses-dev/spec';
+import type { BuiltinVariableDefinition, VariableDefinition } from '@perses-dev/spec';
 import ArrowDown from 'mdi-material-ui/ArrowDown';
 import ArrowUp from 'mdi-material-ui/ArrowUp';
 import ExpandMoreIcon from 'mdi-material-ui/ChevronUp';
@@ -52,12 +52,13 @@ import OpenInNewIcon from 'mdi-material-ui/OpenInNew';
 import PencilIcon from 'mdi-material-ui/Pencil';
 import AddIcon from 'mdi-material-ui/Plus';
 import TrashIcon from 'mdi-material-ui/TrashCan';
-import { ReactElement, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo, useState } from 'react';
 import { useImmer } from 'use-immer';
 
 import { useDiscardChangesConfirmationDialog, VariableProvider } from '../../context';
 import { hydrateVariableDefinitionStates } from '../../context/VariableProvider/hydrationUtils';
-import { ExternalVariableDefinition } from '../../model/VariableDefinition';
+import type { ExternalVariableDefinition } from '../../model/VariableDefinition';
 import { BuiltinVariableAccordions } from './BuiltinVariableAccordions';
 
 function getVariableLabelByKind(kind: string): 'List' | 'Text' | undefined {

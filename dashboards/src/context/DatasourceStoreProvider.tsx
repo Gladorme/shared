@@ -11,23 +11,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
+import type {
   BuildDatasourceProxyUrlParams,
   DashboardResource,
   DatasourceApi,
   DatasourceDefinition,
 } from '@perses-dev/client';
-import {
-  DatasourceStoreContext,
+import type {
   DatasourceStore,
   DatasourceSelectItemGroup,
-  usePluginRegistry,
-  useEvent,
   DatasourceClient,
   DatasourceSelectItem,
 } from '@perses-dev/plugin-system';
-import { DashboardSpec, DatasourceSelector, DatasourceSpec } from '@perses-dev/spec';
-import { ReactElement, ReactNode, useCallback, useMemo, useRef, useState } from 'react';
+import { DatasourceStoreContext, usePluginRegistry, useEvent } from '@perses-dev/plugin-system';
+import type { DashboardSpec, DatasourceSelector, DatasourceSpec } from '@perses-dev/spec';
+import type { ReactElement, ReactNode } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 
 export interface DatasourceStoreProviderProps {
   dashboardResource?: DashboardResource;

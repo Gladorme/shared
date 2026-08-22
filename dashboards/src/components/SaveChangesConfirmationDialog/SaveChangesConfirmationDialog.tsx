@@ -15,7 +15,8 @@ import { Checkbox, FormGroup, FormControlLabel, Typography } from '@mui/material
 import { Dialog } from '@perses-dev/components';
 import { DEFAULT_REFRESH_INTERVAL_OPTIONS, useTimeRange, useTimeZoneParams } from '@perses-dev/plugin-system';
 import { isRelativeTimeRange } from '@perses-dev/spec';
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
 import { useSaveChangesConfirmationDialog, useVariableDefinitionActions } from '../../context';
 

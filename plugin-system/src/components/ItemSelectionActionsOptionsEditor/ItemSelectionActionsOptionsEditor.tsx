@@ -11,6 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import type { SwitchProps } from '@mui/material';
 import {
   Box,
   Button,
@@ -30,11 +31,10 @@ import {
   Select,
   Stack,
   Switch,
-  SwitchProps,
   TextField,
   Typography,
 } from '@mui/material';
-import { SelectChangeEvent } from '@mui/material/Select';
+import type { SelectChangeEvent } from '@mui/material/Select';
 import {
   DragAndDropElement,
   DragButton,
@@ -66,7 +66,8 @@ import SendIcon from 'mdi-material-ui/Send';
 import StopIcon from 'mdi-material-ui/Stop';
 import SyncIcon from 'mdi-material-ui/Sync';
 import UploadIcon from 'mdi-material-ui/Upload';
-import { ReactElement, useCallback, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 export type ActionIcon =
   | 'play'

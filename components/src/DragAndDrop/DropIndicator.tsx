@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { Box, Stack } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 export function DropIndicator(): ReactElement {
   return (

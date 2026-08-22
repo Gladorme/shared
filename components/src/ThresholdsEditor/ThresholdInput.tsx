@@ -13,10 +13,11 @@
 
 import { Stack, FormLabel, TextField, IconButton, Box } from '@mui/material';
 import DeleteIcon from 'mdi-material-ui/DeleteOutline';
-import { ReactElement, RefObject, useState } from 'react';
+import type { ReactElement, RefObject } from 'react';
+import { useState } from 'react';
 
 import { OptionsColorPicker } from '../ColorPicker/OptionsColorPicker';
-import { ThresholdOptions } from '../model';
+import type { ThresholdOptions } from '../model';
 
 export interface ThresholdInputProps {
   label: string;

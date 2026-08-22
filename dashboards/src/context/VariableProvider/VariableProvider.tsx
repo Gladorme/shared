@@ -11,36 +11,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  VariableContext,
+import type {
   VariableStateMap,
   VariableState,
   VariableStoreStateMap,
   VariableOption,
-  BuiltinVariableContext,
-  useTimeRange,
   VariableDefinitionGroup,
 } from '@perses-dev/plugin-system';
-import {
-  DEFAULT_ALL_VALUE as ALL_VALUE,
+import { VariableContext, BuiltinVariableContext, useTimeRange } from '@perses-dev/plugin-system';
+import type {
   VariableName,
   VariableValue,
   VariableDefinition,
-  formatDuration,
   BuiltinVariableDefinition,
   TextVariableDefinition,
   ListVariableDefinition,
-  intervalToDuration,
 } from '@perses-dev/spec';
+import { DEFAULT_ALL_VALUE as ALL_VALUE, formatDuration, intervalToDuration } from '@perses-dev/spec';
 import { produce } from 'immer';
-import { createContext, ReactElement, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
-import { createStore, StoreApi, useStore } from 'zustand';
+import type { ReactElement, ReactNode } from 'react';
+import { createContext, useContext, useEffect, useMemo, useState } from 'react';
+import type { StoreApi } from 'zustand';
+import { createStore, useStore } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/shallow';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 
-import { ExternalVariableDefinition } from '../../model/VariableDefinition';
+import type { ExternalVariableDefinition } from '../../model/VariableDefinition';
 import { hydrateVariableDefinitionStates } from './hydrationUtils';
 import { getInitalValuesFromQueryParameters, getURLQueryParamName, useVariableQueryParams } from './query-params';
 import { checkSavedDefaultVariableStatus, findVariableDefinitionByName, mergeVariableDefinitions } from './utils';

@@ -11,11 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Box, ListItemText, ListItemProps, ListItemButton } from '@mui/material';
-import { forwardRef, memo, MouseEvent, MouseEventHandler, ReactElement, useState } from 'react';
+import type { ListItemProps } from '@mui/material';
+import { Box, ListItemText, ListItemButton } from '@mui/material';
+import type { MouseEvent, MouseEventHandler, ReactElement } from 'react';
+import { forwardRef, memo, useState } from 'react';
 
 import { combineSx } from '../utils';
-import { LegendItem } from './legend-model';
+import type { LegendItem } from './legend-model';
 import { LegendColorBadge } from './LegendColorBadge';
 
 export type LegendItemEventOpts = {

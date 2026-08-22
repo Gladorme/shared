@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Box, BoxProps } from '@mui/material';
+import type { BoxProps } from '@mui/material';
+import { Box } from '@mui/material';
 import { ErrorBoundary, ErrorAlert, combineSx } from '@perses-dev/components';
 import {
   TimeRangeProviderWithQueryParams,
@@ -19,19 +20,16 @@ import {
   useInitialTimeRange,
   usePluginBuiltinVariableDefinitions,
 } from '@perses-dev/plugin-system';
-import { BuiltinVariableDefinition } from '@perses-dev/spec';
-import { ReactElement, useMemo } from 'react';
+import type { BuiltinVariableDefinition } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
+import { useMemo } from 'react';
 
 import { DEFAULT_DASHBOARD_DURATION, DEFAULT_REFRESH_INTERVAL } from '../../constants';
-import {
-  DatasourceStoreProviderProps,
-  DatasourceStoreProvider,
-  VariableProviderProps,
-  VariableProviderWithQueryParams,
-  AnnotationProvider,
-} from '../../context';
+import type { DatasourceStoreProviderProps, VariableProviderProps } from '../../context';
+import { DatasourceStoreProvider, VariableProviderWithQueryParams, AnnotationProvider } from '../../context';
 import { DashboardProviderWithQueryParams } from '../../context/DashboardProvider/DashboardProviderWithQueryParams';
-import { DashboardApp, DashboardAppProps } from './DashboardApp';
+import type { DashboardAppProps } from './DashboardApp';
+import { DashboardApp } from './DashboardApp';
 
 export interface ViewDashboardProps extends Omit<BoxProps, 'children'>, DashboardAppProps {
   datasourceApi: DatasourceStoreProviderProps['datasourceApi'];

@@ -11,9 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { renderHook, RenderHookOptions, RenderHookResult } from '@testing-library/react';
+import type { RenderHookOptions, RenderHookResult } from '@testing-library/react';
+import { renderHook } from '@testing-library/react';
 
-import { ContextOptions, getTestContextWrapper } from './utils';
+import type { ContextOptions } from './utils';
+import { getTestContextWrapper } from './utils';
 
 /**
  * Test helper to render a React hook with common app-level providers, including the PluginRegistry,

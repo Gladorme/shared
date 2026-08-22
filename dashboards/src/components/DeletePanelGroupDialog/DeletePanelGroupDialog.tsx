@@ -13,7 +13,7 @@
 
 import { Button } from '@mui/material';
 import { Dialog } from '@perses-dev/components';
-import { FormEvent, ReactElement } from 'react';
+import type { FormEvent, ReactElement } from 'react';
 
 import { useDeletePanelGroupDialog, useViewPanel } from '../../context';
 

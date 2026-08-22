@@ -14,8 +14,10 @@
 import { Box, CircularProgress } from '@mui/material';
 import { useFetch } from '@perses-dev/client';
 import { Dialog, InfoTooltip, useItemActions, useSelection } from '@perses-dev/components';
-import { ACTION_ICONS, executeAction, ItemAction, VariableStateMap } from '@perses-dev/plugin-system';
-import { ReactNode, useCallback, useMemo, useState } from 'react';
+import type { ItemAction, VariableStateMap } from '@perses-dev/plugin-system';
+import { ACTION_ICONS, executeAction } from '@perses-dev/plugin-system';
+import type { ReactNode } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { HeaderIconButton } from './HeaderIconButton';
 

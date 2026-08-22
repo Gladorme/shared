@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DashboardResource } from '@perses-dev/client';
+import type { DashboardResource } from '@perses-dev/client';
 import { act, renderHook, waitFor } from '@testing-library/react';
 
 import { useDashboardShortcuts } from './useDashboardShortcuts';

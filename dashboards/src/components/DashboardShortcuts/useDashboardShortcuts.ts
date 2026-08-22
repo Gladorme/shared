@@ -13,18 +13,13 @@
 
 import { useSnackbar } from '@perses-dev/components';
 import { useTimeRange } from '@perses-dev/plugin-system';
-import { AbsoluteTimeRange, TimeRangeValue, isRelativeTimeRange, toAbsoluteTimeRange } from '@perses-dev/spec';
+import type { AbsoluteTimeRange, TimeRangeValue } from '@perses-dev/spec';
+import { isRelativeTimeRange, toAbsoluteTimeRange } from '@perses-dev/spec';
 import { useHotkeys, useHotkeySequences } from '@tanstack/react-hotkeys';
 import { useCallback } from 'react';
 
-import {
-  OnSaveDashboard,
-  useEditMode,
-  useDashboardStore,
-  DashboardStoreState,
-  useViewPanelGroup,
-  useSaveDashboard,
-} from '../../context/DashboardProvider';
+import type { OnSaveDashboard, DashboardStoreState } from '../../context/DashboardProvider';
+import { useEditMode, useDashboardStore, useViewPanelGroup, useSaveDashboard } from '../../context/DashboardProvider';
 import {
   useFocusedPanel,
   buildShortcutOptions,
@@ -45,7 +40,7 @@ import {
   PANEL_DUPLICATE_SHORTCUT,
   PANEL_DELETE_SHORTCUT,
 } from '../../keyboard-shortcuts';
-import { PanelGroupItemId } from '../../model';
+import type { PanelGroupItemId } from '../../model';
 
 const SAVE_SHORTCUT_EDIT_MODE_MESSAGE = 'Enter edit mode to save this dashboard.';
 const SAVE_SHORTCUT_READONLY_MESSAGE = 'This dashboard is read-only. Keyboard save is disabled.';

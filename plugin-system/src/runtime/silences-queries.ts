@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { SilencesData, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
-import { QueryKey, useQueries, UseQueryResult } from '@tanstack/react-query';
+import type { SilencesData, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
+import type { QueryKey, UseQueryResult } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 
-import { SilencesQueryContext, SilencesQueryPlugin } from '../model';
+import type { SilencesQueryContext, SilencesQueryPlugin } from '../model';
 import { useDatasourceStore } from './datasources';
 import { usePluginRegistry, usePlugins } from './plugin-registry';
 import { filterVariableStateMap, getVariableValuesKey } from './utils';

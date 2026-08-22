@@ -26,14 +26,15 @@ import {
   Collapse,
 } from '@mui/material';
 import { InfoTooltip, LinkEditorForm } from '@perses-dev/components';
-import { Link } from '@perses-dev/spec';
+import type { Link } from '@perses-dev/spec';
 import ArrowDown from 'mdi-material-ui/ArrowDown';
 import ArrowUp from 'mdi-material-ui/ArrowUp';
 import ChevronUp from 'mdi-material-ui/ChevronUp';
 import PencilIcon from 'mdi-material-ui/Pencil';
 import AddIcon from 'mdi-material-ui/Plus';
 import TrashIcon from 'mdi-material-ui/TrashCan';
-import { useState, ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 import { useImmer } from 'use-immer';
 
 import { useDiscardChangesConfirmationDialog } from '../../context';

@@ -12,17 +12,21 @@
 // limitations under the License.
 
 import { ErrorAlert, JSONEditor } from '@perses-dev/components';
-import { AnnotationSpec, PanelDefinition, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
-import { forwardRef, ReactElement } from 'react';
-import { Control, Controller } from 'react-hook-form';
+import type { AnnotationSpec, PanelDefinition, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
+import { forwardRef } from 'react';
+import type { Control } from 'react-hook-form';
+import { Controller } from 'react-hook-form';
 
-import { PanelEditorValues, PanelPlugin } from '../../model';
+import type { PanelEditorValues, PanelPlugin } from '../../model';
 import { useDataQueriesContext, usePlugin } from '../../runtime';
-import { LayoutEditor, PanelGroup, VariableDefinitionGroup } from '../LayoutEditor';
+import type { PanelGroup, VariableDefinitionGroup } from '../LayoutEditor';
+import { LayoutEditor } from '../LayoutEditor';
 import { LinksEditor } from '../LinksEditor';
 import { MultiQueryEditor } from '../MultiQueryEditor';
-import { OptionsEditorTabs, OptionsEditorTabsProps } from '../OptionsEditorTabs';
-import { PluginEditorRef } from '../PluginEditor';
+import type { OptionsEditorTabsProps } from '../OptionsEditorTabs';
+import { OptionsEditorTabs } from '../OptionsEditorTabs';
+import type { PluginEditorRef } from '../PluginEditor';
 import { PanelAnnotationsEditor } from './PanelAnnotationsEditor';
 
 export interface PanelSpecEditorProps {

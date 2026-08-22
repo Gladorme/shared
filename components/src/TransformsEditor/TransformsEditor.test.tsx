@@ -14,7 +14,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 
 import { TransformsEditor } from '.';
-import { Transform } from '../model';
+import type { Transform } from '../model';
 
 describe('TransformsEditor', () => {
   function renderTableColumnsEditor(value: Transform[], onChange = vi.fn()): void {

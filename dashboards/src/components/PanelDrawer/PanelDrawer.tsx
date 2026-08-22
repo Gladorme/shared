@@ -26,8 +26,9 @@
 // limitations under the License.
 
 import { Drawer, ErrorAlert, ErrorBoundary } from '@perses-dev/components';
-import { PanelEditorValues } from '@perses-dev/plugin-system';
-import { ReactElement, useCallback, useMemo, useState } from 'react';
+import type { PanelEditorValues } from '@perses-dev/plugin-system';
+import type { ReactElement } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { usePanelEditor, usePanelKey } from '../../context';
 import { FixedValueVariableProvider } from '../Variables';

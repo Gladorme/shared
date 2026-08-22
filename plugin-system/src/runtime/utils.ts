@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { VariableStateMap } from './variables';
+import type { VariableStateMap } from './variables';
 
 export function filterVariableStateMap(v: VariableStateMap, names?: string[]): VariableStateMap {
   if (!names) {

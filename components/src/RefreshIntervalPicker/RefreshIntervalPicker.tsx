@@ -12,10 +12,11 @@
 // limitations under the License.
 
 import { Box, FormControl, MenuItem, Select } from '@mui/material';
-import { DurationString } from '@perses-dev/spec';
-import { ReactElement, useMemo } from 'react';
+import type { DurationString } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
+import { useMemo } from 'react';
 
-import { TimeOption } from '../model';
+import type { TimeOption } from '../model';
 
 interface RefreshIntervalPickerProps {
   timeOptions: TimeOption[];

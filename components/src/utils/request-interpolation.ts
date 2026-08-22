@@ -11,15 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RequestHeaders } from '@perses-dev/client';
+import type { RequestHeaders } from '@perses-dev/client';
 
 import { createRegexFromString } from './regexp';
-import {
-  replaceVariables,
-  VariableStateMap,
-  parseVariablesAndFormat,
-  InterpolationFormat,
-} from './variable-interpolation';
+import type { VariableStateMap } from './variable-interpolation';
+import { replaceVariables, parseVariablesAndFormat, InterpolationFormat } from './variable-interpolation';
 
 export type QueryParamValues = Record<string, string | string[]>;
 

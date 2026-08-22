@@ -11,11 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { render, RenderResult, screen, within } from '@testing-library/react';
+import type { RenderResult } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { VirtuosoMockContext } from 'react-virtuoso';
 
-import { TableLegend, TableLegendProps } from './TableLegend';
+import type { TableLegendProps } from './TableLegend';
+import { TableLegend } from './TableLegend';
 
 const MOCK_VIEWPORT_HEIGHT = 1000;
 const MOCK_ITEM_HEIGHT = 100;

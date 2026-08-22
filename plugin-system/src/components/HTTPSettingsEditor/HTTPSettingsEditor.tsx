@@ -12,12 +12,13 @@
 // limitations under the License.
 
 import { Box, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
-import { RequestHeaders } from '@perses-dev/client';
-import { HTTPDatasourceSpec } from '@perses-dev/spec';
+import type { RequestHeaders } from '@perses-dev/client';
+import type { HTTPDatasourceSpec } from '@perses-dev/spec';
 import { produce } from 'immer';
 import MinusIcon from 'mdi-material-ui/Minus';
 import PlusIcon from 'mdi-material-ui/Plus';
-import React, { Fragment, ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import React, { Fragment, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 

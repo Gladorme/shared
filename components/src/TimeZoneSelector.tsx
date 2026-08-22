@@ -11,10 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Select, MenuItem, SelectProps, SelectChangeEvent } from '@mui/material';
-import { ReactElement, ReactNode, useMemo } from 'react';
+import type { SelectProps, SelectChangeEvent } from '@mui/material';
+import { Select, MenuItem } from '@mui/material';
+import type { ReactElement, ReactNode } from 'react';
+import { useMemo } from 'react';
 
-import { TimeZoneOption, getTimeZoneOptions } from './model/timeZoneOption';
+import type { TimeZoneOption } from './model/timeZoneOption';
+import { getTimeZoneOptions } from './model/timeZoneOption';
 
 export interface TimeZoneSelectorProps extends Omit<SelectProps, 'onChange' | 'variant' | 'value'> {
   value: string;

@@ -12,10 +12,11 @@
 // limitations under the License.
 
 import { TableSortLabel, Typography, tableSortLabelClasses, Box, Divider } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
-import { SortDirection } from './model/table-model';
-import { TableCell, TableCellProps } from './TableCell';
+import type { SortDirection } from './model/table-model';
+import type { TableCellProps } from './TableCell';
+import { TableCell } from './TableCell';
 
 export interface TableHeaderCellProps extends TableCellProps {
   /**

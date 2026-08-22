@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Theme } from '@mui/material';
-import { Link } from '@perses-dev/spec';
-import { rankings } from '@tanstack/match-sorter-utils';
-import {
+import type { Theme } from '@mui/material';
+import type { Link } from '@perses-dev/spec';
+import type { rankings } from '@tanstack/match-sorter-utils';
+import type {
   AccessorKeyColumnDef,
   CellContext,
   ColumnDef,
@@ -25,7 +25,7 @@ import {
   RowSelectionState,
   SortingState,
 } from '@tanstack/react-table';
-import { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 export const DEFAULT_COLUMN_WIDTH = 150;
 export const DEFAULT_COLUMN_MIN_WIDTH = 60;

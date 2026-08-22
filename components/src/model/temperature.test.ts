@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { getFormatterStats } from './formatterCache';
-import { UnitTestCase } from './types';
+import type { UnitTestCase } from './types';
 import { formatValue } from './units';
 
 const TEMPERATURE_TESTS: UnitTestCase[] = [

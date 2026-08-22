@@ -14,10 +14,12 @@
 import { Button } from '@mui/material';
 import { Dialog } from '@perses-dev/components';
 import { useVariableValues } from '@perses-dev/plugin-system';
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
 import { usePanelGroupEditor } from '../../context';
-import { PanelGroupEditorForm, panelGroupEditorFormId, PanelGroupEditorFormProps } from './PanelGroupEditorForm';
+import type { PanelGroupEditorFormProps } from './PanelGroupEditorForm';
+import { PanelGroupEditorForm, panelGroupEditorFormId } from './PanelGroupEditorForm';
 
 /**
  * A dialog for adding or editing a Panel Group. Open and initial state is controlled by the DashboardStore.

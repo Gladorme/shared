@@ -11,11 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PanelGroupId } from '@perses-dev/plugin-system';
-import { StateCreator } from 'zustand';
+import type { PanelGroupId } from '@perses-dev/plugin-system';
+import type { StateCreator } from 'zustand';
 
-import { Middleware } from './common';
-import { PanelGroupSlice, addPanelGroup, createEmptyPanelGroup } from './panel-group-slice';
+import type { Middleware } from './common';
+import type { PanelGroupSlice } from './panel-group-slice';
+import { addPanelGroup, createEmptyPanelGroup } from './panel-group-slice';
 
 export interface PanelGroupEditor {
   mode: 'Add' | 'Edit';

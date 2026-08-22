@@ -13,7 +13,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Typography, TextField, Grid, Divider, Stack, IconButton } from '@mui/material';
-import { Action } from '@perses-dev/client';
+import type { Action } from '@perses-dev/client';
 import {
   DiscardChangesConfirmationDialog,
   ErrorAlert,
@@ -23,11 +23,13 @@ import {
   getSubmitText,
   getTitleAction,
 } from '@perses-dev/components';
-import { AnnotationSpec } from '@perses-dev/spec';
+import type { AnnotationSpec } from '@perses-dev/spec';
 import { useQueryClient } from '@tanstack/react-query';
 import InvertColorsIcon from 'mdi-material-ui/InvertColors';
-import { DispatchWithoutAction, ReactElement, useCallback, useState } from 'react';
-import { Control, Controller, FormProvider, SubmitHandler, useForm, useWatch } from 'react-hook-form';
+import type { DispatchWithoutAction, ReactElement } from 'react';
+import { useCallback, useState } from 'react';
+import type { Control, SubmitHandler } from 'react-hook-form';
+import { Controller, FormProvider, useForm, useWatch } from 'react-hook-form';
 
 import { useValidationSchemas } from '../../../context';
 import { PluginEditor } from '../../PluginEditor';

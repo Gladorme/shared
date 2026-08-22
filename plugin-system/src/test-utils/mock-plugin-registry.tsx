@@ -11,17 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { UnknownSpec } from '@perses-dev/spec';
+import type { UnknownSpec } from '@perses-dev/spec';
 
-import { PluginRegistryProps } from '../components';
-import {
-  PluginModuleResource,
-  Plugin,
-  PluginLoader,
-  PluginImplementation,
-  PluginType,
-  getPluginModuleCompoundKey,
-} from '../model';
+import type { PluginRegistryProps } from '../components';
+import type { PluginModuleResource, Plugin, PluginLoader, PluginImplementation, PluginType } from '../model';
+import { getPluginModuleCompoundKey } from '../model';
 
 export type MockPlugin = {
   [T in PluginType]: {

@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Button, ButtonProps } from '@mui/material';
+import type { ButtonProps } from '@mui/material';
+import { Button } from '@mui/material';
 import { InfoTooltip } from '@perses-dev/components';
 import AddPanelIcon from 'mdi-material-ui/ChartBoxPlusOutline';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { TOOLTIP_TEXT, editButtonStyle } from '../../constants';
 import { useDashboardActions } from '../../context';

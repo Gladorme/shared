@@ -11,15 +11,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Action } from '@perses-dev/client';
-import { PanelEditorValues, PanelGroupId } from '@perses-dev/plugin-system';
-import { StateCreator } from 'zustand';
+import type { Action } from '@perses-dev/client';
+import type { PanelEditorValues, PanelGroupId } from '@perses-dev/plugin-system';
+import type { StateCreator } from 'zustand';
 
-import { PanelGroupDefinition, PanelGroupItemId, PanelGroupItemLayout } from '../../model';
+import type { PanelGroupDefinition, PanelGroupItemId, PanelGroupItemLayout } from '../../model';
 import { generatePanelKey, getYForNewRow } from '../../utils';
-import { generateId, Middleware, createPanelDefinition } from './common';
-import { PanelGroupSlice, addPanelGroup, createEmptyPanelGroup } from './panel-group-slice';
-import { PanelSlice } from './panel-slice';
+import type { Middleware } from './common';
+import { generateId, createPanelDefinition } from './common';
+import type { PanelGroupSlice } from './panel-group-slice';
+import { addPanelGroup, createEmptyPanelGroup } from './panel-group-slice';
+import type { PanelSlice } from './panel-slice';
 
 /**
  * Slice that handles the visual editor state and actions for adding or editing Panels.

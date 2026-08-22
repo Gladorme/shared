@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AbsoluteTimeRange, UnknownSpec, LogData, QueryDefinition } from '@perses-dev/spec';
+import type { AbsoluteTimeRange, UnknownSpec, LogData, QueryDefinition } from '@perses-dev/spec';
 
-import { DatasourceStore, VariableStateMap } from '../runtime';
-import { Plugin } from './plugin-base';
+import type { DatasourceStore, VariableStateMap } from '../runtime';
+import type { Plugin } from './plugin-base';
 
 export interface LogQueryResult {
   logs: LogData;

@@ -12,14 +12,15 @@
 // limitations under the License.
 
 import { ErrorAlert, ErrorBoundary } from '@perses-dev/components';
-import { PanelGroupId } from '@perses-dev/plugin-system';
-import { ReactElement } from 'react';
+import type { PanelGroupId } from '@perses-dev/plugin-system';
+import type { ReactElement } from 'react';
 
 import { DEFAULT_MARGIN } from '../../constants';
 import { useViewPanelGroup } from '../../context';
-import { PanelGroupItemId } from '../../model';
-import { getPerRowCount, RepeatItemMeta } from '../../utils';
-import { PanelOptions } from '../Panel/Panel';
+import type { PanelGroupItemId } from '../../model';
+import type { RepeatItemMeta } from '../../utils';
+import { getPerRowCount } from '../../utils';
+import type { PanelOptions } from '../Panel/Panel';
 import { GridItemContent } from './GridItemContent';
 import { RepeatGridItemContent } from './RepeatGridItemContent';
 

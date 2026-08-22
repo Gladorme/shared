@@ -26,14 +26,15 @@ import {
   TableRow,
   styled,
 } from '@mui/material';
-import { Action } from '@perses-dev/client';
-import { AnnotationSpec, Definition, UnknownSpec } from '@perses-dev/spec';
+import type { Action } from '@perses-dev/client';
+import type { AnnotationSpec, Definition, UnknownSpec } from '@perses-dev/spec';
 import ArrowDown from 'mdi-material-ui/ArrowDown';
 import ArrowUp from 'mdi-material-ui/ArrowUp';
 import PencilIcon from 'mdi-material-ui/Pencil';
 import AddIcon from 'mdi-material-ui/Plus';
 import TrashIcon from 'mdi-material-ui/TrashCan';
-import { ReactElement, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo, useState } from 'react';
 
 import { ValidationProvider } from '../../context';
 import { AnnotationEditorForm } from '../Annotations';

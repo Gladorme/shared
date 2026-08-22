@@ -15,7 +15,7 @@ import { formatBits } from './bits';
 import { formatBytes } from './bytes';
 import { MAX_SIGNIFICANT_DIGITS } from './constants';
 import { getFormatterFromCache } from './formatterCache';
-import { UnitGroupConfig, UnitConfig } from './types';
+import type { UnitGroupConfig, UnitConfig } from './types';
 import { hasDecimalPlaces, limitDecimalPlaces, shouldShortenValues } from './utils';
 
 type ThroughputUnit =

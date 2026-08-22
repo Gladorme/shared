@@ -11,11 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { RenderResult, screen } from '@testing-library/react';
+import type { RenderResult } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithContext } from '../../test';
-import { PluginKindSelect, PluginKindSelectProps } from './PluginKindSelect';
+import type { PluginKindSelectProps } from './PluginKindSelect';
+import { PluginKindSelect } from './PluginKindSelect';
 
 describe('PluginKindSelect', () => {
   const renderComponent = (props: PluginKindSelectProps): RenderResult => {

@@ -13,7 +13,8 @@
 
 import { Box, IconButton, Stack, Typography } from '@mui/material';
 import { InfoTooltip } from '@perses-dev/components';
-import { useReplaceVariablesInString, PanelGroupId } from '@perses-dev/plugin-system';
+import type { PanelGroupId } from '@perses-dev/plugin-system';
+import { useReplaceVariablesInString } from '@perses-dev/plugin-system';
 import ArrowDownIcon from 'mdi-material-ui/ArrowDown';
 import ArrowUpIcon from 'mdi-material-ui/ArrowUp';
 import AddPanelIcon from 'mdi-material-ui/ChartBoxPlusOutline';
@@ -21,7 +22,7 @@ import ExpandedIcon from 'mdi-material-ui/ChevronDown';
 import CollapsedIcon from 'mdi-material-ui/ChevronRight';
 import DeleteIcon from 'mdi-material-ui/DeleteOutline';
 import PencilIcon from 'mdi-material-ui/PencilOutline';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { ARIA_LABEL_TEXT, TOOLTIP_TEXT } from '../../constants';
 import { usePanelGroupActions, useEditMode, useDeletePanelGroupDialog } from '../../context';

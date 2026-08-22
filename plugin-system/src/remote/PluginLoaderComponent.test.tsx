@@ -11,11 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ModuleFederation } from '@module-federation/enhanced/runtime';
+import type { ModuleFederation } from '@module-federation/enhanced/runtime';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
-import { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
+import type { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
 import { PluginLoaderComponent } from './PluginLoaderComponent';
 import * as PluginRuntime from './PluginRuntime';
 

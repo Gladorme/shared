@@ -12,14 +12,15 @@
 // limitations under the License.
 
 import { AnnotationProvider, usePanelAnnotationsWithData } from '@perses-dev/dashboards';
-import { AnnotationSpec } from '@perses-dev/spec';
+import type * as PluginSystemModule from '@perses-dev/plugin-system';
+import type { AnnotationSpec } from '@perses-dev/spec';
 import { renderHook, waitFor } from '@testing-library/react';
-import { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 // Resolve every annotation definition to a single data point derived from its name, so both the
 // dashboard hydration and the panel-local resolution go through the same predictable stub.
 vi.mock('@perses-dev/plugin-system', async () => {
-  const actual = await vi.importActual<typeof import('@perses-dev/plugin-system')>('@perses-dev/plugin-system');
+  const actual = await vi.importActual<typeof PluginSystemModule>('@perses-dev/plugin-system');
   return {
     ...actual,
     useAnnotations: (definitions: AnnotationSpec[]): Array<{ data: Array<{ start: number; title: string }> }> =>

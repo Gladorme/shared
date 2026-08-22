@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import React, { createContext, ReactElement, useContext, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 
-import { PersesChartsTheme } from '../model';
-import { CursorCoordinates } from '../TimeSeriesTooltip';
+import type { PersesChartsTheme } from '../model';
+import type { CursorCoordinates } from '../TimeSeriesTooltip';
 
 export interface ChartsProviderProps {
   chartsTheme: PersesChartsTheme;

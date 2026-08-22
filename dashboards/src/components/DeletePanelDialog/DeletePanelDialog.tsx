@@ -12,9 +12,10 @@
 // limitations under the License.
 
 import { Dialog } from '@perses-dev/components';
-import { FormEvent, ReactElement } from 'react';
+import type { FormEvent, ReactElement } from 'react';
 
-import { useDeletePanelDialog, DeletePanelDialogState, useViewPanel } from '../../context';
+import type { DeletePanelDialogState } from '../../context';
+import { useDeletePanelDialog, useViewPanel } from '../../context';
 
 export const DeletePanelDialog = (): ReactElement => {
   const { deletePanelDialog, closeDeletePanelDialog } = useDeletePanelDialog();

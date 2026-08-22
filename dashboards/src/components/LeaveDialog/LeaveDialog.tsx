@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DashboardResource } from '@perses-dev/client';
+import type { DashboardResource } from '@perses-dev/client';
 import { DiscardChangesConfirmationDialog } from '@perses-dev/components';
 import type { BlockerFunction } from '@remix-run/router';
-import { ReactElement, ReactNode, useEffect } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { useEffect } from 'react';
 import { useBlocker } from 'react-router-dom';
 
 const handleRouteChange = (event: BeforeUnloadEvent): string => {

@@ -11,9 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { StyledComponent } from '@emotion/styled';
-import { IconButton, IconButtonProps, styled } from '@mui/material';
-import { Theme } from '@mui/material/styles';
+import type { StyledComponent } from '@emotion/styled';
+import type { IconButtonProps } from '@mui/material';
+import { IconButton, styled } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 
 export const HeaderIconButton: StyledComponent<IconButtonProps & { theme?: Theme }> = styled(IconButton)(
   ({ theme }) => ({

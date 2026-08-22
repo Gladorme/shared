@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { VariableValue } from '@perses-dev/spec';
+import type { VariableValue } from '@perses-dev/spec';
 
 /**
  * Option for a variable with label and value

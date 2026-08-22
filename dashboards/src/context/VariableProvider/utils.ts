@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { VariableStoreStateMap } from '@perses-dev/plugin-system';
-import { VariableDefinition } from '@perses-dev/spec';
+import type { VariableStoreStateMap } from '@perses-dev/plugin-system';
+import type { VariableDefinition } from '@perses-dev/spec';
 
-import { ExternalVariableDefinition } from '../../model/VariableDefinition';
+import type { ExternalVariableDefinition } from '../../model/VariableDefinition';
 
 /*
  * Check whether saved variable definitions are out of date with current default list values in Zustand store

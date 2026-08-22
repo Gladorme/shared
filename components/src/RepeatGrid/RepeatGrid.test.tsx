@@ -11,10 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { render, RenderResult, screen } from '@testing-library/react';
-import { ReactNode } from 'react';
+import type { RenderResult } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import type { ReactNode } from 'react';
 
-import { RepeatGrid, RepeatGridProps } from './RepeatGrid';
+import type { RepeatGridProps } from './RepeatGrid';
+import { RepeatGrid } from './RepeatGrid';
 
 type TestItem = { id: string; label: string };
 

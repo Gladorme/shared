@@ -11,9 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DEFAULT_ALL_VALUE, VariableDefinition } from '@perses-dev/spec';
+import type { VariableDefinition } from '@perses-dev/spec';
+import { DEFAULT_ALL_VALUE } from '@perses-dev/spec';
 
-import { ExternalVariableDefinition } from '../../model/VariableDefinition';
+import type { ExternalVariableDefinition } from '../../model/VariableDefinition';
 import { hydrateVariableDefinitionStates } from './hydrationUtils';
 
 describe('hydrateVariableStates', () => {

@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { VariableStateMap } from '@perses-dev/components';
+import type { VariableStateMap } from '@perses-dev/components';
 import { useVariableValues, VariableContext } from '@perses-dev/plugin-system';
 import { renderHook } from '@testing-library/react';
-import { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import { FixedValueVariableProvider } from './FixedValueVariableProvider';
 

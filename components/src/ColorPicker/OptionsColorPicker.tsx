@@ -13,7 +13,8 @@
 
 import { styled, IconButton, Popover } from '@mui/material';
 import CircleIcon from 'mdi-material-ui/Circle';
-import { ReactElement, useState, MouseEvent } from 'react';
+import type { ReactElement, MouseEvent } from 'react';
+import { useState } from 'react';
 
 import { useChartsTheme } from '../context';
 import { ColorPicker } from './ColorPicker';

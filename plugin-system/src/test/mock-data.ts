@@ -11,7 +11,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AlertsData, JsonData, LogData, ProfileData, SilencesData, TimeSeriesData, TraceData } from '@perses-dev/spec';
+import type {
+  AlertsData,
+  JsonData,
+  LogData,
+  ProfileData,
+  SilencesData,
+  TimeSeriesData,
+  TraceData,
+} from '@perses-dev/spec';
 
 export const MOCK_TIME_SERIES_DATA: TimeSeriesData = {
   timeRange: {

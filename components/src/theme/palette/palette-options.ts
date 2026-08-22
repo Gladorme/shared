@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PaletteMode, PaletteOptions } from '@mui/material';
+import type { PaletteMode, PaletteOptions } from '@mui/material';
 
 import { background } from './background';
 import { blue, green, grey, orange, purple, red } from './colors';

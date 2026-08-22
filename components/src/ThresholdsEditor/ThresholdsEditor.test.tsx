@@ -16,7 +16,7 @@ import userEvent from '@testing-library/user-event';
 import { produce } from 'immer';
 
 import { ChartsProvider } from '../context/ChartsProvider';
-import { ThresholdOptions } from '../model';
+import type { ThresholdOptions } from '../model';
 import { testChartsTheme } from '../test-utils';
 import { ThresholdsEditor } from './ThresholdsEditor';
 

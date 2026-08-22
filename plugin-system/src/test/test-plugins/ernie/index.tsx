@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DatasourceEditorProps, DatasourcePlugin, VariableOption, VariablePlugin } from '../../../model';
+import type { DatasourceEditorProps, DatasourcePlugin, VariableOption, VariablePlugin } from '../../../model';
 
 const data: VariableOption[] = [
   { label: 'Grover', value: 'Grover' },

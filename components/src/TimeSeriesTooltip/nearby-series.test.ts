@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TimeSeries } from '@perses-dev/spec';
-import { ECharts as EChartsInstance } from 'echarts/core';
+import type { TimeSeries } from '@perses-dev/spec';
+import type { ECharts as EChartsInstance } from 'echarts/core';
 
-import { EChartsDataFormat, FormatOptions, TimeChartSeriesMapping } from '../model';
+import type { EChartsDataFormat, FormatOptions, TimeChartSeriesMapping } from '../model';
 import {
   checkforNearbyTimeSeries,
   legacyCheckforNearbySeries,

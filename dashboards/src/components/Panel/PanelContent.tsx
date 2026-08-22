@@ -13,9 +13,10 @@
 
 import { Skeleton } from '@mui/material';
 import { LoadingOverlay } from '@perses-dev/components';
-import { usePlugin, PanelProps, QueryData, PanelPlugin } from '@perses-dev/plugin-system';
-import { UnknownSpec, PanelDefinition, QueryDataType } from '@perses-dev/spec';
-import { ReactElement } from 'react';
+import type { PanelProps, QueryData, PanelPlugin } from '@perses-dev/plugin-system';
+import { usePlugin } from '@perses-dev/plugin-system';
+import type { UnknownSpec, PanelDefinition, QueryDataType } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
 
 import { PanelPluginLoader } from './PanelPluginLoader';
 

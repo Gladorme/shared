@@ -11,9 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { BuiltinVariableDefinition, UnknownSpec } from '@perses-dev/spec';
+import type { BuiltinVariableDefinition, UnknownSpec } from '@perses-dev/spec';
 
-import { OptionsEditorProps, Plugin } from './plugin-base';
+import type { OptionsEditorProps, Plugin } from './plugin-base';
 
 /**
  * Plugin that defines options for an external system that Perses talks to for data.

@@ -11,29 +11,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  Stack,
-  ListItemText,
-  Chip,
-  IconButton,
-  Box,
-  OutlinedSelectProps,
-  BaseSelectProps,
-  Autocomplete,
-  TextField,
-} from '@mui/material';
-import { DatasourceSelector, VariableName } from '@perses-dev/spec';
+import type { OutlinedSelectProps, BaseSelectProps } from '@mui/material';
+import { Stack, ListItemText, Chip, IconButton, Box, Autocomplete, TextField } from '@mui/material';
+import type { DatasourceSelector, VariableName } from '@perses-dev/spec';
 import OpenInNewIcon from 'mdi-material-ui/OpenInNew';
-import { ReactElement, useMemo } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo } from 'react';
 
-import {
+import type {
   DatasourceSelectItem,
   DatasourceSelectItemGroup,
   DatasourceSelectItemSelector,
-  useListDatasourceSelectItems,
-  useVariableValues,
   VariableStateMap,
 } from '../../runtime';
+import { useListDatasourceSelectItems, useVariableValues } from '../../runtime';
 import { parseVariables } from '../../utils';
 
 const DATASOURCE_VARIABLE_VALUE_PREFIX = '__DATASOURCE_VARIABLE_VALUE__';

@@ -11,8 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DataItem, InterpolationResult, replaceDataFields, replaceDataFieldsBatch } from './data-field-interpolation';
-import { VariableStateMap, replaceVariables } from './variable-interpolation';
+import type { DataItem, InterpolationResult } from './data-field-interpolation';
+import { replaceDataFields, replaceDataFieldsBatch } from './data-field-interpolation';
+import type { VariableStateMap } from './variable-interpolation';
+import { replaceVariables } from './variable-interpolation';
 
 export type SelectionItem = DataItem;
 

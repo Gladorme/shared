@@ -11,11 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import type { CardProps } from '@mui/material';
 import {
   Card,
   CardContent,
   CardHeader,
-  CardProps,
   Chip,
   CircularProgress,
   Divider,
@@ -24,9 +24,10 @@ import {
   Typography,
 } from '@mui/material';
 import { getDateAndTime, InfoTooltip, useTimeZone } from '@perses-dev/components';
-import { AnnotationData, AnnotationSpec } from '@perses-dev/spec';
+import type { AnnotationData, AnnotationSpec } from '@perses-dev/spec';
 import AlertIcon from 'mdi-material-ui/Alert';
-import { ReactNode, useMemo, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useAnnotationData } from '../../../runtime';
 

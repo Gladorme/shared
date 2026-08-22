@@ -13,8 +13,8 @@
 
 import { createTheme as createMuiTheme } from '@mui/material';
 
-import { SharedChartsState } from '../context';
-import { PersesChartsTheme, EChartsTheme } from '../model';
+import type { SharedChartsState } from '../context';
+import type { PersesChartsTheme, EChartsTheme } from '../model';
 import { generateChartsTheme } from '../utils';
 
 // app specific echarts option overrides

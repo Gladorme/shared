@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { JsonData, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
-import { useQueries, UseQueryResult } from '@tanstack/react-query';
+import type { JsonData, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
+import type { UseQueryResult } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 
-import { JsonQueryContext } from '../model/json-queries';
+import type { JsonQueryContext } from '../model/json-queries';
 import { useDatasourceStore } from './datasources';
 import { usePluginRegistry } from './plugin-registry';
 import { useVariableValues } from './variables';

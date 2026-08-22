@@ -11,8 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Box, SxProps, Theme } from '@mui/material';
-import { ReactNode, useMemo } from 'react';
+import type { SxProps, Theme } from '@mui/material';
+import { Box } from '@mui/material';
+import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 
 export interface RepeatGridProps<T> {
   repeatItems: T[];

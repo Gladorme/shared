@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Theme } from '@mui/material';
+import type { Theme } from '@mui/material';
 
-import { LegendProps } from '../../Legend';
-import { LegendPositions, getLegendMode, LegendSize } from '../../model';
+import type { LegendProps } from '../../Legend';
+import type { LegendPositions, LegendSize } from '../../model';
+import { getLegendMode } from '../../model';
 import { getTableCellLayout } from '../../Table';
 
 type Dimensions = {
