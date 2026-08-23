@@ -17,7 +17,7 @@ import { isRelativeTimeRange, toAbsoluteTimeRange } from '@perses-dev/spec';
 import Calendar from 'mdi-material-ui/Calendar';
 import EarthIcon from 'mdi-material-ui/Earth';
 import type { ReactElement } from 'react';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useTimeZone } from '../context';
 import type { TimeOption } from '../model';
@@ -77,7 +77,7 @@ export function TimeRangeSelector({
   const { timeZone: ctxTimeZone } = useTimeZone();
   const timeZone = timeZoneProp ?? ctxTimeZone;
 
-  const anchorEl = useRef();
+  const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [showCustomDateSelector, setShowCustomDateSelector] = useState(false);
 
   const convertedTimeRange = useMemo(() => {
@@ -135,7 +135,7 @@ export function TimeRangeSelector({
         </Box>
       </Popover>
       <Popover
-        anchorEl={anchorEl.current}
+        anchorEl={anchorEl}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         open={showCustomDateSelector}
         onClose={() => setShowCustomDateSelector(false)}
@@ -152,7 +152,7 @@ export function TimeRangeSelector({
           timeZone={timeZone}
         />
       </Popover>
-      <Box ref={anchorEl}>
+      <Box ref={setAnchorEl}>
         <Select
           open={open}
           value={formatTimeRange(value, timeZone)}

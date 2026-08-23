@@ -11,24 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { useRef } from 'react';
-
-declare global {
-  // eslint-disable-next-line no-var
-  var useIdValue: number;
-}
+import { useId as useReactId } from 'react';
 
 /**
- * Generates a unique (stable) ID for a component. Should be replaced with React.useId once we support only React 18.
+ * Generates a unique, stable ID for a component.
  */
 export function useId(prefix: string): string {
-  if (globalThis.useIdValue === undefined) {
-    globalThis.useIdValue = 0;
-  }
-
-  const id = useRef<string | undefined>(undefined);
-  if (id.current === undefined) {
-    id.current = `${prefix}-${globalThis.useIdValue++}`;
-  }
-  return id.current;
+  return `${prefix}-${useReactId()}`;
 }

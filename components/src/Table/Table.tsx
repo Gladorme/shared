@@ -38,6 +38,9 @@ import { DEFAULT_COLUMN_WIDTH, persesColumnsToTanstackColumns } from './model/ta
 import { TableCheckbox } from './TableCheckbox';
 import { VirtualizedTable } from './VirtualizedTable';
 
+// TanStack Table exposes functions that React Compiler cannot safely memoize.
+/* oxlint-disable react/react-compiler */
+
 const DEFAULT_GET_ROW_ID = (data: unknown, index: number): string => {
   return `${index}`;
 };
@@ -80,6 +83,8 @@ export function Table<TableData>({
   defaultColumnConfig,
   ...otherProps
 }: TableProps<TableData>): ReactElement {
+  'use no memo';
+
   const theme = useTheme();
 
   const hasSubRows = !!getSubRows;

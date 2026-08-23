@@ -15,7 +15,7 @@ import { Collapse, useTheme } from '@mui/material';
 import type { PanelGroupId } from '@perses-dev/plugin-system';
 import { useVariableValues } from '@perses-dev/plugin-system';
 import type { ReactElement } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import type { Layout, Layouts } from 'react-grid-layout';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
@@ -45,6 +45,8 @@ export interface RowProps {
   repeatVariable?: [string, string];
 }
 
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
 export function Row({
   panelGroupId,
   groupDefinition,
@@ -56,13 +58,12 @@ export function Row({
   onWidthChange,
   repeatVariable,
 }: RowProps): ReactElement {
-  const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
   const theme = useTheme();
   const viewPanelItemId = useViewPanelGroup();
   const variableValues = useVariableValues();
   const repeatVariableMaxValues = useRepeatVariableMaxValues();
 
-  const [isOpen, setIsOpen] = useState(!groupDefinition.isCollapsed);
+  const [isGroupOpen, setIsGroupOpen] = useState(!groupDefinition.isCollapsed);
 
   const { expandedItemLayouts, repeatMeta } = useMemo(
     () =>
@@ -85,12 +86,7 @@ export function Row({
   // If there is a panel in view mode, we should hide the grid if the panel is not in the current group.
   const isGridDisplayed = !viewPanelItemId || hasViewPanel;
 
-  // TODO: handle it without useEffect
-  useEffect(() => {
-    if (hasViewPanel) {
-      setIsOpen(true);
-    }
-  }, [hasViewPanel]);
+  const isOpen = hasViewPanel || isGroupOpen;
 
   // Item layout is override if there is a panel in view mode
   const itemLayouts: PanelGroupItemLayout[] = useMemo(() => {
@@ -138,7 +134,7 @@ export function Row({
           collapse={
             groupDefinition.isCollapsed === undefined
               ? undefined
-              : { isOpen: isOpen, onToggleOpen: () => setIsOpen((current) => !current) }
+              : { isOpen: isOpen, onToggleOpen: () => setIsGroupOpen((current) => !current) }
           }
         />
       )}

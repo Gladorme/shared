@@ -185,9 +185,7 @@ export const EChart = memo(function EChart<T>({
     if (chartElement.current === undefined) return;
     chartElement.current.setOption(initialOption.current, true);
     onChartInitialized?.(chartElement.current);
-    if (_instance !== undefined) {
-      _instance.current = chartElement.current;
-    }
+    setExternalInstance(_instance, chartElement.current);
     return (): void => {
       if (chartElement.current === null) return;
       chartElement.current.dispose();
@@ -259,6 +257,12 @@ export const EChart = memo(function EChart<T>({
 
   return <Box ref={containerRef} sx={sx} style={style}></Box>;
 });
+
+function setExternalInstance(ref: React.MutableRefObject<ECharts | undefined> | undefined, instance: ECharts): void {
+  if (ref) {
+    ref.current = instance;
+  }
+}
 
 // Validate event config and bind custom events
 function bindEvents<T>(instance: ECharts, events?: OnEventsType<T>): void {

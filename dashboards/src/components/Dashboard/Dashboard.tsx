@@ -15,7 +15,7 @@ import type { BoxProps } from '@mui/material';
 import { Box } from '@mui/material';
 import { ErrorBoundary, ErrorAlert } from '@perses-dev/components';
 import type { ReactElement } from 'react';
-import { useRef } from 'react';
+import { useCallback, useState } from 'react';
 
 import { usePanelGroupIds } from '../../context';
 import type { EmptyDashboardProps } from '../EmptyDashboard';
@@ -39,13 +39,16 @@ const HEADER_HEIGHT = 165; // Approximate height of the header in dashboard view
  */
 export function Dashboard({ emptyDashboardProps, panelOptions, ...boxProps }: DashboardProps): ReactElement {
   const panelGroupIds = usePanelGroupIds();
-  const boxRef = useRef<HTMLDivElement>(null);
   const isEmpty = !panelGroupIds.length;
-  const dashboardTopPosition = boxRef.current?.getBoundingClientRect().top ?? HEADER_HEIGHT;
-  const panelFullHeight = window.innerHeight - dashboardTopPosition - window.scrollY;
+  const [panelFullHeight, setPanelFullHeight] = useState(() => window.innerHeight - HEADER_HEIGHT - window.scrollY);
+  const setDashboardElement = useCallback((element: HTMLDivElement | null): void => {
+    if (element) {
+      setPanelFullHeight(window.innerHeight - element.getBoundingClientRect().top - window.scrollY);
+    }
+  }, []);
 
   return (
-    <Box {...boxProps} sx={{ height: '100%' }} ref={boxRef}>
+    <Box {...boxProps} sx={{ height: '100%' }} ref={setDashboardElement}>
       <ErrorBoundary FallbackComponent={ErrorAlert}>
         {isEmpty && (
           <Box sx={{ height: '100%', display: 'flex', alignItems: 'center' }}>

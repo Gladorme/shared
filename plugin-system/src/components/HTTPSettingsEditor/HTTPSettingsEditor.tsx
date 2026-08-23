@@ -25,6 +25,9 @@ import { z } from 'zod';
 import { DatasourceTestConnectionButton } from '../DatasourceTestConnectionButton';
 import { OptionsEditorRadios } from '../OptionsEditorRadios';
 
+// React Hook Form exposes functions that React Compiler cannot safely memoize.
+/* oxlint-disable react/react-compiler */
+
 const urlSchema = z.string().url();
 
 type HeaderEntry = {
@@ -46,20 +49,20 @@ export interface HTTPSettingsEditor {
 }
 
 export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
+  'use no memo';
+
   const { value, onChange, isReadonly, initialSpecDirect, initialSpecProxy, testConnection } = props;
   const strDirect = 'Direct access';
   const strProxy = 'Proxy';
 
   // Initialize Proxy mode by default, if neither direct nor proxy mode is selected.
-  if (value.directUrl === undefined && value.proxy === undefined) {
-    Object.assign(value, initialSpecProxy);
-  }
+  const editorValue = value.directUrl === undefined && value.proxy === undefined ? initialSpecProxy : value;
 
   // Use local state to maintain an array of header entries during editing, instead of
   // manipulating a map directly which causes weird UX.
   const headersForm = useForm<HeaderFormValues>({
     defaultValues: {
-      headers: Object.entries(value.proxy?.spec.headers ?? {}).map(([name, headerValue]) => ({
+      headers: Object.entries(editorValue.proxy?.spec.headers ?? {}).map(([name, headerValue]) => ({
         name,
         value: headerValue as string,
       })),
@@ -100,7 +103,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
     });
 
     onChange(
-      produce(value, (draft) => {
+      produce(editorValue, (draft) => {
         if (draft.proxy !== undefined) {
           draft.proxy.spec.headers = Object.keys(headersObject).length > 0 ? headersObject : undefined;
         }
@@ -120,7 +123,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                 {...field}
                 fullWidth
                 label="URL"
-                value={value.proxy?.spec.url || ''}
+                value={editorValue.proxy?.spec.url || ''}
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
                 InputProps={{
@@ -130,7 +133,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                 onChange={(e) => {
                   field.onChange(e);
                   onChange(
-                    produce(value, (draft) => {
+                    produce(editorValue, (draft) => {
                       if (draft.proxy !== undefined) {
                         draft.proxy.spec.url = e.target.value;
                       }
@@ -145,7 +148,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
             <Box mb={2} display="flex" justifyContent="flex-end">
               <DatasourceTestConnectionButton
                 testConnection={testConnection}
-                disabled={!urlSchema.safeParse(value.proxy?.spec.url).success}
+                disabled={!urlSchema.safeParse(editorValue.proxy?.spec.url).success}
               />
             </Box>
           )}
@@ -153,8 +156,8 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
             Allowed endpoints
           </Typography>
           <Grid container spacing={2} mb={2}>
-            {value.proxy?.spec.allowedEndpoints && value.proxy?.spec.allowedEndpoints.length !== 0 ? (
-              value.proxy.spec.allowedEndpoints.map(({ endpointPattern, method }, i) => {
+            {editorValue.proxy?.spec.allowedEndpoints && editorValue.proxy?.spec.allowedEndpoints.length !== 0 ? (
+              editorValue.proxy.spec.allowedEndpoints.map(({ endpointPattern, method }, i) => {
                 return (
                   <Fragment key={i}>
                     <Grid item xs={8}>
@@ -175,7 +178,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                             onChange={(e) => {
                               field.onChange(e);
                               onChange(
-                                produce(value, (draft) => {
+                                produce(editorValue, (draft) => {
                                   if (draft.proxy !== undefined) {
                                     draft.proxy.spec.allowedEndpoints = draft.proxy.spec.allowedEndpoints?.map(
                                       (item, itemIndex) => {
@@ -216,7 +219,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                             onChange={(e) => {
                               field.onChange(e);
                               onChange(
-                                produce(value, (draft) => {
+                                produce(editorValue, (draft) => {
                                   if (draft.proxy !== undefined) {
                                     draft.proxy.spec.allowedEndpoints = draft.proxy.spec.allowedEndpoints?.map(
                                       (item, itemIndex) => {
@@ -255,7 +258,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                             onClick={(e) => {
                               field.onChange(e);
                               onChange(
-                                produce(value, (draft) => {
+                                produce(editorValue, (draft) => {
                                   if (draft.proxy !== undefined) {
                                     draft.proxy.spec.allowedEndpoints = [
                                       ...(draft.proxy.spec.allowedEndpoints?.filter((item, itemIndex) => {
@@ -286,7 +289,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                 // Add a new (empty) allowed endpoint to the list
                 onClick={() =>
                   onChange(
-                    produce(value, (draft) => {
+                    produce(editorValue, (draft) => {
                       if (draft.proxy !== undefined) {
                         draft.proxy.spec.allowedEndpoints = [
                           ...(draft.proxy.spec.allowedEndpoints ?? []),
@@ -399,7 +402,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                 {...field}
                 fullWidth
                 label="Secret"
-                value={value.proxy?.spec.secret || ''}
+                value={editorValue.proxy?.spec.secret || ''}
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
                 InputProps={{
@@ -409,7 +412,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                 onChange={(e) => {
                   field.onChange(e);
                   onChange(
-                    produce(value, (draft) => {
+                    produce(editorValue, (draft) => {
                       if (draft.proxy !== undefined) {
                         draft.proxy.spec.secret = e.target.value;
                       }
@@ -433,7 +436,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                 {...field}
                 fullWidth
                 label="URL"
-                value={value.directUrl || ''}
+                value={editorValue.directUrl || ''}
                 error={!!fieldState.error}
                 helperText={fieldState.error?.message}
                 InputProps={{
@@ -443,7 +446,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
                 onChange={(e) => {
                   field.onChange(e);
                   onChange(
-                    produce(value, (draft) => {
+                    produce(editorValue, (draft) => {
                       draft.directUrl = e.target.value;
                     }),
                   );
@@ -455,7 +458,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
             <Box my={2} display="flex" justifyContent="flex-end">
               <DatasourceTestConnectionButton
                 testConnection={testConnection}
-                disabled={!urlSchema.safeParse(value.directUrl).success}
+                disabled={!urlSchema.safeParse(editorValue.directUrl).success}
               />
             </Box>
           )}
@@ -470,7 +473,7 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
   const proxyModeId = tabs.findIndex((tab) => tab.label === strProxy);
 
   // Set defaultTab to the mode that this datasource is currently relying on.
-  const defaultTab = value.proxy ? proxyModeId : directModeId;
+  const defaultTab = editorValue.proxy ? proxyModeId : directModeId;
 
   // For better user experience, save previous states in mind for both mode.
   // This avoids losing everything when the user changes their mind back.
@@ -480,18 +483,18 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
   // When changing mode, remove previous mode's config + append default values for the new mode.
   const handleModeChange = (v: number): void => {
     if (tabs[v]?.label === strDirect) {
-      setPreviousSpecProxy(value);
+      setPreviousSpecProxy(editorValue);
 
       // Copy all settings (for example, scrapeInterval), except 'proxy'
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { proxy, ...newValue } = value;
+      const { proxy, ...newValue } = editorValue;
       onChange({ ...newValue, directUrl: previousSpecDirect.directUrl });
     } else if (tabs[v]?.label === strProxy) {
-      setPreviousSpecDirect(value);
+      setPreviousSpecDirect(editorValue);
 
       // Copy all settings (for example, scrapeInterval), except 'directUrl'
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { directUrl, ...newValue } = value;
+      const { directUrl, ...newValue } = editorValue;
       onChange({ ...newValue, proxy: previousSpecProxy.proxy });
     }
   };

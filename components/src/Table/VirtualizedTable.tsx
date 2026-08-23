@@ -33,6 +33,9 @@ import type { TableToolbarProps } from './TableToolbar';
 import { TableToolbar } from './TableToolbar';
 import { VirtualizedTableContainer } from './VirtualizedTableContainer';
 
+// TanStack Table mutates sizing data behind stable object identities, so its manual invalidation cannot be compiled.
+/* oxlint-disable react/react-compiler */
+
 type TableCellPosition = {
   row: number;
   column: number;

@@ -69,6 +69,7 @@ export type UsePluginEditorProps = Pick<PluginEditorProps, 'pluginTypes' | 'valu
  * kind back.
  */
 export function usePluginEditor(props: UsePluginEditorProps): {
+  selection: PluginEditorSelection;
   pendingSelection?: PluginEditorSelection;
   isLoading: boolean;
   error: Error | null;
@@ -83,24 +84,6 @@ export function usePluginEditor(props: UsePluginEditorProps): {
   const onChange = useEvent(props.onChange);
   const onHideQuery = useEvent(onHideQueryEditorChange);
 
-  // The previous spec state for PluginType and kind and a helper function for remembering current values
-  const prevSpecState = useRef<PreviousSpecState>({
-    [value.selection.type]: { [value.selection.kind]: value.spec },
-  });
-  const rememberCurrentSpecState = useEvent(() => {
-    let byPluginType = prevSpecState.current[value.selection.type];
-    if (byPluginType === undefined) {
-      byPluginType = {};
-      prevSpecState.current[value.selection.type] = byPluginType;
-    }
-    byPluginType[value.selection.kind] = value.spec;
-  });
-
-  // The previous hide query state for each panel kind
-  const hideQueryState = useRef<HideQueryEditorState>({
-    [value.selection.kind]: false,
-  });
-
   const { defaultPluginKinds } = usePluginRegistry();
   const defaultPluginType = pluginTypes[0];
   const defaultPluginKind = defaultPluginType ? defaultPluginKinds?.[defaultPluginType] : undefined;
@@ -111,24 +94,46 @@ export function usePluginEditor(props: UsePluginEditorProps): {
           kind: defaultPluginKind,
         }
       : undefined;
-  const initPendingSelection = !value.selection && defaultPluginSelection ? defaultPluginSelection : undefined;
+  const currentSelection =
+    value.selection.kind === '' && defaultPluginSelection ? defaultPluginSelection : value.selection;
 
+  // The previous spec state for PluginType and kind and a helper function for remembering current values
+  const prevSpecState = useRef<PreviousSpecState>({
+    [currentSelection.type]: { [currentSelection.kind]: value.spec },
+  });
+  const rememberCurrentSpecState = useEvent(() => {
+    let byPluginType = prevSpecState.current[currentSelection.type];
+    if (byPluginType === undefined) {
+      byPluginType = {};
+      prevSpecState.current[currentSelection.type] = byPluginType;
+    }
+    byPluginType[currentSelection.kind] = value.spec;
+  });
+
+  // The previous hide query state for each panel kind
+  const hideQueryState = useRef<HideQueryEditorState>({
+    [currentSelection.kind]: false,
+  });
   // When kind changes and we haven't loaded that plugin before, we will need to enter a "pending" state so that we
   // can generate proper initial spec values that match the new plugin kind
-  const [pendingSelection, setPendingSelection] = useState<PluginEditorSelection | undefined>(initPendingSelection);
+  const [pendingSelection, setPendingSelection] = useState<PluginEditorSelection | undefined>();
+  const activePendingSelection =
+    pendingSelection &&
+    value.selection.kind !== '' &&
+    pendingSelection.type === currentSelection.type &&
+    pendingSelection.kind === currentSelection.kind
+      ? undefined
+      : pendingSelection;
 
-  // Take a default kind in case user write explicitly an empty kind in the initial value
-  useEffect(() => {
-    if (value.selection.kind === '') {
-      value.selection.kind = defaultPluginKind || '';
-    }
-  }, [value.selection, defaultPluginKind]);
-
-  const { data: plugin, isFetching, error } = usePlugin(pendingSelection?.type, pendingSelection?.kind || '');
+  const {
+    data: plugin,
+    isFetching,
+    error,
+  } = usePlugin(activePendingSelection?.type, activePendingSelection?.kind || '');
 
   useEffect(() => {
     // Nothing to do if no new plugin kind is pending
-    if (!pendingSelection) return;
+    if (!activePendingSelection) return;
 
     // Can't get spec value until we have a plugin
     if (plugin === undefined || isFetching) return;
@@ -136,27 +141,25 @@ export function usePluginEditor(props: UsePluginEditorProps): {
     // Fire an onChange to change to the pending kind with initial values from the plugin
     rememberCurrentSpecState();
     onChange({
-      selection: pendingSelection,
+      selection: activePendingSelection,
       spec: plugin.createInitialOptions ? plugin.createInitialOptions() : {},
     });
 
-    if (pendingSelection.type === 'Panel') {
+    if (activePendingSelection.type === 'Panel') {
       const panelPlugin = plugin as PanelPlugin;
-      hideQueryState.current[pendingSelection.kind] = !!panelPlugin.hideQueryEditor;
-      if (!!panelPlugin.hideQueryEditor !== hideQueryState.current[value.selection.kind]) {
+      hideQueryState.current[activePendingSelection.kind] = !!panelPlugin.hideQueryEditor;
+      if (!!panelPlugin.hideQueryEditor !== hideQueryState.current[currentSelection.kind]) {
         onHideQuery(!!panelPlugin.hideQueryEditor);
       }
     }
-    setPendingSelection(undefined);
   }, [
-    pendingSelection,
+    activePendingSelection,
     plugin,
     isFetching,
     rememberCurrentSpecState,
     onChange,
     onHideQuery,
-    hideQueryState,
-    value.selection,
+    currentSelection.kind,
   ]);
 
   /**
@@ -180,7 +183,7 @@ export function usePluginEditor(props: UsePluginEditorProps): {
     if (
       nextSelection.type === 'Panel' &&
       hideQueryState.current[nextSelection.kind] !== undefined &&
-      hideQueryState.current[value.selection.kind] !== hideQueryState.current[nextSelection.kind]
+      hideQueryState.current[currentSelection.kind] !== hideQueryState.current[nextSelection.kind]
     ) {
       onHideQuery(!!hideQueryState.current[nextSelection.kind]);
     }
@@ -198,8 +201,9 @@ export function usePluginEditor(props: UsePluginEditorProps): {
   };
 
   return {
-    pendingSelection,
-    isLoading: isFetching,
+    selection: currentSelection,
+    pendingSelection: activePendingSelection,
+    isLoading: activePendingSelection ? isFetching : false,
     error,
     onSelectionChange,
     onSpecChange,

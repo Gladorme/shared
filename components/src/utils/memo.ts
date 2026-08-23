@@ -15,6 +15,9 @@ import isEqual from 'lodash/isEqual';
 import type { DependencyList } from 'react';
 import { useRef } from 'react';
 
+// These hooks intentionally provide stronger memoization guarantees than useMemo by keeping a render-time ref cache.
+/* oxlint-disable react/react-compiler */
+
 type MemoRef<T> = {
   value: T;
   deps: DependencyList;
@@ -26,6 +29,8 @@ type MemoRef<T> = {
  * useMemo does not offer this guarantee, it's only a performance optimization).
  */
 export function useMemoized<T>(factory: () => T, deps: DependencyList): T {
+  'use no memo';
+
   const ref = useRef<MemoRef<T>>();
 
   let areEqual = true;
@@ -48,6 +53,8 @@ export function useMemoized<T>(factory: () => T, deps: DependencyList): T {
  * isEqual on the dependency list.
  */
 export function useDeepMemo<T>(factory: () => T, deps: DependencyList): T {
+  'use no memo';
+
   const ref = useRef<MemoRef<T>>();
   if (ref.current === undefined || isEqual(deps, ref.current.deps) === false) {
     ref.current = { value: factory(), deps };

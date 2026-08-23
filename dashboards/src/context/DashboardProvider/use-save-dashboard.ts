@@ -13,7 +13,7 @@
 
 import { useTimeRange, useTimeZoneParams, useDisableAutoRefreshSetting } from '@perses-dev/plugin-system';
 import { isRelativeTimeRange } from '@perses-dev/spec';
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import { useDashboard } from '../useDashboard';
 import { useVariableDefinitionActions } from '../VariableProvider/VariableProvider';
@@ -54,7 +54,7 @@ export function useSaveDashboard(onSave?: OnSaveDashboard): SaveDashboardResult 
   const { timeZone } = useTimeZoneParams();
   const { getSavedVariablesStatus, setVariableDefaultValues } = useVariableDefinitionActions();
   const { openSaveChangesConfirmationDialog, closeSaveChangesConfirmationDialog } = useSaveChangesConfirmationDialog();
-  const performSave = useCallback(async (): Promise<void> => {
+  const performSave = async (): Promise<void> => {
     if (!onSave) {
       setEditMode(false);
       return;
@@ -68,9 +68,9 @@ export function useSaveDashboard(onSave?: OnSaveDashboard): SaveDashboardResult 
     } finally {
       setSaving(false);
     }
-  }, [closeSaveChangesConfirmationDialog, dashboard, onSave, setEditMode]);
+  };
 
-  const saveDashboard = useCallback((): void => {
+  const saveDashboard = (): void => {
     if (isSaving) {
       return;
     }
@@ -114,20 +114,7 @@ export function useSaveDashboard(onSave?: OnSaveDashboard): SaveDashboardResult 
     } else {
       performSave();
     }
-  }, [
-    isSaving,
-    timeRange,
-    dashboard,
-    refreshInterval,
-    disableAutoRefresh,
-    timeZone,
-    getSavedVariablesStatus,
-    openSaveChangesConfirmationDialog,
-    setVariableDefaultValues,
-    setDashboard,
-    performSave,
-    closeSaveChangesConfirmationDialog,
-  ]);
+  };
 
   return { saveDashboard, isSaving };
 }

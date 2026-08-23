@@ -59,7 +59,7 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
   pinnedPos,
 }: TimeChartTooltipProps) {
   const [showAllSeries, setShowAllSeries] = useState(false);
-  const transform = useRef<string | undefined>();
+  const [chart, setChart] = useState<EChartsInstance>();
   const tooltipElementRef = useRef<HTMLDivElement | null>(null);
 
   const mousePos = useMousePosition();
@@ -86,22 +86,25 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
     const rect = node.getBoundingClientRect();
     if (rect.height === 0 || rect.width === 0) return;
     const nextTransform = assembleTransform(mousePos, pinnedPos, rect.height, rect.width, containerElement);
-    if (nextTransform && nextTransform !== transform.current) {
-      transform.current = nextTransform;
+    if (nextTransform && nextTransform !== node.style.transform) {
       node.style.transform = nextTransform;
     }
+  });
+
+  useLayoutEffect(() => {
+    if (chartRef.current === chart) return;
+    const animationFrame = requestAnimationFrame(() => setChart(chartRef.current));
+    return (): void => cancelAnimationFrame(animationFrame);
   });
 
   if (mousePos === null || mousePos.target === null || data === null) return null;
 
   if (pinnedPos === null && (mousePos.target as HTMLElement).tagName !== 'CANVAS') return null;
 
-  const chart = chartRef.current;
-
   // Cap height to container so the tooltip is not cut off.
   const maxHeight = containerElement ? containerElement.getBoundingClientRect().height : undefined;
 
-  transform.current = assembleTransform(mousePos, pinnedPos, height ?? 0, width ?? 0, containerElement);
+  const transform = assembleTransform(mousePos, pinnedPos, height ?? 0, width ?? 0, containerElement);
 
   const nearbySeries = getNearbySeriesData({
     mousePos,
@@ -125,7 +128,7 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
         ref={setTooltipRef}
         sx={(theme) => getTooltipStyles(theme, pinnedPos, maxHeight)}
         style={{
-          transform: transform.current,
+          transform,
         }}
       >
         <Stack spacing={0.5}>

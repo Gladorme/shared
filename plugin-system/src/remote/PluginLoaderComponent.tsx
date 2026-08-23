@@ -25,8 +25,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
+import { useEvent } from '../utils';
 import type { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
 import { usePluginRuntime } from './PluginRuntime';
 
@@ -34,6 +35,12 @@ interface PluginLoaderProps<P> {
   plugin: PersesPlugin;
   props?: P;
   field?: string;
+}
+
+interface PluginLoadState {
+  name: string;
+  pluginModule: RemotePluginModule | null;
+  error: Error | null;
 }
 
 function PluginContainer<P>({
@@ -48,32 +55,39 @@ function PluginContainer<P>({
 
 export function PluginLoaderComponent<P>({ plugin, props, field }: PluginLoaderProps<P>): JSX.Element | null {
   const { loadPlugin } = usePluginRuntime({ plugin });
-  const [pluginModule, setPluginModule] = useState<RemotePluginModule | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-
+  const loadPluginEvent = useEvent(loadPlugin);
   const name = `${plugin.moduleName}-${plugin.name}`;
-  const previousPluginName = useRef<string>(name);
+  const [loadState, setLoadState] = useState<PluginLoadState>({ name, pluginModule: null, error: null });
 
   useEffect(() => {
-    previousPluginName.current = name;
-    setError(null);
+    let cancelled = false;
 
-    loadPlugin()
+    loadPluginEvent()
       .then((module) => {
-        setPluginModule(module);
+        if (!cancelled) {
+          setLoadState({ name, pluginModule: module, error: null });
+        }
       })
       .catch((error) => {
-        setPluginModule(null);
+        if (cancelled) return;
         console.error(
           `PluginLoaderComponent: Error loading plugin ${plugin.name} from module ${plugin.moduleName}:`,
           error,
         );
-        setError(
-          new Error(`PluginLoaderComponent: Error loading plugin ${plugin.name} from module ${plugin.moduleName}`),
-        );
+        setLoadState({
+          name,
+          pluginModule: null,
+          error: new Error(
+            `PluginLoaderComponent: Error loading plugin ${plugin.name} from module ${plugin.moduleName}`,
+          ),
+        });
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name]);
+    return (): void => {
+      cancelled = true;
+    };
+  }, [loadPluginEvent, name, plugin.moduleName, plugin.name]);
+
+  const { error, pluginModule } = loadState.name === name ? loadState : { error: null, pluginModule: null };
 
   if (error) {
     throw error;
@@ -95,11 +109,6 @@ export function PluginLoaderComponent<P>({ plugin, props, field }: PluginLoaderP
 
   if (typeof pluginFunction !== 'function') {
     throw new Error(`PluginLoaderComponent: Plugin ${plugin.name} export is not a function`);
-  }
-
-  // make sure to re mount the plugin when changes, to avoid mismatch in hooks ordering when re rendering
-  if (previousPluginName.current !== name) {
-    return null;
   }
 
   return (

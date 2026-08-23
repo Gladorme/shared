@@ -48,6 +48,27 @@ function variableOptionToVariableValue(options: VariableOption | VariableOption[
   return options.value;
 }
 
+const EMPTY_VARIABLE_OPTIONS: VariableOption[] = [];
+
+function normalizeVariableValue(value: VariableValue | undefined, allowMultiple: boolean): VariableValue | undefined {
+  if (!allowMultiple || Array.isArray(value)) return value;
+  if (typeof value === 'string') return [value];
+  return [];
+}
+
+function getEffectiveVariableValue(
+  value: VariableValue | undefined,
+  firstOptionValue: string | undefined,
+  valueIsInOptions: boolean,
+  allowMultiple: boolean,
+): VariableValue | undefined {
+  if (firstOptionValue && (!valueIsInOptions || !value || value.length === 0)) {
+    if (allowMultiple) return [firstOptionValue];
+    return firstOptionValue;
+  }
+  return value;
+}
+
 export function Variable({ name, source }: VariableProps): ReactElement {
   const ctx = useVariableDefinitionAndState(name, source);
   const kind = ctx.definition?.kind;
@@ -78,15 +99,10 @@ export function useListVariableState(
   const allowMultiple = spec?.allowMultiple === true;
   const allowAllValue = spec?.allowAllValue === true;
   const sort = spec?.sort;
-  const loading = useMemo(() => variablesOptionsQuery.isFetching ?? false, [variablesOptionsQuery.isFetching]);
-  const options = useMemo(() => variablesOptionsQuery.data ?? [], [variablesOptionsQuery.data]);
-
-  let value = state?.value;
-
+  const loading = variablesOptionsQuery.isFetching ?? false;
+  const options = variablesOptionsQuery.data ?? EMPTY_VARIABLE_OPTIONS;
   // Make sure value is an array if allowMultiple is true
-  if (allowMultiple && !Array.isArray(value)) {
-    value = typeof value === 'string' ? [value] : [];
-  }
+  const normalizedValue = normalizeVariableValue(state?.value, allowMultiple);
 
   // Sort the provided list of options according to the method defined
   const sortedOptions = useMemo((): VariableOption[] => {
@@ -107,47 +123,23 @@ export function useListVariableState(
     return computedOptions;
   }, [allowAllValue, sortedOptions]);
 
-  const valueIsInOptions = useMemo(
-    () =>
-      Boolean(
-        viewOptions.find((v) => {
-          if (allowMultiple) {
-            return (value as string[]).includes(v.value);
-          }
-          return value === v.value;
-        }),
-      ),
-    [viewOptions, value, allowMultiple],
+  const valueIsInOptions = Boolean(
+    viewOptions.find((option) => {
+      if (allowMultiple) {
+        return (normalizedValue as string[]).includes(option.value);
+      }
+      return normalizedValue === option.value;
+    }),
   );
 
-  value = useMemo(() => {
-    const firstOptionValue = viewOptions?.[allowAllValue ? 1 : 0]?.value;
+  const firstOptionValue = viewOptions[allowAllValue ? 1 : 0]?.value;
+  // If there is no value but there are options, or the value is not in options, use the first option.
+  const value = getEffectiveVariableValue(normalizedValue, firstOptionValue, valueIsInOptions, allowMultiple);
 
-    // If there is no value but there are options, or the value is not in options, we set the value to the first option.
-    if (firstOptionValue) {
-      if (!valueIsInOptions || !value || value.length === 0) {
-        return allowMultiple ? [firstOptionValue] : firstOptionValue;
-      }
-    }
-
-    return value;
-  }, [viewOptions, value, valueIsInOptions, allowMultiple, allowAllValue]);
-
-  const selectedOptions = useMemo(() => {
-    // In the case Autocomplete.multiple equals false, Autocomplete.value expects a single object, not
-    // an array, hence this conditional
-    if (Array.isArray(value)) {
-      return viewOptions.filter((o) => {
-        return value?.includes(o.value);
-      });
-    } else {
-      return (
-        viewOptions.find((o) => {
-          return value === o.value;
-        }) ?? { value: '', label: '' }
-      );
-    }
-  }, [value, viewOptions]);
+  // In the case Autocomplete.multiple equals false, Autocomplete.value expects a single object, not an array.
+  const selectedOptions = Array.isArray(value)
+    ? viewOptions.filter((option) => value.includes(option.value))
+    : (viewOptions.find((option) => value === option.value) ?? { value: '', label: '' });
 
   return { value, loading, options, selectedOptions, viewOptions };
 }
@@ -169,6 +161,8 @@ const getWidthPx = (inputValue: string, kind: 'list' | 'text'): number => {
   }
 };
 
+const filterVariableOptions = createFilterOptions<VariableOption>({});
+
 function ListVariable({ name, source }: VariableProps): ReactElement {
   const ctx = useVariableDefinitionAndState(name, source);
   const definition = ctx.definition as ListVariableDefinition;
@@ -187,11 +181,9 @@ function ListVariable({ name, source }: VariableProps): ReactElement {
   const allowMultiple = definition?.spec.allowMultiple === true;
   const allowAllValue = definition?.spec.allowAllValue === true;
 
-  const filterOptions = createFilterOptions<VariableOption>({});
-
   const filteredOptions = useMemo(
-    () => filterOptions(viewOptions, { inputValue, getOptionLabel: (o) => o.label }),
-    [inputValue, viewOptions, filterOptions],
+    () => filterVariableOptions(viewOptions, { inputValue, getOptionLabel: (option) => option.label }),
+    [inputValue, viewOptions],
   );
 
   // Update value when changed
@@ -252,7 +244,7 @@ function ListVariable({ name, source }: VariableProps): ReactElement {
             margin: '1px 2px', // Default margin of 2px (Y axis) make min height of the autocomplete 40px
           },
         }}
-        filterOptions={filterOptions}
+        filterOptions={filterVariableOptions}
         options={viewOptions}
         value={selectedOptions}
         onChange={(_, value) => {
@@ -319,7 +311,6 @@ function ListVariable({ name, source }: VariableProps): ReactElement {
   }, [
     allowAllValue,
     allowMultiple,
-    filterOptions,
     inputValue,
     inputWidth,
     loading,
@@ -344,21 +335,18 @@ function TextVariable({ name, source }: VariableProps): ReactElement {
   const ctx = useVariableDefinitionAndState(name, source);
   const state = ctx.state;
   const definition = ctx.definition as TextVariableDefinition;
-  const [tempValue, setTempValue] = useState(state?.value ?? '');
-  const [inputWidth, setInputWidth] = useState(getWidthPx(tempValue as string, 'text'));
+  const sourceValue = (state?.value ?? '') as string;
+  const [draft, setDraft] = useState(() => ({ sourceValue, value: sourceValue }));
   const { setVariableValue } = useVariableDefinitionActions();
-
-  useEffect(() => {
-    setTempValue(state?.value ?? '');
-  }, [state?.value]);
+  const tempValue = draft.sourceValue === sourceValue ? draft.value : sourceValue;
+  const inputWidth = getWidthPx(tempValue, 'text');
 
   return (
     <TextField
-      title={tempValue as string}
+      title={tempValue}
       value={tempValue}
       onChange={(e) => {
-        setTempValue(e.target.value);
-        setInputWidth(getWidthPx(e.target.value, 'text'));
+        setDraft({ sourceValue, value: e.target.value });
       }}
       onBlur={() => setVariableValue(name, tempValue, source)}
       placeholder={name}

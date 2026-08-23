@@ -28,7 +28,7 @@
 import { Drawer, ErrorAlert, ErrorBoundary } from '@perses-dev/components';
 import type { PanelEditorValues } from '@perses-dev/plugin-system';
 import type { ReactElement } from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import { usePanelEditor, usePanelKey } from '../../context';
 import { FixedValueVariableProvider } from '../Variables';
@@ -75,29 +75,27 @@ export const PanelDrawer = (): ReactElement => {
     /* do nothing */
   };
 
-  const drawer = useMemo(() => {
-    return (
-      <Drawer
-        isOpen={isOpen}
-        onClose={handleClickOut}
-        slotProps={{ transition: { onExited: handleExited } }}
-        data-testid="panel-editor"
-      >
-        {/* When the drawer is opened, we should have panel editor state (this also ensures the form state gets reset between opens) */}
-        {panelEditor && (
-          <ErrorBoundary FallbackComponent={ErrorAlert}>
-            <PanelEditorForm
-              panelKey={panelKey}
-              initialAction={panelEditor.mode}
-              initialValues={panelEditor.initialValues}
-              onSave={handleSave}
-              onClose={handleClose}
-            />
-          </ErrorBoundary>
-        )}
-      </Drawer>
-    );
-  }, [handleExited, handleSave, isOpen, panelEditor, panelKey]);
+  const drawer = (
+    <Drawer
+      isOpen={isOpen}
+      onClose={handleClickOut}
+      slotProps={{ transition: { onExited: handleExited } }}
+      data-testid="panel-editor"
+    >
+      {/* When the drawer is opened, we should have panel editor state (this also ensures the form state gets reset between opens) */}
+      {panelEditor && (
+        <ErrorBoundary FallbackComponent={ErrorAlert}>
+          <PanelEditorForm
+            panelKey={panelKey}
+            initialAction={panelEditor.mode}
+            initialValues={panelEditor.initialValues}
+            onSave={handleSave}
+            onClose={handleClose}
+          />
+        </ErrorBoundary>
+      )}
+    </Drawer>
+  );
 
   // If the panel editor is using a repeat variable, we need to wrap the drawer in a VariableContext.Provider
   if (panelEditor?.panelGroupItemId?.repeatVariable?.group) {

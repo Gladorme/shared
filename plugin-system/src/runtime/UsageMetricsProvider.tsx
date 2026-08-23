@@ -15,7 +15,7 @@ import type { FetchFn } from '@perses-dev/client';
 import { useFetch } from '@perses-dev/client';
 import type { QueryDefinition } from '@perses-dev/spec';
 import type { ReactElement, ReactNode } from 'react';
-import { createContext, useContext } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 type QueryState = 'pending' | 'success' | 'error';
 
@@ -52,31 +52,33 @@ export const useUsageMetrics = (): UseUsageMetricsResults => {
 
   return {
     markQuery: (definition: QueryDefinition, newState: QueryState): void => {
-      if (ctx === undefined) {
-        return;
-      }
-
-      const definitionKey = JSON.stringify(definition);
-      if (ctx.pendingQueries.has(definitionKey) && newState === 'pending') {
-        // Never allow transitions back to pending, to avoid re-sending stats on a re-render.
-        return;
-      }
-
-      if (ctx.pendingQueries.get(definitionKey) !== newState) {
-        ctx.pendingQueries.set(definitionKey, newState);
-        if (newState === 'error') {
-          ctx.renderErrorCount += 1;
-        }
-
-        const allDone = [...ctx.pendingQueries.values()].every((p) => p !== 'pending');
-        if (ctx.renderDurationMs === 0 && allDone) {
-          ctx.renderDurationMs = Date.now() - ctx.startRenderTime;
-          submitMetrics(ctx);
-        }
-      }
+      updateUsageMetrics(ctx, definition, newState);
     },
   };
 };
+
+function updateUsageMetrics(stats: UsageMetrics | undefined, definition: QueryDefinition, newState: QueryState): void {
+  if (stats === undefined) return;
+
+  const definitionKey = JSON.stringify(definition);
+  if (stats.pendingQueries.has(definitionKey) && newState === 'pending') {
+    // Never allow transitions back to pending, to avoid re-sending stats on a re-render.
+    return;
+  }
+
+  if (stats.pendingQueries.get(definitionKey) !== newState) {
+    stats.pendingQueries.set(definitionKey, newState);
+    if (newState === 'error') {
+      stats.renderErrorCount += 1;
+    }
+
+    const allDone = [...stats.pendingQueries.values()].every((pendingState) => pendingState !== 'pending');
+    if (stats.renderDurationMs === 0 && allDone) {
+      stats.renderDurationMs = Date.now() - stats.startRenderTime;
+      submitMetrics(stats);
+    }
+  }
+}
 
 const submitMetrics = async (stats: UsageMetrics): Promise<void> => {
   await stats.fetchFn(`${stats.apiPrefix ?? ''}/api/v1/view`, {
@@ -96,16 +98,16 @@ const submitMetrics = async (stats: UsageMetrics): Promise<void> => {
 export const UsageMetricsProvider = ({ apiPrefix, project, dashboard, children }: UsageMetricsProps): ReactElement => {
   const { fetch } = useFetch();
 
-  const ctx: UsageMetrics = {
-    project: project,
-    dashboard: dashboard,
+  const [ctx] = useState<UsageMetrics>(() => ({
+    project,
+    dashboard,
     renderErrorCount: 0,
     startRenderTime: Date.now(),
     renderDurationMs: 0,
     pendingQueries: new Map(),
     apiPrefix,
     fetchFn: fetch,
-  };
+  }));
 
   return <UsageMetricsContext.Provider value={ctx}>{children}</UsageMetricsContext.Provider>;
 };

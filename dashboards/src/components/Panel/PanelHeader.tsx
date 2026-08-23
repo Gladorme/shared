@@ -18,7 +18,7 @@ import type { ItemAction, QueryData } from '@perses-dev/plugin-system';
 import { useAllVariableValues, useReplaceVariablesInString } from '@perses-dev/plugin-system';
 import type { Link } from '@perses-dev/spec';
 import type { ReactElement, ReactNode } from 'react';
-import { useRef } from 'react';
+import { useCallback, useState } from 'react';
 
 import { HEADER_ACTIONS_CONTAINER_NAME } from '../../constants/styles';
 import type { PanelOptions } from './Panel';
@@ -69,11 +69,14 @@ export function PanelHeader({
   const variableState = useAllVariableValues();
   const title = rawTitle ? replaceVariablesForDisplay(rawTitle, variableState) : undefined;
   const description = useReplaceVariablesInString(rawDescription);
-
-  const textRef = useRef<HTMLDivElement>(null);
-
-  const isEllipsisActive =
-    textRef.current && dimension?.width ? textRef.current.scrollWidth > textRef.current.clientWidth : false;
+  const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+  const setTextElement = useCallback(
+    (element: HTMLDivElement | null): void => {
+      if (!element) return;
+      setIsEllipsisActive(Boolean(title && dimension?.width && element.scrollWidth > element.clientWidth));
+    },
+    [dimension?.width, title],
+  );
 
   const { actionButtons, confirmDialog } = useSelectionItemActions({
     actions: itemActionsListConfig,
@@ -96,7 +99,7 @@ export function PanelHeader({
                 <Typography
                   id={titleElementId}
                   variant="subtitle1"
-                  ref={textRef}
+                  ref={setTextElement}
                   sx={{
                     minWidth: 0,
                     flexShrink: 1,

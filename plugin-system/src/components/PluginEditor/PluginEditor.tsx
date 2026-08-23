@@ -46,7 +46,7 @@ export function PluginEditor(props: PluginEditorProps): ReactElement {
     ...others
   } = props;
 
-  const { pendingSelection, isLoading, error, onSelectionChange, onSpecChange } = usePluginEditor(props);
+  const { selection, pendingSelection, isLoading, error, onSelectionChange, onSpecChange } = usePluginEditor(props);
 
   const handleSpecChange = useCallback(
     (nextSpec: UnknownSpec) => {
@@ -74,7 +74,7 @@ export function PluginEditor(props: PluginEditorProps): ReactElement {
           label={pluginKindLabel}
           pluginTypes={pluginTypes}
           disabled={isLoading}
-          value={pendingSelection ? pendingSelection : value.selection}
+          value={pendingSelection ?? selection}
           slotProps={{ input: { readOnly: isReadonly } }}
           error={!!error}
           helperText={error?.message}
@@ -97,7 +97,7 @@ export function PluginEditor(props: PluginEditorProps): ReactElement {
 
       <ErrorBoundary FallbackComponent={ErrorAlert}>
         <PluginSpecEditor
-          pluginSelection={value.selection}
+          pluginSelection={selection}
           value={value.spec}
           onChange={handleSpecChange}
           isReadonly={isReadonly}
