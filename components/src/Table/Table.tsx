@@ -98,9 +98,13 @@ export function Table<TableData>({
     setExpanded,
   );
 
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    hiddenColumns?.reduce((acc, columnId) => ({ ...acc, [columnId]: false }), {}) ?? {},
-  );
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(() => {
+    const initialVisibility: VisibilityState = {};
+    for (const columnId of hiddenColumns ?? []) {
+      initialVisibility[columnId] = false;
+    }
+    return initialVisibility;
+  });
 
   const handleRowSelectionChange: OnChangeFn<RowSelectionState> = (rowSelectionUpdater) => {
     const newRowSelection =

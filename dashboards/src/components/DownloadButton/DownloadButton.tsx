@@ -15,7 +15,7 @@ import { ClickAwayListener, Menu, MenuItem, MenuList } from '@mui/material';
 import { ToolbarIconButton } from '@perses-dev/components';
 import DownloadIcon from 'mdi-material-ui/DownloadOutline';
 import type { ReactElement } from 'react';
-import React, { useRef } from 'react';
+import React from 'react';
 
 import { useDashboard } from '../../context';
 import { serializeDashboard } from './serializeDashboard';
@@ -23,7 +23,6 @@ import { serializeDashboard } from './serializeDashboard';
 // Button that enables downloading the dashboard as a JSON file
 export function DownloadButton(): ReactElement {
   const { dashboard } = useDashboard();
-  const hiddenLinkRef = useRef<HTMLAnchorElement>(null);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>): void => {
@@ -34,13 +33,13 @@ export function DownloadButton(): ReactElement {
 
     const { contentType, content } = serializeDashboard(dashboard, format, shape);
 
-    if (!hiddenLinkRef || !hiddenLinkRef.current) return;
     // Create blob URL
     const hiddenLinkUrl = URL.createObjectURL(new Blob([content], { type: contentType }));
     // Simulate click
-    hiddenLinkRef.current.download = `${dashboard.metadata.name}${shape ? `-${shape}` : ''}.${format}`;
-    hiddenLinkRef.current.href = hiddenLinkUrl;
-    hiddenLinkRef.current.click();
+    const hiddenLink = document.createElement('a');
+    hiddenLink.download = `${dashboard.metadata.name}${shape ? `-${shape}` : ''}.${format}`;
+    hiddenLink.href = hiddenLinkUrl;
+    hiddenLink.click();
     // Remove blob URL (for memory management)
     URL.revokeObjectURL(hiddenLinkUrl);
   };
@@ -78,11 +77,6 @@ export function DownloadButton(): ReactElement {
           </ClickAwayListener>
         </div>
       </Menu>
-
-      {/* Hidden link to download the dashboard as a JSON or YAML file */}
-      {/* eslint-disable jsx-a11y/anchor-has-content */}
-      {/* eslint-disable jsx-a11y/anchor-is-valid  */}
-      <a ref={hiddenLinkRef} style={{ display: 'none' }} />
     </>
   );
 }

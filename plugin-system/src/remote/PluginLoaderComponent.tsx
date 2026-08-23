@@ -25,6 +25,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import type { ReactElement } from 'react';
 import { useEffect, useState } from 'react';
 
 import { useEvent } from '../utils';
@@ -47,13 +48,13 @@ function PluginContainer<P>({
   pluginFn,
   props,
 }: {
-  pluginFn: (props: P | undefined) => JSX.Element;
+  pluginFn: (props: P | undefined) => ReactElement;
   props: P | undefined;
-}): JSX.Element {
+}): ReactElement {
   return pluginFn(props);
 }
 
-export function PluginLoaderComponent<P>({ plugin, props, field }: PluginLoaderProps<P>): JSX.Element | null {
+export function PluginLoaderComponent<P>({ plugin, props, field }: PluginLoaderProps<P>): ReactElement | null {
   const { loadPlugin } = usePluginRuntime({ plugin });
   const loadPluginEvent = useEvent(loadPlugin);
   const name = `${plugin.moduleName}-${plugin.name}`;
@@ -112,6 +113,6 @@ export function PluginLoaderComponent<P>({ plugin, props, field }: PluginLoaderP
   }
 
   return (
-    <PluginContainer key={name} pluginFn={pluginFunction as (props: P | undefined) => JSX.Element} props={props} />
+    <PluginContainer key={name} pluginFn={pluginFunction as (props: P | undefined) => ReactElement} props={props} />
   );
 }

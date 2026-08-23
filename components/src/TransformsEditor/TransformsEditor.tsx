@@ -26,7 +26,7 @@ export interface TransformsEditorProps extends Omit<StackProps, 'onChange'> {
 }
 
 export function TransformsEditor({ value, onChange, ...props }: TransformsEditorProps): ReactElement {
-  const [transformsCollapsed, setTransformsCollapsed] = useState(value.map(() => true));
+  const [transformsCollapsed, setTransformsCollapsed] = useState(() => value.map(() => true));
 
   function handleTransformChange(index: number, transform: Transform): void {
     const updatedTransforms = [...value];
@@ -39,27 +39,20 @@ export function TransformsEditor({ value, onChange, ...props }: TransformsEditor
     // @ts-expect-error: Unknown transform
     updatedTransforms.push({ kind: '', spec: {} });
     onChange(updatedTransforms);
-    setTransformsCollapsed((prev) => {
-      prev.push(false);
-      return [...prev];
-    });
+    setTransformsCollapsed((prev) => [...prev, false]);
   }
 
   function handleTransformDelete(index: number): void {
     const updatedTransforms = [...value];
     updatedTransforms.splice(index, 1);
     onChange(updatedTransforms);
-    setTransformsCollapsed((prev) => {
-      prev.splice(index, 1);
-      return [...prev];
-    });
+    setTransformsCollapsed((prev) => prev.filter((_, itemIndex) => itemIndex !== index));
   }
 
   function handleTransformCollapseExpand(index: number, collapsed: boolean): void {
-    setTransformsCollapsed((prev) => {
-      prev[index] = collapsed;
-      return [...prev];
-    });
+    setTransformsCollapsed((prev) =>
+      prev.map((collapsedValue, itemIndex) => (itemIndex === index ? collapsed : collapsedValue)),
+    );
   }
 
   return (

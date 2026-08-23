@@ -18,7 +18,7 @@ import { produce } from 'immer';
 import MinusIcon from 'mdi-material-ui/Minus';
 import PlusIcon from 'mdi-material-ui/Plus';
 import type { ReactElement } from 'react';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useRef } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -477,25 +477,25 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
 
   // For better user experience, save previous states in mind for both mode.
   // This avoids losing everything when the user changes their mind back.
-  const [previousSpecDirect, setPreviousSpecDirect] = useState(initialSpecDirect);
-  const [previousSpecProxy, setPreviousSpecProxy] = useState(initialSpecProxy);
+  const previousSpecDirect = useRef(initialSpecDirect);
+  const previousSpecProxy = useRef(initialSpecProxy);
 
   // When changing mode, remove previous mode's config + append default values for the new mode.
   const handleModeChange = (v: number): void => {
     if (tabs[v]?.label === strDirect) {
-      setPreviousSpecProxy(editorValue);
+      previousSpecProxy.current = editorValue;
 
       // Copy all settings (for example, scrapeInterval), except 'proxy'
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { proxy, ...newValue } = editorValue;
-      onChange({ ...newValue, directUrl: previousSpecDirect.directUrl });
+      onChange({ ...newValue, directUrl: previousSpecDirect.current.directUrl });
     } else if (tabs[v]?.label === strProxy) {
-      setPreviousSpecDirect(editorValue);
+      previousSpecDirect.current = editorValue;
 
       // Copy all settings (for example, scrapeInterval), except 'directUrl'
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { directUrl, ...newValue } = editorValue;
-      onChange({ ...newValue, proxy: previousSpecProxy.proxy });
+      onChange({ ...newValue, proxy: previousSpecProxy.current.proxy });
     }
   };
 

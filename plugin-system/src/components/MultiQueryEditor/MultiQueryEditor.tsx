@@ -52,7 +52,8 @@ function useDefaultQueryDefinition(
   let defaultQueryKind: string = '';
 
   if (filteredQueryPlugins?.length) {
-    defaultQueryKind = queryPlugins?.find((i) => filteredQueryPlugins.includes(i.spec.name))!.spec.name ?? '';
+    const filteredQueryPluginSet = new Set(filteredQueryPlugins);
+    defaultQueryKind = queryPlugins?.find((plugin) => filteredQueryPluginSet.has(plugin.spec.name))?.spec.name ?? '';
   } else {
     defaultQueryKind = defaultPluginKinds?.[defaultQueryType] ?? queryPlugins?.[0]?.spec.name ?? '';
   }
@@ -87,7 +88,7 @@ export const MultiQueryEditor = forwardRef<PluginEditorRef, MultiQueryEditorProp
   const { queryTypes, queries = [], queryResults, filteredQueryPlugins, onChange, onQueryRun } = props;
   const { defaultInitialQueryDefinition, isLoading } = useDefaultQueryDefinition(queryTypes, filteredQueryPlugins);
   // State for which queries are collapsed
-  const [queriesCollapsed, setQueriesCollapsed] = useState(queries.map(() => false));
+  const [queriesCollapsed, setQueriesCollapsed] = useState(() => queries.map(() => false));
 
   // Query handlers
   const handleQueryChange = (index: number, queryDef: QueryDefinition): void => {
@@ -116,10 +117,7 @@ export const MultiQueryEditor = forwardRef<PluginEditorRef, MultiQueryEditorProp
         }
       }),
     );
-    setQueriesCollapsed((queriesCollapsed) => {
-      queriesCollapsed.push(false);
-      return [...queriesCollapsed];
-    });
+    setQueriesCollapsed((currentCollapsed) => [...currentCollapsed, false]);
   };
 
   const handleQueryDelete = (index: number): void => {
@@ -128,17 +126,13 @@ export const MultiQueryEditor = forwardRef<PluginEditorRef, MultiQueryEditorProp
         draft.splice(index, 1);
       }),
     );
-    setQueriesCollapsed((queriesCollapsed) => {
-      queriesCollapsed.splice(index, 1);
-      return [...queriesCollapsed];
-    });
+    setQueriesCollapsed((currentCollapsed) => currentCollapsed.filter((_, queryIndex) => queryIndex !== index));
   };
 
   const handleQueryCollapseExpand = (index: number): void => {
-    setQueriesCollapsed((queriesCollapsed) => {
-      queriesCollapsed[index] = !queriesCollapsed[index];
-      return [...queriesCollapsed];
-    });
+    setQueriesCollapsed((currentCollapsed) =>
+      currentCollapsed.map((collapsed, queryIndex) => (queryIndex === index ? !collapsed : collapsed)),
+    );
   };
 
   // show one query input if queries is empty

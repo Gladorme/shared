@@ -34,6 +34,10 @@ import { usePanelEditor, usePanelKey } from '../../context';
 import { FixedValueVariableProvider } from '../Variables';
 import { PanelEditorForm } from './PanelEditorForm';
 
+const handleClickOut = (): void => {
+  // Disables closing on click out to avoid losing draft changes.
+};
+
 /**
  * The Add/Edit panel drawer for editing a panel's options.
  */
@@ -68,12 +72,6 @@ export const PanelDrawer = (): ReactElement => {
     panelEditor?.close();
     setIsClosing(false);
   }, [panelEditor]);
-
-  // Disables closing on click out. This is a quick-win solution to avoid losing draft changes.
-  // -> TODO find a way to enable closing by clicking-out in edit view, with a discard confirmation modal popping up
-  const handleClickOut = (): void => {
-    /* do nothing */
-  };
 
   const drawer = (
     <Drawer

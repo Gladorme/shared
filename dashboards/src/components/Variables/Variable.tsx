@@ -137,8 +137,9 @@ export function useListVariableState(
   const value = getEffectiveVariableValue(normalizedValue, firstOptionValue, valueIsInOptions, allowMultiple);
 
   // In the case Autocomplete.multiple equals false, Autocomplete.value expects a single object, not an array.
-  const selectedOptions = Array.isArray(value)
-    ? viewOptions.filter((option) => value.includes(option.value))
+  const selectedValueSet = Array.isArray(value) ? new Set(value) : undefined;
+  const selectedOptions = selectedValueSet
+    ? viewOptions.filter((option) => selectedValueSet.has(option.value))
     : (viewOptions.find((option) => value === option.value) ?? { value: '', label: '' });
 
   return { value, loading, options, selectedOptions, viewOptions };
@@ -286,9 +287,10 @@ function ListVariable({ name, source }: VariableProps): ReactElement {
           if (ownerState.focused) {
             return (
               <Box sx={{ maxHeight: 200, overflowY: 'auto' }}>
-                {value.map((option, index) => (
-                  <Chip {...getTagProps({ index })} key={index} label={option.label} size="small" />
-                ))}
+                {value.map((option, index) => {
+                  const { key: _key, ...tagProps } = getTagProps({ index });
+                  return <Chip {...tagProps} key={option.value} label={option.label} size="small" />;
+                })}
               </Box>
             );
           }
@@ -298,11 +300,12 @@ function ListVariable({ name, source }: VariableProps): ReactElement {
 
           return (
             <>
-              {value.slice(0, limitTags).map((option, index) => (
-                <Chip {...getTagProps({ index })} key={index} label={option.label} size="small" />
-              ))}
+              {value.slice(0, limitTags).map((option, index) => {
+                const { key: _key, ...tagProps } = getTagProps({ index });
+                return <Chip {...tagProps} key={option.value} label={option.label} size="small" />;
+              })}
 
-              {limitTags && numTags > limitTags && ` +${numTags - limitTags}`}
+              {limitTags !== undefined && numTags > limitTags ? ` +${numTags - limitTags}` : null}
             </>
           );
         }}

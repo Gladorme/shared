@@ -192,12 +192,12 @@ export function VirtualizedTable<TableData>({
   const columnSizeVars = useMemo(() => {
     const colSizes: { [key: string]: number } = {};
     headers.forEach((headerGroup) => {
-      headerGroup.headers
-        .filter((header) => header.column.getCanResize())
-        .forEach((header) => {
+      headerGroup.headers.forEach((header) => {
+        if (header.column.getCanResize()) {
           colSizes[`--header-${header.id}-size`] = header.getSize();
           colSizes[`--col-${header.column.id}-size`] = header.column.getSize();
-        });
+        }
+      });
     });
     return colSizes;
     // We want to recalculate column sizes whenever column sizes or column resizing info changes.
@@ -331,15 +331,12 @@ export function VirtualizedTable<TableData>({
                 /* this has been specifically added for the data link,
                      therefore, non string and numeric values should be excluded
                   */
-                const adjacentCellsValuesMap = Object.entries(row.original as Record<string, unknown>)
-                  ?.filter(([_, value]) => ['string', 'number'].includes(typeof value))
-                  .reduce(
-                    (acc, [key, value]) => ({
-                      ...acc,
-                      [key]: String(value),
-                    }),
-                    {},
-                  );
+                const adjacentCellsValuesMap: Record<string, string> = {};
+                for (const [key, value] of Object.entries(row.original as Record<string, unknown>)) {
+                  if (typeof value === 'string' || typeof value === 'number') {
+                    adjacentCellsValuesMap[key] = String(value);
+                  }
+                }
 
                 return (
                   <TableCell

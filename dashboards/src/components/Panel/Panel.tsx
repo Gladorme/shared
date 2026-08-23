@@ -19,13 +19,12 @@ import {
   ItemActionsProvider,
   SelectionProvider,
   combineSx,
-  useId,
 } from '@perses-dev/components';
 import type { ActionOptions } from '@perses-dev/plugin-system';
 import { useDataQueriesContext, usePluginRegistry } from '@perses-dev/plugin-system';
 import type { PanelDefinition } from '@perses-dev/spec';
 import type { ReactNode } from 'react';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useId, useMemo, useState } from 'react';
 import useResizeObserver from 'use-resize-observer';
 
 import type { PanelGroupItemId } from '../../model';
@@ -96,7 +95,7 @@ export const Panel = memo(function Panel(props: PanelProps) {
   } = props;
 
   // Make sure we have an ID we can use for aria attributes
-  const generatedPanelId = useId('Panel');
+  const generatedPanelId = `Panel-${useId()}`;
   const headerId = `${generatedPanelId}-header`;
 
   const [contentElement, setContentElement] = useState<HTMLElement | null>(null);
@@ -127,16 +126,19 @@ export const Panel = memo(function Panel(props: PanelProps) {
   const [pluginActions, setPluginActions] = useState<ReactNode[]>([]);
 
   useEffect(() => {
+    let cancelled = false;
+
     const loadPluginActions = async (): Promise<void> => {
       const panelPluginKind = definition.spec.plugin.kind;
 
-      if (!panelPluginKind || !panelPropsForActions || !getPlugin || typeof getPlugin !== 'function') {
+      if (!panelPluginKind || !getPlugin || typeof getPlugin !== 'function') {
         setPluginActions([]);
         return;
       }
 
       try {
         const plugin = await getPlugin({ kind: 'Panel', name: panelPluginKind });
+        if (cancelled) return;
 
         // More defensive checking for plugin and actions
         if (
@@ -151,28 +153,31 @@ export const Panel = memo(function Panel(props: PanelProps) {
         }
 
         // Render plugin actions in header location
-        const headerActions = plugin.actions
-          .filter((action) => !action.location || action.location === 'header')
-          .map((action, index): ReactNode | null => {
-            const ActionComponent = action.component;
-            try {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              return <ActionComponent key={`plugin-action-${index}`} {...(panelPropsForActions as any)} />;
-            } catch (error) {
-              console.warn(`Failed to render plugin action ${index}:`, error);
-              return null;
-            }
-          })
-          .filter((item): item is ReactNode => Boolean(item));
+        const headerActions: ReactNode[] = [];
+        plugin.actions.forEach((action, index) => {
+          if (action.location && action.location !== 'header') return;
+
+          const ActionComponent = action.component;
+          try {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            headerActions.push(<ActionComponent key={`plugin-action-${index}`} {...(panelPropsForActions as any)} />);
+          } catch (error) {
+            console.warn(`Failed to render plugin action ${index}:`, error);
+          }
+        });
 
         setPluginActions(headerActions);
       } catch (error) {
+        if (cancelled) return;
         console.warn('Failed to load plugin actions:', error);
         setPluginActions([]);
       }
     };
 
     loadPluginActions();
+    return (): void => {
+      cancelled = true;
+    };
   }, [definition.spec.plugin.kind, panelPropsForActions, getPlugin]);
 
   const handleMouseEnter: CardProps['onMouseEnter'] = (e) => {

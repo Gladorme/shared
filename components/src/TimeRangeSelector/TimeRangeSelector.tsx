@@ -204,9 +204,9 @@ export function TimeRangeSelector({
               </Box>
             </Box>
           </MenuItem>
-          {timeOptions.map((item, idx) => (
+          {timeOptions.map((item) => (
             <MenuItem
-              key={idx}
+              key={item.display}
               value={formatTimeRange(item.value, timeZone)}
               onClick={() => {
                 onChange(item.value);
