@@ -11,13 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Box, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
+import { Autocomplete, Box, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
+import type { AutocompleteRenderInputParams } from '@mui/material';
 import { RequestHeaders } from '@perses-dev/client';
 import { HTTPDatasourceSpec } from '@perses-dev/spec';
 import { produce } from 'immer';
 import MinusIcon from 'mdi-material-ui/Minus';
 import PlusIcon from 'mdi-material-ui/Plus';
-import React, { Fragment, ReactElement, useState } from 'react';
+import React, { Fragment, ReactElement, useCallback, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -25,6 +26,68 @@ import { DatasourceTestConnectionButton } from '../DatasourceTestConnectionButto
 import { OptionsEditorRadios } from '../OptionsEditorRadios';
 
 const urlSchema = z.string().url();
+
+// These proxy fields are introduced by perses/perses#3782 but are not yet exposed by
+// the current @perses-dev/spec dependency, so validate them at this package boundary.
+const headerPolicySchema = z.object({
+  allowHeaders: z.array(z.string()).optional(),
+  dropHeaders: z.array(z.string()).optional(),
+});
+
+type HeaderPolicySpec = z.infer<typeof headerPolicySchema>;
+type HeaderPolicy = 'all' | 'allow' | 'drop';
+
+const HEADER_POLICIES: ReadonlyArray<{ value: HeaderPolicy; label: string }> = [
+  { value: 'all', label: 'Forward all headers' },
+  { value: 'allow', label: 'Allow listed headers' },
+  { value: 'drop', label: 'Drop listed headers' },
+];
+
+const EMPTY_HEADER_NAMES: string[] = [];
+const HEADER_POLICY_FIELD_SX = { mb: 2 };
+
+function renderAllowedHeadersInput(params: AutocompleteRenderInputParams): ReactElement {
+  return (
+    <TextField
+      {...params}
+      label="Allowed headers"
+      helperText="Only these headers are forwarded. Type a header name and press Enter."
+    />
+  );
+}
+
+function renderDroppedHeadersInput(params: AutocompleteRenderInputParams): ReactElement {
+  return (
+    <TextField
+      {...params}
+      label="Dropped headers"
+      helperText="These headers are removed before forwarding. Type a header name and press Enter."
+    />
+  );
+}
+
+function getHeaderPolicySpec(value: HTTPDatasourceSpec): HeaderPolicySpec {
+  const result = headerPolicySchema.safeParse(value.proxy?.spec);
+  return result.success ? result.data : {};
+}
+
+function getHeaderPolicy(value: HeaderPolicySpec): HeaderPolicy {
+  if (value.allowHeaders !== undefined) {
+    return 'allow';
+  }
+  if (value.dropHeaders !== undefined) {
+    return 'drop';
+  }
+  return 'all';
+}
+
+function isHeaderPolicy(value: string): value is HeaderPolicy {
+  return HEADER_POLICIES.some((policy) => policy.value === value);
+}
+
+function normalizeHeaderNames(headers: string[]): string[] {
+  return [...new Set(headers.map((header) => header.trim()).filter((header) => header !== ''))];
+}
 
 type HeaderEntry = {
   name: string;
@@ -88,6 +151,53 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
     }
   });
   const hasDuplicates = duplicateNames.size > 0;
+  const headerPolicySpec = getHeaderPolicySpec(value);
+  const headerPolicy = getHeaderPolicy(headerPolicySpec);
+
+  const updateHeaderPolicy = useCallback(
+    (policy: HeaderPolicy, headers: string[] = []): void => {
+      onChange(
+        produce(value, (draft) => {
+          if (draft.proxy === undefined) {
+            return;
+          }
+
+          Reflect.deleteProperty(draft.proxy.spec, 'allowHeaders');
+          Reflect.deleteProperty(draft.proxy.spec, 'dropHeaders');
+
+          if (policy === 'allow') {
+            Object.assign(draft.proxy.spec, { allowHeaders: normalizeHeaderNames(headers) });
+          } else if (policy === 'drop') {
+            Object.assign(draft.proxy.spec, { dropHeaders: normalizeHeaderNames(headers) });
+          }
+        }),
+      );
+    },
+    [onChange, value],
+  );
+
+  const handleHeaderPolicyChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+      if (isHeaderPolicy(event.target.value)) {
+        updateHeaderPolicy(event.target.value);
+      }
+    },
+    [updateHeaderPolicy],
+  );
+
+  const handleAllowedHeadersChange = useCallback(
+    (_: React.SyntheticEvent, headers: string[]): void => {
+      updateHeaderPolicy('allow', headers);
+    },
+    [updateHeaderPolicy],
+  );
+
+  const handleDroppedHeadersChange = useCallback(
+    (_: React.SyntheticEvent, headers: string[]): void => {
+      updateHeaderPolicy('drop', headers);
+    },
+    [updateHeaderPolicy],
+  );
 
   // Sync headers to parent
   const syncHeadersToParent = (headers: HeaderEntry[]): void => {
@@ -390,6 +500,52 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
               </IconButton>
             </Grid>
           </Grid>
+
+          <Typography variant="h5" mb={2}>
+            Forwarded Headers
+          </Typography>
+          <TextField
+            select
+            fullWidth
+            disabled={isReadonly}
+            label="Header policy"
+            value={headerPolicy}
+            onChange={handleHeaderPolicyChange}
+            helperText="Choose which incoming request headers the proxy forwards to the datasource."
+            sx={HEADER_POLICY_FIELD_SX}
+          >
+            {HEADER_POLICIES.map((policy) => (
+              <MenuItem key={policy.value} value={policy.value}>
+                {policy.label}
+              </MenuItem>
+            ))}
+          </TextField>
+          {headerPolicy === 'allow' && (
+            <Autocomplete<string, true, false, true>
+              multiple
+              freeSolo
+              fullWidth
+              readOnly={isReadonly}
+              options={EMPTY_HEADER_NAMES}
+              value={headerPolicySpec.allowHeaders ?? EMPTY_HEADER_NAMES}
+              onChange={handleAllowedHeadersChange}
+              renderInput={renderAllowedHeadersInput}
+              sx={HEADER_POLICY_FIELD_SX}
+            />
+          )}
+          {headerPolicy === 'drop' && (
+            <Autocomplete<string, true, false, true>
+              multiple
+              freeSolo
+              fullWidth
+              readOnly={isReadonly}
+              options={EMPTY_HEADER_NAMES}
+              value={headerPolicySpec.dropHeaders ?? EMPTY_HEADER_NAMES}
+              onChange={handleDroppedHeadersChange}
+              renderInput={renderDroppedHeadersInput}
+              sx={HEADER_POLICY_FIELD_SX}
+            />
+          )}
 
           <Controller
             name="Secret"

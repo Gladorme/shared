@@ -31,6 +31,17 @@ vi.mock('@perses-dev/components', async (importOriginal) => ({
   }),
 }));
 
+function createProxySpec(headerPolicy: Record<string, string[]> = {}): HTTPDatasourceSpec {
+  const proxySpec = { url: 'http://localhost:9090' };
+  Object.assign(proxySpec, headerPolicy);
+  return {
+    proxy: {
+      kind: 'HTTPProxy',
+      spec: proxySpec,
+    },
+  };
+}
+
 describe('HTTPSettingsEditor - Request Headers', () => {
   const initialSpecDirect: HTTPDatasourceSpec = {
     directUrl: '',
@@ -45,7 +56,11 @@ describe('HTTPSettingsEditor - Request Headers', () => {
     },
   };
 
-  const renderComponent = (value: HTTPDatasourceSpec, onChange = vi.fn()): ReturnType<typeof render> => {
+  const renderComponent = (
+    value: HTTPDatasourceSpec,
+    onChange = vi.fn(),
+    isReadonly = false,
+  ): ReturnType<typeof render> => {
     const Wrapper = (): ReactElement => {
       const methods = useForm();
       return (
@@ -53,6 +68,7 @@ describe('HTTPSettingsEditor - Request Headers', () => {
           <HTTPSettingsEditor
             value={value}
             onChange={onChange}
+            isReadonly={isReadonly}
             initialSpecDirect={initialSpecDirect}
             initialSpecProxy={initialSpecProxy}
           />
@@ -423,6 +439,72 @@ describe('HTTPSettingsEditor - Request Headers', () => {
       await waitFor(() => {
         expect(screen.getByLabelText(/Header name/i)).toBeInTheDocument();
       });
+    });
+  });
+
+  describe('Forwarded header policy', () => {
+    it('forwards all headers by default', () => {
+      renderComponent(createProxySpec());
+
+      expect(screen.getByRole('combobox', { name: 'Header policy' })).toHaveTextContent('Forward all headers');
+      expect(screen.queryByRole('combobox', { name: 'Allowed headers' })).not.toBeInTheDocument();
+      expect(screen.queryByRole('combobox', { name: 'Dropped headers' })).not.toBeInTheDocument();
+    });
+
+    it('initializes the allow list from the proxy spec', () => {
+      renderComponent(createProxySpec({ allowHeaders: ['Origin', 'Referer'] }));
+
+      expect(screen.getByRole('combobox', { name: 'Header policy' })).toHaveTextContent('Allow listed headers');
+      expect(screen.getByText('Origin')).toBeInTheDocument();
+      expect(screen.getByText('Referer')).toBeInTheDocument();
+    });
+
+    it('adds and normalizes an allowed header', async () => {
+      const onChange = vi.fn();
+      renderComponent(createProxySpec({ allowHeaders: [] }), onChange);
+
+      const allowedHeaders = screen.getByRole('combobox', { name: 'Allowed headers' });
+      await userEvent.type(allowedHeaders, '  Origin  {enter}');
+
+      await waitFor(() => {
+        const lastCall = onChange.mock.lastCall?.[0];
+        expect(lastCall?.proxy?.spec).toMatchObject({ allowHeaders: ['Origin'] });
+        expect(lastCall?.proxy?.spec).not.toHaveProperty('dropHeaders');
+      });
+    });
+
+    it('adds a dropped header', async () => {
+      const onChange = vi.fn();
+      renderComponent(createProxySpec({ dropHeaders: [] }), onChange);
+
+      const droppedHeaders = screen.getByRole('combobox', { name: 'Dropped headers' });
+      await userEvent.type(droppedHeaders, 'Referer{enter}');
+
+      await waitFor(() => {
+        const lastCall = onChange.mock.lastCall?.[0];
+        expect(lastCall?.proxy?.spec).toMatchObject({ dropHeaders: ['Referer'] });
+        expect(lastCall?.proxy?.spec).not.toHaveProperty('allowHeaders');
+      });
+    });
+
+    it('clears the incompatible list when changing policy', async () => {
+      const onChange = vi.fn();
+      renderComponent(createProxySpec({ dropHeaders: ['Origin'] }), onChange);
+
+      await userEvent.click(screen.getByRole('combobox', { name: 'Header policy' }));
+      await userEvent.click(screen.getByRole('option', { name: 'Allow listed headers' }));
+
+      const lastCall = onChange.mock.lastCall?.[0];
+      expect(lastCall?.proxy?.spec).toMatchObject({ allowHeaders: [] });
+      expect(lastCall?.proxy?.spec).not.toHaveProperty('dropHeaders');
+    });
+
+    it('disables policy controls in readonly mode', () => {
+      const value = createProxySpec({ allowHeaders: ['Origin'] });
+      renderComponent(value, vi.fn(), true);
+
+      expect(screen.getByRole('combobox', { name: 'Header policy' })).toHaveAttribute('aria-disabled', 'true');
+      expect(screen.getByRole('combobox', { name: 'Allowed headers' })).toHaveAttribute('readonly');
     });
   });
 
