@@ -14,6 +14,7 @@
 import { JsonData, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
 import { useQueries, UseQueryResult } from '@tanstack/react-query';
 
+import { JsonQueryContext } from '../model/json-queries';
 import { useDatasourceStore } from './datasources';
 import { usePluginRegistry } from './plugin-registry';
 import { useVariableValues } from './variables';
@@ -21,12 +22,17 @@ import { useVariableValues } from './variables';
 export type JsonQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'JsonQuery', PluginSpec>;
 export const JSON_QUERY_KEY = 'JsonQuery';
 
+/**
+ * Run a json query using a JsonQuery plugin and return the results.
+ * A json query returns an arbitrary JSON payload and is NOT time-range dependent.
+ * @param definitions: dashboard definitions for the json queries to run
+ */
 export function useJsonQueries(definitions: JsonQueryDefinition[]): Array<UseQueryResult<JsonData>> {
   const { getPlugin } = usePluginRegistry();
   const datasourceStore = useDatasourceStore();
   const variableValues = useVariableValues();
 
-  const context = {
+  const context: JsonQueryContext = {
     variableState: variableValues,
     datasourceStore,
   };

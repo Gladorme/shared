@@ -16,15 +16,28 @@ import { JsonData, UnknownSpec } from '@perses-dev/spec';
 import { DatasourceStore, VariableStateMap } from '../runtime';
 import { Plugin } from './plugin-base';
 
+/**
+ * An object containing all the dependencies of a JsonQuery.
+ */
 type JsonQueryPluginDependencies = {
+  /**
+   * Returns a list of variables name this json query depends on.
+   */
   variables?: string[];
 };
 
+/**
+ * Context available to JsonQuery plugins at runtime.
+ * Note: No absoluteTimeRange since a json query is not time-range dependent.
+ */
 export interface JsonQueryContext {
   variableState: VariableStateMap;
   datasourceStore: DatasourceStore;
 }
 
+/**
+ * A plugin for running json queries, i.e. queries returning arbitrary JSON payloads.
+ */
 export interface JsonQueryPlugin<Spec = UnknownSpec> extends Plugin<Spec> {
   getJsonData: (spec: Spec, ctx: JsonQueryContext, abortSignal?: AbortSignal) => Promise<JsonData>;
   dependsOn?: (spec: Spec, ctx: JsonQueryContext) => JsonQueryPluginDependencies;
