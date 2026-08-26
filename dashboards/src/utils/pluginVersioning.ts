@@ -292,17 +292,3 @@ export function isDashboardLocked(dashboard: DashboardResource): boolean {
   });
   return total > 0 && pinned === total;
 }
-
-/**
- * Whether at least one plugin definition of the dashboard is pinned to an exact version. Versioning can be enforced
- * partially, so this is true both for a fully locked dashboard and for one where only a few plugins are pinned.
- */
-export function hasPinnedPluginVersions(dashboard: DashboardResource): boolean {
-  let pinned = false;
-  visitPluginDefinitions(dashboard, (definition) => {
-    if (getPinnedVersion(definition)) {
-      pinned = true;
-    }
-  });
-  return pinned;
-}

@@ -20,7 +20,6 @@ import {
   findOutdatedPlugins,
   getOutdatedPluginId,
   getPluginIdentityKey,
-  hasPinnedPluginVersions,
   isDashboardLocked,
   LatestPluginVersions,
   removePluginVersions,
@@ -173,9 +172,8 @@ describe('applyPluginVersions / removePluginVersions / isDashboardLocked', () =>
     ['Annotation', 'TempoAnnotation', '1.4.0'],
   ]);
 
-  test('a fresh dashboard is neither locked nor pinned', () => {
+  test('a fresh dashboard is not locked', () => {
     expect(isDashboardLocked(buildDashboard())).toBe(false);
-    expect(hasPinnedPluginVersions(buildDashboard())).toBe(false);
   });
 
   test('applies versions to every plugin definition and marks the dashboard as locked', () => {
@@ -204,7 +202,6 @@ describe('applyPluginVersions / removePluginVersions / isDashboardLocked', () =>
     const unlocked = removePluginVersions(locked);
 
     expect(isDashboardLocked(unlocked)).toBe(false);
-    expect(hasPinnedPluginVersions(unlocked)).toBe(false);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((unlocked.spec.panels.panel1 as any).spec.plugin.metadata).toBeUndefined();
   });
@@ -219,13 +216,11 @@ describe('applyPluginVersions / removePluginVersions / isDashboardLocked', () =>
 
   test('a partially pinned dashboard is pinned but not locked', () => {
     const partial = applyPluginVersions(buildDashboard(), buildVersions([['Panel', 'TimeSeriesChart', '1.0.0']]));
-    expect(hasPinnedPluginVersions(partial)).toBe(true);
     expect(isDashboardLocked(partial)).toBe(false);
   });
 
   test('the `latest` sentinel does not count as a pin', () => {
     const sentinel = applyPluginVersions(buildDashboard(), allPluginsAt('latest'));
-    expect(hasPinnedPluginVersions(sentinel)).toBe(false);
     expect(isDashboardLocked(sentinel)).toBe(false);
   });
 });

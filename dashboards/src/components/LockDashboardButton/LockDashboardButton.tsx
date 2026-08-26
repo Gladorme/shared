@@ -22,7 +22,6 @@ import { useDashboard } from '../../context/useDashboard';
 import {
   applyPluginVersions,
   buildLatestPluginVersions,
-  hasPinnedPluginVersions,
   isDashboardLocked,
   removePluginVersions,
 } from '../../utils/pluginVersioning';
@@ -45,7 +44,6 @@ export function LockDashboardButton(): ReactElement {
   const [pendingAction, setPendingAction] = useState<'lock' | 'unlock' | undefined>(undefined);
 
   const isLocked = useMemo(() => isDashboardLocked(dashboard), [dashboard]);
-  const hasPins = useMemo(() => hasPinnedPluginVersions(dashboard), [dashboard]);
 
   const closeConfirmation = useCallback((): void => setPendingAction(undefined), []);
 
@@ -63,7 +61,21 @@ export function LockDashboardButton(): ReactElement {
 
   return (
     <>
-      {!isLocked && (
+      {isLocked ? (
+        <Tooltip title="Remove the pinned plugin versions" placement="bottom">
+          <span>
+            <Button
+              onClick={() => setPendingAction('unlock')}
+              startIcon={<LockOpenOutline />}
+              variant="outlined"
+              color="secondary"
+              sx={{ whiteSpace: 'nowrap', minWidth: 'auto' }}
+            >
+              Unlock
+            </Button>
+          </span>
+        </Tooltip>
+      ) : (
         <Tooltip title="Pin every plugin to its latest version" placement="bottom">
           <span>
             <Button
@@ -75,21 +87,6 @@ export function LockDashboardButton(): ReactElement {
               sx={{ whiteSpace: 'nowrap', minWidth: 'auto' }}
             >
               Lock
-            </Button>
-          </span>
-        </Tooltip>
-      )}
-      {hasPins && (
-        <Tooltip title="Remove the pinned plugin versions" placement="bottom">
-          <span>
-            <Button
-              onClick={() => setPendingAction('unlock')}
-              startIcon={<LockOpenOutline />}
-              variant="outlined"
-              color="secondary"
-              sx={{ whiteSpace: 'nowrap', minWidth: 'auto' }}
-            >
-              Unlock
             </Button>
           </span>
         </Tooltip>
