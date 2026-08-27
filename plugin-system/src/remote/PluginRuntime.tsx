@@ -85,7 +85,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         echarts: {
           version: '5.5.0',
-          lib: () => require('echarts'),
+          lib: () => import('echarts'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^5.5.0',
@@ -93,7 +93,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/spec': {
           version: '0.3.0-beta.5',
-          lib: () => require('@perses-dev/spec'),
+          lib: () => import('@perses-dev/spec'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.3.0-beta.5',
@@ -101,7 +101,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/client': {
           version: '0.55.0-beta.6',
-          lib: () => require('@perses-dev/client'),
+          lib: () => import('@perses-dev/client'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -109,7 +109,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/components': {
           version: '0.55.0-beta.6',
-          lib: () => require('@perses-dev/components'),
+          lib: () => import('@perses-dev/components'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -117,7 +117,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/plugin-system': {
           version: '0.55.0-beta.6',
-          lib: () => require('@perses-dev/plugin-system'),
+          lib: () => import('@perses-dev/plugin-system'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -125,7 +125,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/explore': {
           version: '0.55.0-beta.6',
-          lib: () => require('@perses-dev/explore'),
+          lib: () => import('@perses-dev/explore'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -133,7 +133,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/dashboards': {
           version: '0.55.0-beta.6',
-          lib: () => require('@perses-dev/dashboards'),
+          lib: () => import('@perses-dev/dashboards'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -142,7 +142,7 @@ const getPluginRuntime = (): ModuleFederation => {
         // Below are the shared modules that are used by the plugins, this can be part of the SDK
         'date-fns': {
           version: '4.1.0',
-          lib: () => require('date-fns'),
+          lib: () => import('date-fns'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^4.1.0',
@@ -150,7 +150,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'date-fns-tz': {
           version: '3.2.0',
-          lib: () => require('date-fns-tz'),
+          lib: () => import('date-fns-tz'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^3.2.0',
@@ -158,7 +158,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         lodash: {
           version: '4.17.21',
-          lib: () => require('lodash'),
+          lib: () => import('lodash'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^4.17.21',
@@ -166,7 +166,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@emotion/react': {
           version: '11.11.3',
-          lib: () => require('@emotion/react'),
+          lib: () => import('@emotion/react'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^11.11.3',
@@ -174,7 +174,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@emotion/styled': {
           version: '11.11.0',
-          lib: () => require('@emotion/styled'),
+          lib: () => import('@emotion/styled'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^11.11.0',
@@ -182,7 +182,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@hookform/resolvers/zod': {
           version: '3.3.4',
-          lib: () => require('@hookform/resolvers/zod'),
+          lib: () => import('@hookform/resolvers/zod'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^3.3.4',
@@ -190,7 +190,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'use-resize-observer': {
           version: '9.1.0',
-          lib: () => require('use-resize-observer'),
+          lib: () => import('use-resize-observer'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^9.1.0',
@@ -198,7 +198,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'mdi-material-ui': {
           version: '7.4.0',
-          lib: () => require('mdi-material-ui'),
+          lib: () => import('mdi-material-ui'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^7.4.0',
@@ -206,7 +206,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         immer: {
           version: '10.1.1',
-          lib: () => require('immer'),
+          lib: () => import('immer'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^10.1.1',
