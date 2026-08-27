@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createContext, ReactElement, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { createContext, useCallback, useContext, useMemo, useState } from 'react';
 
 export interface ItemActionStatus {
   loading: boolean;

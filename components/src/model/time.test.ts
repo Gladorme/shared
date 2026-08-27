@@ -11,11 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AbsoluteTimeRange, formatDuration, intervalToDuration } from '@perses-dev/spec';
-import { Duration } from 'date-fns';
+import type { AbsoluteTimeRange } from '@perses-dev/spec';
+import { formatDuration, intervalToDuration } from '@perses-dev/spec';
+import type { Duration } from 'date-fns';
 
 import { getFormatterStats } from './formatterCache';
-import { FormatTestCase, IntervalTestCase, UnitTestCase } from './types';
+import type { FormatTestCase, IntervalTestCase, UnitTestCase } from './types';
 import { formatValue } from './units';
 
 const TIME_TESTS: UnitTestCase[] = [

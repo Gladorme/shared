@@ -11,12 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { IconButton, Link as LinkComponent, Menu, MenuItem, Theme, Chip, capitalize, Stack } from '@mui/material';
+import type { Theme } from '@mui/material';
+import { IconButton, Link as LinkComponent, Menu, MenuItem, Chip, capitalize, Stack } from '@mui/material';
 import { InfoTooltip } from '@perses-dev/components';
 import { useReplaceVariablesInString } from '@perses-dev/plugin-system';
-import { Link } from '@perses-dev/spec';
+import type { Link } from '@perses-dev/spec';
 import LaunchIcon from 'mdi-material-ui/Launch';
-import { MouseEvent, ReactElement, useState } from 'react';
+import type { MouseEvent, ReactElement } from 'react';
+import { useState } from 'react';
 
 type LinksVariant = 'dashboard' | 'panel';
 

@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DatasourceSpec, HTTPProxy, UnknownSpec } from '@perses-dev/spec';
+import type { DatasourceSpec, HTTPProxy, UnknownSpec } from '@perses-dev/spec';
 
 import { fetch } from '../util';
-import { DatasourceResource, DatasourceSelector, GlobalDatasourceResource } from './datasource';
+import type { DatasourceResource, DatasourceSelector, GlobalDatasourceResource } from './datasource';
 
 /**
  * Parameters for building a datasource proxy URL

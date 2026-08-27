@@ -15,8 +15,9 @@ import { TZDate } from '@date-fns/tz';
 import { Box, Stack, Typography, Button } from '@mui/material';
 import { DateTimeField, LocalizationProvider, StaticDateTimePicker } from '@mui/x-date-pickers';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
-import { AbsoluteTimeRange } from '@perses-dev/spec';
-import { ReactElement, useState } from 'react';
+import type { AbsoluteTimeRange } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
 import { ErrorAlert } from '../ErrorAlert';
 import { ErrorBoundary } from '../ErrorBoundary';

@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { Alert } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 export interface ErrorAlertProps {
   error: Error;

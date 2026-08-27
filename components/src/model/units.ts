@@ -11,26 +11,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { formatBits, BitsFormatOptions, BITS_GROUP_CONFIG, BITS_UNIT_CONFIG } from './bits';
-import { formatBytes, BytesFormatOptions, BYTES_GROUP_CONFIG, BYTES_UNIT_CONFIG } from './bytes';
-import { formatCurrency, CURRENCY_GROUP_CONFIG, CURRENCY_UNIT_CONFIG, CurrencyFormatOptions } from './currency';
-import { formatDate, DateFormatOptions, DATE_GROUP_CONFIG, DATE_UNIT_CONFIG } from './date';
-import { formatDecimal, DecimalFormatOptions, DECIMAL_GROUP_CONFIG, DECIMAL_UNIT_CONFIG } from './decimal';
-import { formatPercent, PercentFormatOptions, PERCENT_GROUP_CONFIG, PERCENT_UNIT_CONFIG } from './percent';
-import {
-  TEMPERATURE_GROUP_CONFIG,
-  formatTemperature,
-  TEMPERATURE_UNIT_CONFIG,
-  TemperatureFormatOptions,
-} from './temperature';
-import {
-  formatThroughput,
-  THROUGHPUT_GROUP_CONFIG,
-  THROUGHPUT_UNIT_CONFIG,
-  ThroughputFormatOptions,
-} from './throughput';
-import { formatTime, TimeFormatOptions, TIME_GROUP_CONFIG, TIME_UNIT_CONFIG } from './time';
-import { UnitGroup, UnitGroupConfig, UnitConfig } from './types';
+import type { BitsFormatOptions } from './bits';
+import { formatBits, BITS_GROUP_CONFIG, BITS_UNIT_CONFIG } from './bits';
+import type { BytesFormatOptions } from './bytes';
+import { formatBytes, BYTES_GROUP_CONFIG, BYTES_UNIT_CONFIG } from './bytes';
+import type { CurrencyFormatOptions } from './currency';
+import { formatCurrency, CURRENCY_GROUP_CONFIG, CURRENCY_UNIT_CONFIG } from './currency';
+import type { DateFormatOptions } from './date';
+import { formatDate, DATE_GROUP_CONFIG, DATE_UNIT_CONFIG } from './date';
+import type { DecimalFormatOptions } from './decimal';
+import { formatDecimal, DECIMAL_GROUP_CONFIG, DECIMAL_UNIT_CONFIG } from './decimal';
+import type { PercentFormatOptions } from './percent';
+import { formatPercent, PERCENT_GROUP_CONFIG, PERCENT_UNIT_CONFIG } from './percent';
+import type { TemperatureFormatOptions } from './temperature';
+import { TEMPERATURE_GROUP_CONFIG, formatTemperature, TEMPERATURE_UNIT_CONFIG } from './temperature';
+import type { ThroughputFormatOptions } from './throughput';
+import { formatThroughput, THROUGHPUT_GROUP_CONFIG, THROUGHPUT_UNIT_CONFIG } from './throughput';
+import type { TimeFormatOptions } from './time';
+import { formatTime, TIME_GROUP_CONFIG, TIME_UNIT_CONFIG } from './time';
+import type { UnitGroup, UnitGroupConfig, UnitConfig } from './types';
 
 /**
  * Most of the number formatting is based on Intl.NumberFormat, which is built into JavaScript.

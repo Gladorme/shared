@@ -14,7 +14,8 @@
 import { screen } from '@testing-library/dom';
 import { render } from '@testing-library/react';
 
-import { SeriesInfo, SeriesInfoProps } from './SeriesInfo';
+import type { SeriesInfoProps } from './SeriesInfo';
+import { SeriesInfo } from './SeriesInfo';
 
 describe('SeriesInfo', () => {
   const renderComponent = (props: SeriesInfoProps): void => {

@@ -14,17 +14,19 @@
 import { Grid, Typography } from '@mui/material';
 import { ErrorAlert, ErrorBoundary } from '@perses-dev/components';
 import { PanelEditorContext, PanelPreview } from '@perses-dev/dashboards';
+import type { PanelEditorValues } from '@perses-dev/plugin-system';
 import {
   DataQueriesProvider,
-  PanelEditorValues,
   PanelSpecEditor,
   usePlugin,
   useSuggestedStepMs,
   useVariableValues,
 } from '@perses-dev/plugin-system';
-import { AnnotationSpec, Definition, PanelDefinition, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
-import { ReactElement, useCallback, useContext, useMemo, useState } from 'react';
-import { Control, useWatch } from 'react-hook-form';
+import type { AnnotationSpec, Definition, PanelDefinition, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
+import { useCallback, useContext, useMemo, useState } from 'react';
+import type { Control } from 'react-hook-form';
+import { useWatch } from 'react-hook-form';
 
 import { useListPanelGroups } from '../../context';
 import { useAllVariableDefinitions } from '../../context/VariableProvider';

@@ -11,21 +11,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { UnknownSpec } from '@perses-dev/spec';
+import type { UnknownSpec } from '@perses-dev/spec';
 
-import { AlertsQueryPlugin } from './alerts-queries';
-import { AnnotationPlugin } from './annotations';
-import { DatasourcePlugin } from './datasource';
-import { ExplorePlugin } from './explore';
-import { JsonQueryPlugin } from './json-queries';
-import { LogQueryPlugin } from './log-queries';
-import { PanelPlugin } from './panels';
-import { Plugin } from './plugin-base';
-import { ProfileQueryPlugin } from './profile-queries';
-import { SilencesQueryPlugin } from './silences-queries';
-import { TimeSeriesQueryPlugin } from './time-series-queries';
-import { TraceQueryPlugin } from './trace-queries';
-import { VariablePlugin } from './variables';
+import type { AlertsQueryPlugin } from './alerts-queries';
+import type { AnnotationPlugin } from './annotations';
+import type { DatasourcePlugin } from './datasource';
+import type { ExplorePlugin } from './explore';
+import type { JsonQueryPlugin } from './json-queries';
+import type { LogQueryPlugin } from './log-queries';
+import type { PanelPlugin } from './panels';
+import type { Plugin } from './plugin-base';
+import type { ProfileQueryPlugin } from './profile-queries';
+import type { SilencesQueryPlugin } from './silences-queries';
+import type { TimeSeriesQueryPlugin } from './time-series-queries';
+import type { TraceQueryPlugin } from './trace-queries';
+import type { VariablePlugin } from './variables';
 
 export interface PluginModuleSpec {
   plugins: PluginMetadata[];

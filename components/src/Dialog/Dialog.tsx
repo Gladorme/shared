@@ -11,23 +11,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { StyledComponent } from '@emotion/styled';
-import {
-  Button,
+import type { StyledComponent } from '@emotion/styled';
+import type {
   ButtonProps,
-  DialogActions,
-  DialogContent,
   DialogProps,
-  DialogTitle,
   DialogTitleProps,
-  IconButton,
-  Dialog as MuiDialog,
   DialogContentProps as MuiDialogContentProps,
-  styled,
   Theme,
 } from '@mui/material';
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Dialog as MuiDialog,
+  styled,
+} from '@mui/material';
 import CloseIcon from 'mdi-material-ui/Close';
-import { MouseEvent, ReactElement } from 'react';
+import type { MouseEvent, ReactElement } from 'react';
 
 import { combineSx } from '../utils';
 

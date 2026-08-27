@@ -17,7 +17,7 @@ import '@fontsource/inter/500.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/inter/700.css';
 import '@fontsource/inter/900.css';
-import { ThemeOptions } from '@mui/material';
+import type { ThemeOptions } from '@mui/material';
 
 // Font weights need to correspond with the imports at the top of the file
 const fontWeightLight = 300;

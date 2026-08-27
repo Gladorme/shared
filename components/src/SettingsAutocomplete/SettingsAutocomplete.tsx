@@ -11,15 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  Autocomplete,
-  AutocompleteProps,
-  TextField,
-  Typography,
-  UseAutocompleteProps,
-  createFilterOptions,
-} from '@mui/material';
-import { ReactElement, ReactNode } from 'react';
+import type { AutocompleteProps, UseAutocompleteProps } from '@mui/material';
+import { Autocomplete, TextField, Typography, createFilterOptions } from '@mui/material';
+import type { ReactElement, ReactNode } from 'react';
 
 /**
  * Interface to extend from for `options` when using `SettingsAutocomplete`.

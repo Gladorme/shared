@@ -11,15 +11,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { CardHeader, CardHeaderProps, Stack, Typography, Tooltip, Box } from '@mui/material';
+import type { CardHeaderProps } from '@mui/material';
+import { Box, CardHeader, Stack, Tooltip, Typography } from '@mui/material';
 import { combineSx, replaceVariablesForDisplay } from '@perses-dev/components';
-import { ItemAction, QueryData, useAllVariableValues, useReplaceVariablesInString } from '@perses-dev/plugin-system';
-import { Link } from '@perses-dev/spec';
-import { ReactElement, ReactNode, useRef } from 'react';
+import type { ItemAction, QueryData } from '@perses-dev/plugin-system';
+import { useAllVariableValues, useReplaceVariablesInString } from '@perses-dev/plugin-system';
+import type { Link } from '@perses-dev/spec';
+import type { ReactElement, ReactNode } from 'react';
+import { useRef } from 'react';
 
 import { HEADER_ACTIONS_CONTAINER_NAME } from '../../constants/styles';
-import { PanelOptions } from './Panel';
-import { PanelActions, PanelActionsProps } from './PanelActions';
+import type { PanelOptions } from './Panel';
+import type { PanelActionsProps } from './PanelActions';
+import { PanelActions } from './PanelActions';
 import { useSelectionItemActions } from './useSelectionItemActions';
 
 type OmittedProps = 'children' | 'action' | 'title' | 'disableTypography';

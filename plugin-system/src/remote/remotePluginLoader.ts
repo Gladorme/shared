@@ -11,16 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { fetch as defaultFetch, type FetchFn } from '@perses-dev/client';
-import {
-  PluginLoader,
-  PluginMetadata,
-  PluginModuleResource,
-  PluginType,
-  getPluginModuleCompoundKey,
-} from '@perses-dev/plugin-system';
+import { fetch as defaultFetch } from '@perses-dev/client';
+import type { FetchFn } from '@perses-dev/client';
+import type { PluginLoader, PluginMetadata, PluginModuleResource, PluginType } from '@perses-dev/plugin-system';
+import { getPluginModuleCompoundKey } from '@perses-dev/plugin-system';
 
-import { RemotePluginModule } from './PersesPlugin.types';
+import type { RemotePluginModule } from './PersesPlugin.types';
 import { loadPlugin } from './PluginRuntime';
 
 const isPluginMetadata = (plugin: unknown): plugin is PluginMetadata => {

@@ -11,12 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PanelGroupId } from '@perses-dev/plugin-system';
-import { StateCreator } from 'zustand';
+import type { PanelGroupId } from '@perses-dev/plugin-system';
+import type { StateCreator } from 'zustand';
 
-import { Middleware } from './common';
-import { PanelGroupSlice } from './panel-group-slice';
-import { PanelSlice } from './panel-slice';
+import type { Middleware } from './common';
+import type { PanelGroupSlice } from './panel-group-slice';
+import type { PanelSlice } from './panel-slice';
 
 /**
  * Slice that handles the visual editor state and related actions for deleting a Panel Group.

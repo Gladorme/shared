@@ -11,12 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PanelDefinition, QueryDataType, QueryDefinition, QueryPluginType, UnknownSpec } from '@perses-dev/spec';
+import type { PanelDefinition, QueryDataType, QueryDefinition, QueryPluginType, UnknownSpec } from '@perses-dev/spec';
 import React from 'react';
 
-import { OptionsEditorTab } from '../components';
-import { QueryOptions } from '../runtime';
-import { OptionsEditorProps, Plugin } from './plugin-base';
+import type { OptionsEditorTab } from '../components';
+import type { QueryOptions } from '../runtime';
+import type { OptionsEditorProps, Plugin } from './plugin-base';
 
 export type PanelOptionsEditorComponent<T> = Pick<OptionsEditorTab, 'label'> & {
   content: React.ComponentType<OptionsEditorProps<T>>;

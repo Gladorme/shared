@@ -13,7 +13,8 @@
 
 import { render, screen, waitFor } from '@testing-library/react';
 
-import { FetchProvider, useFetch, FetchFn } from './FetchContext';
+import type { FetchFn } from './FetchContext';
+import { FetchProvider, useFetch } from './FetchContext';
 
 function TestConsumer(): React.ReactElement {
   const { fetch } = useFetch();

@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Metadata, ProjectMetadata } from '@perses-dev/client';
+import type { Metadata, ProjectMetadata } from '@perses-dev/client';
 
 export interface BasicAuth {
   username: string;

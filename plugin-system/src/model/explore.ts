@@ -11,9 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { UnknownSpec } from '@perses-dev/spec';
+import type { UnknownSpec } from '@perses-dev/spec';
 
-import { Plugin } from './plugin-base';
+import type { Plugin } from './plugin-base';
 
 export interface ExploreComponentProps<Spec> {
   spec: Spec;

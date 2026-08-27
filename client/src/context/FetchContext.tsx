@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createContext, ReactElement, ReactNode, useCallback, useContext } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { createContext, useCallback, useContext } from 'react';
 
 import { fetch as defaultFetch } from '../util/fetch';
 

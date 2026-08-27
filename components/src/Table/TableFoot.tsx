@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TableFooter as MuiTableFooter, TableFooterProps as MuiTableFooterProps } from '@mui/material';
+import type { TableFooterProps as MuiTableFooterProps } from '@mui/material';
+import { TableFooter as MuiTableFooter } from '@mui/material';
 import { forwardRef } from 'react';
 
 export const TableFoot = forwardRef<HTMLTableSectionElement, MuiTableFooterProps>(function TableFoot(props, ref) {

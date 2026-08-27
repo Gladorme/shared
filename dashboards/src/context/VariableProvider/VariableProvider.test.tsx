@@ -12,10 +12,11 @@
 // limitations under the License.
 
 import { TimeRangeProviderBasic, useVariableValues } from '@perses-dev/plugin-system';
-import { DEFAULT_ALL_VALUE, VariableDefinition } from '@perses-dev/spec';
+import type { VariableDefinition } from '@perses-dev/spec';
+import { DEFAULT_ALL_VALUE } from '@perses-dev/spec';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook } from '@testing-library/react';
-import { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
 import { VariableProvider } from './VariableProvider';
 

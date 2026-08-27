@@ -13,7 +13,7 @@
 
 import { useEffect, useState } from 'react';
 
-import { NearbySeriesArray } from './types';
+import type { NearbySeriesArray } from './types';
 
 export const TOOLTIP_MIN_WIDTH = 375;
 export const TOOLTIP_MAX_WIDTH = 650;

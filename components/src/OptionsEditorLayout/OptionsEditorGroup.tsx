@@ -12,7 +12,8 @@
 // limitations under the License.
 
 import { Box, Typography, Stack } from '@mui/material';
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 
 export type OptionsEditorGroupProps = {
   /**

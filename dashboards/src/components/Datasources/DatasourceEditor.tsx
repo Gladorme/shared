@@ -24,13 +24,15 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { Action, createTestDatasourceConnection, DatasourceDefinition } from '@perses-dev/client';
+import type { Action, DatasourceDefinition } from '@perses-dev/client';
+import { createTestDatasourceConnection } from '@perses-dev/client';
 import { DatasourceEditorForm, ValidationProvider } from '@perses-dev/plugin-system';
-import { DatasourceSpec } from '@perses-dev/spec';
+import type { DatasourceSpec } from '@perses-dev/spec';
 import PencilIcon from 'mdi-material-ui/Pencil';
 import AddIcon from 'mdi-material-ui/Plus';
 import TrashIcon from 'mdi-material-ui/TrashCan';
-import { ReactElement, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo, useState } from 'react';
 import { useImmer } from 'use-immer';
 
 import { useDashboard, useDiscardChangesConfirmationDialog } from '../../context';

@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AbsoluteTimeRange, AnnotationData, UnknownSpec } from '@perses-dev/spec';
+import type { AbsoluteTimeRange, AnnotationData, UnknownSpec } from '@perses-dev/spec';
 
-import { DatasourceStore, VariableStateMap } from '../runtime';
-import { Plugin } from './plugin-base';
+import type { DatasourceStore, VariableStateMap } from '../runtime';
+import type { Plugin } from './plugin-base';
 
 /**
  * An object containing all the dependencies of a AnnotationQuery.

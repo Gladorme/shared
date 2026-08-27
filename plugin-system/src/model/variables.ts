@@ -12,10 +12,10 @@
 // limitations under the License.
 
 import type { VariableOption } from '@perses-dev/components';
-import { AbsoluteTimeRange, UnknownSpec, VariableDefinition } from '@perses-dev/spec';
+import type { AbsoluteTimeRange, UnknownSpec, VariableDefinition } from '@perses-dev/spec';
 
-import { DatasourceStore, VariableStateMap } from '../runtime';
-import { Plugin } from './plugin-base';
+import type { DatasourceStore, VariableStateMap } from '../runtime';
+import type { Plugin } from './plugin-base';
 
 // Re-export VariableOption from @perses-dev/components for backwards compatibility
 export type { VariableOption } from '@perses-dev/components';

@@ -11,8 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ProjectMetadata } from '@perses-dev/client';
-import { DashboardSpec } from '@perses-dev/spec';
+import type { ProjectMetadata } from '@perses-dev/client';
+import type { DashboardSpec } from '@perses-dev/spec';
 
 export type DashboardKind = 'Dashboard' | 'EphemeralDashboard';
 

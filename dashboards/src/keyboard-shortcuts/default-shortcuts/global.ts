@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { OPEN_SEARCH_EVENT, SHOW_SHORTCUTS_EVENT, TOGGLE_THEME_EVENT } from '../events';
-import { PersesShortcutDef } from '../types';
+import type { PersesShortcutDef } from '../types';
 
 export const GO_HOME_SHORTCUT: PersesShortcutDef = {
   id: 'go-home',

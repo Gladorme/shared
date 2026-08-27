@@ -12,13 +12,14 @@
 // limitations under the License.
 
 import { screen } from '@testing-library/react';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { PanelEditorValues } from '../../model';
+import type { PanelEditorValues } from '../../model';
 import { DataQueriesContext } from '../../runtime';
 import { renderWithContext } from '../../test';
-import { PanelSpecEditor, PanelSpecEditorProps } from './PanelSpecEditor';
+import type { PanelSpecEditorProps } from './PanelSpecEditor';
+import { PanelSpecEditor } from './PanelSpecEditor';
 
 describe('PanelSpecEditor', () => {
   const renderComponent = (props: Omit<PanelSpecEditorProps, 'control'>): void => {

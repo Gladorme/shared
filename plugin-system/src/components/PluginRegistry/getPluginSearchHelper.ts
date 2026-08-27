@@ -13,8 +13,9 @@
 
 import { gt } from 'semver';
 
-import { PluginType, getPluginModuleCompoundKey } from '../../model';
-import { PluginCompoundKey } from './plugin-indexes';
+import type { PluginType } from '../../model';
+import { getPluginModuleCompoundKey } from '../../model';
+import type { PluginCompoundKey } from './plugin-indexes';
 
 // When both a registry and non-registry variant exist at the same version,
 // `registryOverVersion: true` prefers the registry variant.

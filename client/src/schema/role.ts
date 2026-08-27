@@ -13,7 +13,7 @@
 
 import { z } from 'zod';
 
-import { Permission, Role, RoleSpec } from '../model';
+import type { Permission, Role, RoleSpec } from '../model';
 import { metadataSchema, projectMetadataSchema } from './metadata';
 
 export const permissionSchema: z.ZodSchema<Permission> = z.object({

@@ -13,7 +13,7 @@
 
 import { MAX_SIGNIFICANT_DIGITS } from './constants';
 import { getFormatterFromCache } from './formatterCache';
-import { UnitConfig, UnitGroupConfig } from './types';
+import type { UnitConfig, UnitGroupConfig } from './types';
 import { hasDecimalPlaces, limitDecimalPlaces } from './utils';
 
 const TEMPERATURE_GROUP = 'Temperature';

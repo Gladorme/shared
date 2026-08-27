@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Transform } from '../model';
+import type { Transform } from '../model';
 import { transformData } from './transform-data';
 
 function generateMockFlattenQueriesResult(): Array<Record<string, unknown>> {

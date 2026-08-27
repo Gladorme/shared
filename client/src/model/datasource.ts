@@ -11,9 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DatasourceSpec, DatasourceSelector } from '@perses-dev/spec';
+import type { DatasourceSpec, DatasourceSelector } from '@perses-dev/spec';
 
-import { Metadata, ProjectMetadata } from './resource';
+import type { Metadata, ProjectMetadata } from './resource';
 export type { DatasourceSelector, DatasourceSpec };
 
 /**

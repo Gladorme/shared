@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { Box, Divider, Stack, Typography } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { SeriesMarker } from './SeriesMarker';
 

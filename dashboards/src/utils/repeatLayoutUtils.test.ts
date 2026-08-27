@@ -11,9 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { VariableStateMap } from '@perses-dev/plugin-system';
+import type { VariableStateMap } from '@perses-dev/plugin-system';
 
-import { PanelGroupItemLayout, RepeatVariable } from '../model';
+import type { PanelGroupItemLayout, RepeatVariable } from '../model';
 import {
   buildRepeatMeta,
   calcPerPanelWidth,

@@ -11,17 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  createContext,
-  ReactElement,
-  ReactNode,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
 export type GetIdFn<T, Id> = (item: T, index: number) => Id;
 

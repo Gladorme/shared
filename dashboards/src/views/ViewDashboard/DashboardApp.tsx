@@ -12,12 +12,14 @@
 // limitations under the License.
 
 import { Box } from '@mui/material';
-import { DashboardResource } from '@perses-dev/client';
+import type { DashboardResource } from '@perses-dev/client';
 import { ChartsProvider, ErrorAlert, ErrorBoundary, useChartsTheme } from '@perses-dev/components';
 import { useDatasourceStore } from '@perses-dev/plugin-system';
-import { DashboardSpec } from '@perses-dev/spec';
-import { ReactElement, ReactNode, useMemo, useState } from 'react';
+import type { DashboardSpec } from '@perses-dev/spec';
+import type { ReactElement, ReactNode } from 'react';
+import { useMemo, useState } from 'react';
 
+import type { EmptyDashboardProps } from '../../components';
 import {
   PanelDrawer,
   Dashboard,
@@ -27,12 +29,12 @@ import {
   DashboardDiscardChangesConfirmationDialog,
   DashboardToolbar,
   DeletePanelDialog,
-  EmptyDashboardProps,
   EditJsonDialog,
   SaveChangesConfirmationDialog,
   LeaveDialog,
 } from '../../components';
-import { OnSaveDashboard, useDashboard, useDiscardChangesConfirmationDialog, useEditMode } from '../../context';
+import type { OnSaveDashboard } from '../../context';
+import { useDashboard, useDiscardChangesConfirmationDialog, useEditMode } from '../../context';
 import { PanelFocusProvider } from '../../keyboard-shortcuts';
 
 export interface DashboardAppProps {

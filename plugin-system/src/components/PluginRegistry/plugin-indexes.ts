@@ -13,14 +13,14 @@
 
 import { useCallback, useRef } from 'react';
 
-import {
+import type {
   PluginLoader,
   PluginMetadataWithModule,
   PluginModuleResource,
   PluginType,
   PluginCompoundKey,
-  getPluginModuleCompoundKey,
 } from '../../model';
+import { getPluginModuleCompoundKey } from '../../model';
 import { useEvent } from '../../utils';
 
 export type { PluginCompoundKey };

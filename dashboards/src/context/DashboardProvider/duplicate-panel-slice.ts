@@ -11,13 +11,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { StateCreator } from 'zustand';
+import type { StateCreator } from 'zustand';
 
-import { PanelGroupItemId } from '../../model';
-import { generatePanelKey, insertPanelInLayout, UnpositionedPanelGroupItemLayout } from '../../utils';
-import { generateId, Middleware } from './common';
-import { PanelGroupSlice } from './panel-group-slice';
-import { PanelSlice } from './panel-slice';
+import type { PanelGroupItemId } from '../../model';
+import type { UnpositionedPanelGroupItemLayout } from '../../utils';
+import { generatePanelKey, insertPanelInLayout } from '../../utils';
+import type { Middleware } from './common';
+import { generateId } from './common';
+import type { PanelGroupSlice } from './panel-group-slice';
+import type { PanelSlice } from './panel-slice';
 
 /**
  * Slice that handles duplicating Panels.

@@ -12,12 +12,14 @@
 // limitations under the License.
 
 import { Grid2 as Grid, MenuItem, TextField, Typography } from '@mui/material';
-import { ReactElement, useMemo } from 'react';
-import { Control, Controller, useFormContext, useWatch } from 'react-hook-form';
+import type { ReactElement } from 'react';
+import { useMemo } from 'react';
+import type { Control } from 'react-hook-form';
+import { Controller, useFormContext, useWatch } from 'react-hook-form';
 
 import { DEFAULT_MAX_PER_ROW, DEFAULT_REPEAT_ALIGNMENT } from '../../constants';
-import { PanelEditorValues } from '../../model';
-import { VariableDefinitionGroup } from '../../model/variables';
+import type { PanelEditorValues } from '../../model';
+import type { VariableDefinitionGroup } from '../../model/variables';
 import { useVariableValues } from '../../runtime';
 import { RepeatLayoutPreview } from './RepeatLayoutPreview';
 import { RepeatVariableEditor } from './RepeatVariableEditor';

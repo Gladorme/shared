@@ -11,9 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FormControl, FormLabel, FormControlLabelProps, Stack, Box, IconButton } from '@mui/material';
+import type { FormControlLabelProps } from '@mui/material';
+import { FormControl, FormLabel, Stack, Box, IconButton } from '@mui/material';
 import InformationOutlineIcon from 'mdi-material-ui/InformationOutline';
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 
 import { InfoTooltip } from '../InfoTooltip';
 import { useId } from '../utils';

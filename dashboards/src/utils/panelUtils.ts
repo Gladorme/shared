@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { GRID_LAYOUT_SMALL_BREAKPOINT, GRID_LAYOUT_COLS } from '../constants';
-import { PanelGroupDefinition, PanelGroupItemLayout } from '../model';
+import type { PanelGroupDefinition, PanelGroupItemLayout } from '../model';
 
 // Given a PanelGroup, will find the Y coordinate for adding a new row to the grid, taking into account the items present
 export function getYForNewRow(group: PanelGroupDefinition): number {

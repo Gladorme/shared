@@ -12,8 +12,9 @@
 // limitations under the License.
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, RenderOptions, RenderResult } from '@testing-library/react';
-import { ReactElement } from 'react';
+import type { RenderOptions, RenderResult } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import type { ReactElement } from 'react';
 
 const queryClient = new QueryClient({ defaultOptions: { queries: { refetchOnWindowFocus: false } } });
 

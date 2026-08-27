@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AbsoluteTimeRange, DurationString } from '@perses-dev/spec';
-import { Duration } from 'date-fns';
+import type { AbsoluteTimeRange, DurationString } from '@perses-dev/spec';
+import type { Duration } from 'date-fns';
 
-import { FormatOptions } from './units';
+import type { FormatOptions } from './units';
 
 export type UnitGroup =
   | 'Time'

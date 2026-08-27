@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PersesColor } from './types';
+import type { PersesColor } from './types';
 
 export const grey: PersesColor = {
   50: '#F0F1F6',

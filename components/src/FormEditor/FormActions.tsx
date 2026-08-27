@@ -11,9 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Button, Divider, Stack, StackProps } from '@mui/material';
-import { Action } from '@perses-dev/client';
-import { ReactElement } from 'react';
+import type { StackProps } from '@mui/material';
+import { Button, Divider, Stack } from '@mui/material';
+import type { Action } from '@perses-dev/client';
+import type { ReactElement } from 'react';
 
 export interface FormActionsProps extends StackProps {
   action: Action;

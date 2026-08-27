@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { FocusEventHandler, KeyboardEventHandler, useCallback, useState } from 'react';
+import type { FocusEventHandler, KeyboardEventHandler } from 'react';
+import { useCallback, useState } from 'react';
 
 export interface UseTableKeyboardNavProps {
   maxRows: number;

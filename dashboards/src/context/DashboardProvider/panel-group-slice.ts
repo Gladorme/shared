@@ -11,13 +11,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PanelGroupId } from '@perses-dev/plugin-system';
-import { getPanelKeyFromRef, LayoutDefinition } from '@perses-dev/spec';
-import { WritableDraft } from 'immer';
-import { StateCreator } from 'zustand';
+import type { PanelGroupId } from '@perses-dev/plugin-system';
+import type { LayoutDefinition } from '@perses-dev/spec';
+import { getPanelKeyFromRef } from '@perses-dev/spec';
+import type { WritableDraft } from 'immer';
+import type { StateCreator } from 'zustand';
 
-import { PanelGroupDefinition } from '../../model';
-import { generateId, Middleware } from './common';
+import type { PanelGroupDefinition } from '../../model';
+import type { Middleware } from './common';
+import { generateId } from './common';
 
 /**
  * Slice with the state of Panel Groups, as well as any actions that modify only Panel Group state.

@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { interpolateHeaders, interpolateQueryParams } from './request-interpolation';
-import { VariableStateMap } from './variable-interpolation';
+import type { VariableStateMap } from './variable-interpolation';
 
 const variableState: VariableStateMap = {
   namespace: { value: 'default', loading: false },

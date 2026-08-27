@@ -11,21 +11,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TimeSeries, TimeSeriesValueTuple } from '@perses-dev/spec';
-import { BarSeriesOption } from 'echarts/charts';
-import { ECharts as EChartsInstance } from 'echarts/core';
+import type { TimeSeries, TimeSeriesValueTuple } from '@perses-dev/spec';
+import type { BarSeriesOption } from 'echarts/charts';
+import type { ECharts as EChartsInstance } from 'echarts/core';
 
-import {
-  EChartsDataFormat,
-  OPTIMIZED_MODE_SERIES_LIMIT,
-  TimeChartSeriesMapping,
-  DatapointInfo,
-  FormatOptions,
-  formatValue,
-} from '../model';
+import type { EChartsDataFormat, TimeChartSeriesMapping, DatapointInfo, FormatOptions } from '../model';
+import { OPTIMIZED_MODE_SERIES_LIMIT, formatValue } from '../model';
 import { batchDispatchNearbySeriesActions, getPointInGrid, getClosestTimestamp } from '../utils';
-import { CursorCoordinates, CursorData, EMPTY_TOOLTIP_DATA } from './tooltip-model';
-import { Candidate, GetYBufferParams, IsWithinPercentageRangeParams, NearbySeriesArray } from './types';
+import type { CursorCoordinates, CursorData } from './tooltip-model';
+import { EMPTY_TOOLTIP_DATA } from './tooltip-model';
+import type { Candidate, GetYBufferParams, IsWithinPercentageRangeParams, NearbySeriesArray } from './types';
 import {
   calculateBarBandwidth,
   calculateBarSegmentBounds,

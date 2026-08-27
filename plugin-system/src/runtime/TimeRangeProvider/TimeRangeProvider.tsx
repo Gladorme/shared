@@ -11,16 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  AbsoluteTimeRange,
-  DurationString,
-  TimeRangeValue,
-  isRelativeTimeRange,
-  toAbsoluteTimeRange,
-  getSuggestedStepMs,
-} from '@perses-dev/spec';
+import type { AbsoluteTimeRange, DurationString, TimeRangeValue } from '@perses-dev/spec';
+import { isRelativeTimeRange, toAbsoluteTimeRange, getSuggestedStepMs } from '@perses-dev/spec';
 import { useQueryClient } from '@tanstack/react-query';
-import React, { createContext, ReactElement, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import { getRefreshIntervalInMs } from './refresh-interval';
 import { useDisableAutoRefreshSetting } from './TimeRangeSettingsProvider';

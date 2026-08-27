@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { TableContainer as MuiTableContainer, TableContainerProps as MuiTableContainerProps } from '@mui/material';
+import type { TableContainerProps as MuiTableContainerProps } from '@mui/material';
+import { TableContainer as MuiTableContainer } from '@mui/material';
 import { forwardRef } from 'react';
 
 import { combineSx } from '../utils/combine-sx';

@@ -14,7 +14,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { FormatOptions } from '../model';
+import type { FormatOptions } from '../model';
 import { UnitSelector } from './UnitSelector';
 
 function renderUnitSelector(value: FormatOptions | undefined = undefined, onChange = vi.fn()): void {

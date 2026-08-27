@@ -17,9 +17,9 @@ import { useCallback, useState } from 'react';
 
 import { useDashboard } from '../useDashboard';
 import { useVariableDefinitionActions } from '../VariableProvider/VariableProvider';
-import { OnSaveDashboard } from './common';
+import type { OnSaveDashboard } from './common';
 import { useEditMode, useSaveChangesConfirmationDialog } from './dashboard-provider-api';
-import { SaveChangesConfirmationDialogOptions } from './save-changes-dialog-slice';
+import type { SaveChangesConfirmationDialogOptions } from './save-changes-dialog-slice';
 
 export interface SaveDashboardResult {
   /**

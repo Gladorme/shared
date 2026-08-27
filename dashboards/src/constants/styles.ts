@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { SxProps, Theme } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
 
 export const editButtonStyle: SxProps<Theme> = {
   whiteSpace: 'nowrap',

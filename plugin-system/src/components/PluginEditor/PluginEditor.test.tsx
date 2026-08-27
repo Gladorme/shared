@@ -13,12 +13,13 @@
 
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 import type { MockedFunction } from 'vitest';
 
-import { DefaultPluginKinds, PluginType } from '../../model';
+import type { DefaultPluginKinds, PluginType } from '../../model';
 import { renderWithContext } from '../../test';
-import { PluginEditorProps } from './plugin-editor-api';
+import type { PluginEditorProps } from './plugin-editor-api';
 import { PluginEditor } from './PluginEditor';
 
 type RenderComponentOptions = {

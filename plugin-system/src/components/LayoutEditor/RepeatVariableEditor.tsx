@@ -12,12 +12,13 @@
 // limitations under the License.
 
 import { Grid2 as Grid, ListSubheader, MenuItem, TextField, Typography } from '@mui/material';
-import { ReactElement, useCallback } from 'react';
-import { ControllerRenderProps, FieldErrors } from 'react-hook-form';
+import type { ReactElement } from 'react';
+import { useCallback } from 'react';
+import type { ControllerRenderProps, FieldErrors } from 'react-hook-form';
 
 import { DEFAULT_MAX_PER_ROW, DEFAULT_REPEAT_ALIGNMENT } from '../../constants';
-import { PanelEditorValues } from '../../model';
-import { VariableDefinitionGroup } from './LayoutEditor';
+import type { PanelEditorValues } from '../../model';
+import type { VariableDefinitionGroup } from './LayoutEditor';
 
 type RepeatVariableValue = ControllerRenderProps<PanelEditorValues, 'layoutDefinition.repeatVariable'>['value'];
 type RepeatVariableOnChange = ControllerRenderProps<PanelEditorValues, 'layoutDefinition.repeatVariable'>['onChange'];

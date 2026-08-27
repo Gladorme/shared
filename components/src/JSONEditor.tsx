@@ -14,8 +14,10 @@
 import { json, jsonParseLinter } from '@codemirror/lang-json';
 import { linter, lintGutter } from '@codemirror/lint';
 import { useTheme } from '@mui/material';
-import CodeMirror, { ReactCodeMirrorProps } from '@uiw/react-codemirror';
-import { ReactElement, useState } from 'react';
+import type { ReactCodeMirrorProps } from '@uiw/react-codemirror';
+import CodeMirror from '@uiw/react-codemirror';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
 type JSONEditorProps<T> = Omit<ReactCodeMirrorProps, 'onBlur' | 'theme' | 'extensions' | 'onChange' | 'value'> & {
   value: T;

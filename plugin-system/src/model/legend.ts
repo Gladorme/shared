@@ -11,17 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  isValidLegendMode,
-  isValidLegendPosition,
-  isValidLegendSize,
-  LegendMode,
-  LegendOptionsBase,
-  LegendPositions,
-  LegendSize,
-} from '@perses-dev/components';
+import type { LegendMode, LegendOptionsBase, LegendPositions, LegendSize } from '@perses-dev/components';
+import { isValidLegendMode, isValidLegendPosition, isValidLegendSize } from '@perses-dev/components';
 
-import { CALCULATIONS_CONFIG, CalculationType } from './calculations';
+import type { CalculationType } from './calculations';
+import { CALCULATIONS_CONFIG } from './calculations';
 
 // This file contains legend-related model code specific to panel plugin specs.
 // See the `core` package for common/shared legend model code and the

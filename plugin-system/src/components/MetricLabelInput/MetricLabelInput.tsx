@@ -13,7 +13,7 @@
 
 import { TextField } from '@mui/material';
 import { OptionsEditorControl } from '@perses-dev/components';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 export interface MetricLabelInputProps {
   value?: string;

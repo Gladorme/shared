@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AnnotationData, AnnotationSpec } from '@perses-dev/spec';
-import { QueryKey, useQueries, useQuery, UseQueryResult } from '@tanstack/react-query';
+import type { AnnotationData, AnnotationSpec } from '@perses-dev/spec';
+import type { QueryKey, UseQueryResult } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 
-import { AnnotationContext, AnnotationPlugin } from '../model';
+import type { AnnotationContext, AnnotationPlugin } from '../model';
 import { useDatasourceStore } from './datasources';
 import { usePlugin, usePluginRegistry, usePlugins } from './plugin-registry';
 import { useTimeRange } from './TimeRangeProvider';

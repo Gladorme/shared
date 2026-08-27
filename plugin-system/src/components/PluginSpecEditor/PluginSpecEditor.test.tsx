@@ -11,12 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DatasourceSpec } from '@perses-dev/spec';
+import type { DatasourceSpec } from '@perses-dev/spec';
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { renderWithContext } from '../../test';
-import { PluginSpecEditor, PluginSpecEditorProps } from './PluginSpecEditor';
+import type { PluginSpecEditorProps } from './PluginSpecEditor';
+import { PluginSpecEditor } from './PluginSpecEditor';
 
 describe('PluginSpecEditor', () => {
   const renderComponent = (props: PluginSpecEditorProps): void => {

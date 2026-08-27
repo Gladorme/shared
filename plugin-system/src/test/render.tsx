@@ -11,10 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { render, RenderOptions, RenderResult } from '@testing-library/react';
-import { ReactNode } from 'react';
+import type { RenderOptions, RenderResult } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import type { ReactNode } from 'react';
 
-import { ContextOptions, getTestContextWrapper } from './utils';
+import type { ContextOptions } from './utils';
+import { getTestContextWrapper } from './utils';
 
 /**
  * Test helper to render a React component with some common app-level providers, as well as the PluginRegistry

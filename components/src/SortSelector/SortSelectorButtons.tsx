@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Button, ButtonGroup, ButtonGroupProps } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ButtonGroupProps } from '@mui/material';
+import { Button, ButtonGroup } from '@mui/material';
+import type { ReactElement } from 'react';
 
-import { SortOption } from './SortSelector';
+import type { SortOption } from './SortSelector';
 
 export interface SortSelectorButtonsProps extends Omit<ButtonGroupProps, 'onChange'> {
   value?: SortOption;

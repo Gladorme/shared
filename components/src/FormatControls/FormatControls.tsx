@@ -10,10 +10,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-import { Switch, SwitchProps } from '@mui/material';
-import { ReactElement } from 'react';
+import type { SwitchProps } from '@mui/material';
+import { Switch } from '@mui/material';
+import type { ReactElement } from 'react';
 
-import { FormatOptions, isUnitWithDecimalPlaces, isUnitWithShortValues, shouldShortenValues } from '../model';
+import type { FormatOptions } from '../model';
+import { isUnitWithDecimalPlaces, isUnitWithShortValues, shouldShortenValues } from '../model';
 import { OptionsEditorControl } from '../OptionsEditorLayout';
 import { SettingsAutocomplete } from '../SettingsAutocomplete';
 import { UnitSelector } from './UnitSelector';

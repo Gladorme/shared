@@ -12,9 +12,10 @@
 // limitations under the License.
 
 import { useAnnotations } from '@perses-dev/plugin-system';
-import { AnnotationData } from '@perses-dev/spec';
-import { UseQueryResult } from '@tanstack/react-query';
-import { ReactNode, useEffect } from 'react';
+import type { AnnotationData } from '@perses-dev/spec';
+import type { UseQueryResult } from '@tanstack/react-query';
+import type { ReactNode } from 'react';
+import { useEffect } from 'react';
 
 import { useAnnotationActions, useAnnotationSpecs } from './AnnotationProvider';
 

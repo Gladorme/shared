@@ -11,8 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { BaseMetadata } from '@perses-dev/spec';
-import { TracesData } from '@perses-dev/spec/dist/dashboard/query-type/otlp/trace/v1/trace';
+import type { BaseMetadata } from '@perses-dev/spec';
+import type { TracesData } from '@perses-dev/spec/dist/dashboard/query-type/otlp/trace/v1/trace';
 
 /**
  * Partial trace information returned by search endpoint

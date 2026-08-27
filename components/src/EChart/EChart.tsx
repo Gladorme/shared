@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Box, SxProps, Theme } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
+import { Box } from '@mui/material';
 import {
   BarChart as EChartsBarChart,
   LineChart as EChartsLineChart,
@@ -34,13 +35,15 @@ import {
   MarkAreaComponent,
   MarkLineComponent,
 } from 'echarts/components';
-import { ECharts, EChartsCoreOption, init, connect, use as registerEChartsComponents } from 'echarts/core';
+import type { ECharts, EChartsCoreOption } from 'echarts/core';
+import { init, connect, use as registerEChartsComponents } from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import debounce from 'lodash/debounce';
 import isEqual from 'lodash/isEqual';
-import { CSSProperties, memo, useEffect, useLayoutEffect, useRef } from 'react';
+import type { CSSProperties } from 'react';
+import { memo, useEffect, useLayoutEffect, useRef } from 'react';
 
-import { EChartsTheme } from '../model';
+import type { EChartsTheme } from '../model';
 
 // Loading the ECharts extensions should happen in the respective plugins.
 // This is a workaround for https://github.com/perses/plugins/issues/83.

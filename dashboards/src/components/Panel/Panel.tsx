@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Card, CardContent, CardProps } from '@mui/material';
+import type { CardProps } from '@mui/material';
+import { Card, CardContent } from '@mui/material';
 import {
   ErrorAlert,
   ErrorBoundary,
@@ -20,14 +21,17 @@ import {
   combineSx,
   useId,
 } from '@perses-dev/components';
-import { ActionOptions, useDataQueriesContext, usePluginRegistry } from '@perses-dev/plugin-system';
-import { PanelDefinition } from '@perses-dev/spec';
-import { ReactNode, memo, useEffect, useMemo, useState } from 'react';
+import type { ActionOptions } from '@perses-dev/plugin-system';
+import { useDataQueriesContext, usePluginRegistry } from '@perses-dev/plugin-system';
+import type { PanelDefinition } from '@perses-dev/spec';
+import type { ReactNode } from 'react';
+import { memo, useEffect, useMemo, useState } from 'react';
 import useResizeObserver from 'use-resize-observer';
 
-import { PanelGroupItemId } from '../../model';
+import type { PanelGroupItemId } from '../../model';
 import { PanelContent } from './PanelContent';
-import { PanelHeader, PanelHeaderProps } from './PanelHeader';
+import type { PanelHeaderProps } from './PanelHeader';
+import { PanelHeader } from './PanelHeader';
 
 export interface PanelProps extends CardProps<'section'> {
   definition: PanelDefinition;

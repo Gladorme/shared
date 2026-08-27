@@ -11,9 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { QueryDefinition, UnknownSpec, QueryDataType } from '@perses-dev/spec';
-import { QueryObserverOptions, UseQueryResult } from '@tanstack/react-query';
-import { ReactNode } from 'react';
+import type { QueryDefinition, UnknownSpec, QueryDataType } from '@perses-dev/spec';
+import type { QueryObserverOptions, UseQueryResult } from '@tanstack/react-query';
+import type { ReactNode } from 'react';
 
 export type QueryOptions = Record<string, unknown>;
 export interface DataQueriesProviderProps<Kind = unknown, PluginSpec = UnknownSpec> {

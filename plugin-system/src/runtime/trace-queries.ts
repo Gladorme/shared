@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { QueryDefinition, UnknownSpec, TraceData } from '@perses-dev/spec';
-import { QueryKey, useQueries, UseQueryResult } from '@tanstack/react-query';
+import type { QueryDefinition, UnknownSpec, TraceData } from '@perses-dev/spec';
+import type { QueryKey, UseQueryResult } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 
-import { TraceQueryContext, TraceQueryPlugin } from '../model';
+import type { TraceQueryContext, TraceQueryPlugin } from '../model';
 import { useDatasourceStore } from './datasources';
 import { usePluginRegistry, usePlugins } from './plugin-registry';
 import { useTimeRange } from './TimeRangeProvider';

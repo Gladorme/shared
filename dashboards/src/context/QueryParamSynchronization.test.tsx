@@ -12,10 +12,10 @@
 // limitations under the License.
 
 import { TimeRangeProviderBasic } from '@perses-dev/plugin-system';
-import { VariableDefinition } from '@perses-dev/spec';
+import type { VariableDefinition } from '@perses-dev/spec';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { createDashboardProviderSpy, getTestDashboard, renderWithContext } from '../test';
 import { DashboardProviderWithQueryParams } from './DashboardProvider/DashboardProviderWithQueryParams';

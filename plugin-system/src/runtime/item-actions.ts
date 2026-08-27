@@ -11,16 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { type FetchFn } from '@perses-dev/client';
-import {
-  ActionStatus,
-  interpolateSelectionBatch,
-  interpolateSelectionIndividual,
-  SelectionItem,
-  VariableStateMap,
-} from '@perses-dev/components';
+import type { FetchFn } from '@perses-dev/client';
+import type { ActionStatus, SelectionItem, VariableStateMap } from '@perses-dev/components';
+import { interpolateSelectionBatch, interpolateSelectionIndividual } from '@perses-dev/components';
 
-import { ItemAction, EventAction, WebhookAction } from '../components/ItemSelectionActionsOptionsEditor';
+import type { ItemAction, EventAction, WebhookAction } from '../components/ItemSelectionActionsOptionsEditor';
 
 const BODY_METHODS = new Set(['POST', 'PUT', 'PATCH']);
 

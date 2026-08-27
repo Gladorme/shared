@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { PanelEditorValues, PanelGroupId } from '@perses-dev/plugin-system';
+import type { PanelEditorValues, PanelGroupId } from '@perses-dev/plugin-system';
 
 export type RepeatVariable = NonNullable<NonNullable<PanelEditorValues['layoutDefinition']>['repeatVariable']>;
 

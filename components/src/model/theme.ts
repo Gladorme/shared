@@ -22,7 +22,7 @@ import type {
   YAXisComponentOption,
 } from 'echarts';
 
-import { ThresholdColorPalette } from './thresholds';
+import type { ThresholdColorPalette } from './thresholds';
 
 export interface PersesChartsTheme {
   echartsTheme: EChartsTheme;

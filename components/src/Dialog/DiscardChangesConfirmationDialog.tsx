@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { Button } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { Dialog } from './Dialog';
 

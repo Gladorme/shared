@@ -12,10 +12,11 @@
 // limitations under the License.
 
 import { useAnnotations } from '@perses-dev/plugin-system';
-import { AnnotationSpec } from '@perses-dev/spec';
+import type { AnnotationSpec } from '@perses-dev/spec';
 import { useMemo } from 'react';
 
-import { AnnotationSpecWithData, useAnnotationsWithData } from './AnnotationProvider';
+import type { AnnotationSpecWithData } from './AnnotationProvider';
+import { useAnnotationsWithData } from './AnnotationProvider';
 
 /**
  * Returns the annotations to display on a single panel:

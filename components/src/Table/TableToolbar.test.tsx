@@ -13,9 +13,11 @@
 
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
-import { TableToolbar, TableToolbarProps } from './TableToolbar';
+import type { TableToolbarProps } from './TableToolbar';
+import { TableToolbar } from './TableToolbar';
 
 function TableToolbarWrapper(props: Partial<TableToolbarProps<unknown>> = {}): ReactElement {
   const [globalFilter, setGlobalFilter] = useState('');

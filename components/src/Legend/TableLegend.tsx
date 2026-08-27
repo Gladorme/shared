@@ -11,10 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ReactElement, useMemo } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo } from 'react';
 
-import { Table, TableProps, TableColumnConfig, DEFAULT_COLUMN_WIDTH, DEFAULT_COLUMN_MIN_WIDTH } from '../Table';
-import { LegendItem } from './legend-model';
+import type { TableProps, TableColumnConfig } from '../Table';
+import { Table, DEFAULT_COLUMN_WIDTH, DEFAULT_COLUMN_MIN_WIDTH } from '../Table';
+import type { LegendItem } from './legend-model';
 
 export interface TableLegendProps extends Pick<TableProps<LegendItem>, 'sorting' | 'onSortingChange'> {
   items: LegendItem[];

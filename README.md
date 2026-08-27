@@ -19,8 +19,8 @@ This monorepo manages the core UI libraries that power the Perses platform. Each
 
 ### Prerequisites
 
-- Node.js 22+ 
-- npm 10+
+- Node.js 24+
+- npm 11+
 
 ### Installation
 

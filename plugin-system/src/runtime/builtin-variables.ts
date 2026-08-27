@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { BuiltinVariableDefinition } from '@perses-dev/spec';
+import type { BuiltinVariableDefinition } from '@perses-dev/spec';
 import { createContext, useContext, useMemo } from 'react';
 
-import { VariableStateMap } from './variables';
+import type { VariableStateMap } from './variables';
 
 export type BuiltinVariableSrv = {
   variables: BuiltinVariableDefinition[];

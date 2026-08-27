@@ -11,18 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  TimeRangeValue,
-  isRelativeTimeRange,
-  isDurationString,
-  DurationString,
-  AbsoluteTimeRange,
-} from '@perses-dev/spec';
+import type { TimeRangeValue, DurationString, AbsoluteTimeRange } from '@perses-dev/spec';
+import { isRelativeTimeRange, isDurationString } from '@perses-dev/spec';
 import { getUnixTime, isDate } from 'date-fns';
 import { useMemo, useCallback, useEffect, useState } from 'react';
-import { QueryParamConfig, useQueryParams, StringParam } from 'use-query-params';
+import type { QueryParamConfig } from 'use-query-params';
+import { useQueryParams, StringParam } from 'use-query-params';
 
-import { TimeRange } from './TimeRangeProvider';
+import type { TimeRange } from './TimeRangeProvider';
 
 export type TimeOptionValue = Date | DurationString | null | undefined;
 

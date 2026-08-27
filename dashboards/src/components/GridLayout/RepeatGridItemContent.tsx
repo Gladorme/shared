@@ -12,11 +12,12 @@
 // limitations under the License.
 
 import { RepeatGrid } from '@perses-dev/components';
-import { PanelGroupId } from '@perses-dev/plugin-system';
-import { ReactNode, useMemo } from 'react';
+import type { PanelGroupId } from '@perses-dev/plugin-system';
+import type { ReactNode } from 'react';
+import { useMemo } from 'react';
 
 import { calcPerPanelWidth } from '../../utils/repeatLayoutUtils';
-import { PanelOptions } from '../Panel/Panel';
+import type { PanelOptions } from '../Panel/Panel';
 import { FixedValueVariableProvider } from '../Variables';
 import { GridItemContent } from './GridItemContent';
 

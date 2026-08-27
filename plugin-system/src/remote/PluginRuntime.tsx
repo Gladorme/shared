@@ -25,14 +25,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { createInstance, ModuleFederation } from '@module-federation/enhanced/runtime';
+import type { ModuleFederation } from '@module-federation/enhanced/runtime';
+import { createInstance } from '@module-federation/enhanced/runtime';
 import * as ReactQuery from '@tanstack/react-query';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import * as ReactHookForm from 'react-hook-form';
 import * as ReactRouterDOM from 'react-router-dom';
 
-import { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
+import type { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
 
 let instance: ModuleFederation | null = null;
 

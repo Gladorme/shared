@@ -11,10 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Theme } from '@mui/material';
+import type { Theme } from '@mui/material';
 import merge from 'lodash/merge';
 
-import { EChartsTheme, PersesChartsTheme } from '../model';
+import type { EChartsTheme, PersesChartsTheme } from '../model';
 
 const DEFAULT_TEXT_COLOR = '#222';
 

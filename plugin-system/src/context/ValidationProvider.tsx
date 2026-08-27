@@ -11,20 +11,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { buildDatasourceDefinitionSchema, DatasourceDefinition, datasourceDefinitionSchema } from '@perses-dev/client';
+import type { DatasourceDefinition } from '@perses-dev/client';
+import { buildDatasourceDefinitionSchema, datasourceDefinitionSchema } from '@perses-dev/client';
+import type { AnnotationSpec, PluginSchema, VariableDefinition } from '@perses-dev/spec';
 import {
-  AnnotationSpec,
   annotationSpecSchema,
   buildAnnotationSpecSchema,
   buildVariableDefinitionSchema,
-  PluginSchema,
-  VariableDefinition,
   variableDefinitionSchema,
 } from '@perses-dev/spec';
-import { createContext, ReactElement, ReactNode, useContext, useState } from 'react';
-import { z } from 'zod';
+import type { ReactElement, ReactNode } from 'react';
+import { createContext, useContext, useState } from 'react';
+import type { z } from 'zod';
 
-import { PanelEditorValues } from '../model';
+import type { PanelEditorValues } from '../model';
 import { buildPanelEditorSchema, panelEditorSchema as defaultPanelEditorSchema } from '../schema';
 
 export interface ValidationSchemas {

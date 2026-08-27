@@ -11,9 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AnnotationData, AnnotationSpec } from '@perses-dev/spec';
-import { createContext, ReactNode, useContext, useState } from 'react';
-import { createStore, StoreApi, useStore } from 'zustand';
+import type { AnnotationData, AnnotationSpec } from '@perses-dev/spec';
+import type { ReactNode } from 'react';
+import { createContext, useContext, useState } from 'react';
+import type { StoreApi } from 'zustand';
+import { createStore, useStore } from 'zustand';
 import { devtools } from 'zustand/middleware';
 import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/shallow';

@@ -15,16 +15,13 @@ import { createTheme } from '@mui/material';
 
 import { legendModes, legendSizes } from '../../model';
 import * as table from '../../Table';
-import {
-  ContentWithLegendLayoutOpts,
-  TABLE_LEGEND_SIZE,
-  getContentWithLegendLayout,
-} from './content-with-legend-model';
+import type { ContentWithLegendLayoutOpts } from './content-with-legend-model';
+import { TABLE_LEGEND_SIZE, getContentWithLegendLayout } from './content-with-legend-model';
 
 // Workaround to get spyOn to work without a cannot redefine property error.
 // https://github.com/microsoft/TypeScript/issues/43081#issuecomment-1352352654
 vi.mock('../../Table', async () => {
-  const actual = await vi.importActual<typeof import('../../Table')>('../../Table');
+  const actual = await vi.importActual<typeof table>('../../Table');
   return {
     __esModule: true,
     ...actual,

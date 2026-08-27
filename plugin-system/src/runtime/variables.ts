@@ -11,13 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import {
-  VariableOption,
-  VariableState,
-  VariableStateMap,
-  parseVariables,
-  replaceVariables,
-} from '@perses-dev/components';
+import type { VariableOption, VariableState, VariableStateMap } from '@perses-dev/components';
+import { parseVariables, replaceVariables } from '@perses-dev/components';
 import { immerable } from 'immer';
 import { createContext, useContext, useMemo } from 'react';
 

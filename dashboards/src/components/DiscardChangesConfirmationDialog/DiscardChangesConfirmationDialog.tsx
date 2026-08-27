@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { DiscardChangesConfirmationDialog } from '@perses-dev/components';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { useDiscardChangesConfirmationDialog } from '../../context';
 

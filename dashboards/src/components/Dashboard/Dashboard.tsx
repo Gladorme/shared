@@ -11,14 +11,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Box, BoxProps } from '@mui/material';
+import type { BoxProps } from '@mui/material';
+import { Box } from '@mui/material';
 import { ErrorBoundary, ErrorAlert } from '@perses-dev/components';
-import { ReactElement, useRef } from 'react';
+import type { ReactElement } from 'react';
+import { useRef } from 'react';
 
 import { usePanelGroupIds } from '../../context';
-import { EmptyDashboard, EmptyDashboardProps } from '../EmptyDashboard';
+import type { EmptyDashboardProps } from '../EmptyDashboard';
+import { EmptyDashboard } from '../EmptyDashboard';
 import { GridLayout } from '../GridLayout';
-import { PanelOptions } from '../Panel';
+import type { PanelOptions } from '../Panel';
 
 export type DashboardProps = BoxProps & {
   /**

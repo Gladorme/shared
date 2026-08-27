@@ -13,7 +13,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Box, Typography, Switch, TextField, Grid, FormControlLabel, MenuItem, Stack, Divider } from '@mui/material';
-import { Action } from '@perses-dev/client';
+import type { Action } from '@perses-dev/client';
 import {
   DiscardChangesConfirmationDialog,
   ErrorAlert,
@@ -22,15 +22,18 @@ import {
   getSubmitText,
   getTitleAction,
 } from '@perses-dev/components';
-import { VariableDefinition, ListVariableDefinition } from '@perses-dev/spec';
+import type { VariableDefinition, ListVariableDefinition } from '@perses-dev/spec';
 import { useQueryClient } from '@tanstack/react-query';
-import { DispatchWithoutAction, ReactElement, useCallback, useState } from 'react';
-import { Control, Controller, FormProvider, SubmitHandler, useForm, useFormContext, useWatch } from 'react-hook-form';
+import type { DispatchWithoutAction, ReactElement } from 'react';
+import { useCallback, useState } from 'react';
+import type { Control, SubmitHandler } from 'react-hook-form';
+import { Controller, FormProvider, useForm, useFormContext, useWatch } from 'react-hook-form';
 
 import { useValidationSchemas } from '../../../context';
 import { PluginEditor } from '../../PluginEditor';
 import { VARIABLE_TYPES } from '../variable-model';
-import { SORT_METHODS, SortMethodName } from './variable-editor-form-model';
+import type { SortMethodName } from './variable-editor-form-model';
+import { SORT_METHODS } from './variable-editor-form-model';
 import { VariableListPreview, VariablePreview } from './VariablePreview';
 
 function FallbackPreview(): ReactElement {

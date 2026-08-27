@@ -12,24 +12,25 @@
 // limitations under the License.
 
 import { Stack } from '@mui/material';
+import type { TimeOption, TimeZoneOption } from '@perses-dev/components';
 import {
   RefreshIntervalPicker,
   InfoTooltip,
-  TimeOption,
   ToolbarIconButton,
   TimeRangeSelector,
-  TimeZoneOption,
   getTimeZoneOptions,
   buildRelativeTimeOption,
 } from '@perses-dev/components';
-import { AbsoluteTimeRange, DurationString, parseDurationString, RelativeTimeRange } from '@perses-dev/spec';
+import type { AbsoluteTimeRange, DurationString, RelativeTimeRange } from '@perses-dev/spec';
+import { parseDurationString } from '@perses-dev/spec';
 import { milliseconds } from 'date-fns';
 // eslint-disable-next-line import/no-duplicates
 import ZoomOut from 'mdi-material-ui/MinusCircleOutline';
 // eslint-disable-next-line import/no-duplicates
 import ZoomIn from 'mdi-material-ui/PlusCircleOutline';
 import RefreshIcon from 'mdi-material-ui/Refresh';
-import { ReactElement, useCallback } from 'react';
+import type { ReactElement } from 'react';
+import { useCallback } from 'react';
 
 import { TOOLTIP_TEXT } from '../../constants';
 import {

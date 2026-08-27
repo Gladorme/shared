@@ -11,9 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
-import { OptionsEditorProps, PanelPlugin } from '../../../model';
+import type { OptionsEditorProps, PanelPlugin } from '../../../model';
 
 function BertPanel1Editor({ value, onChange }: OptionsEditorProps<{ option1: string }>): ReactElement {
   return (

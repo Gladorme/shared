@@ -11,19 +11,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ListVariableDefinition, VariableDefinition, VariableValue } from '@perses-dev/spec';
-import { useQueries, useQuery, UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
+import type { ListVariableDefinition, VariableDefinition, VariableValue } from '@perses-dev/spec';
+import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import { useCallback, useMemo, useState } from 'react';
 
-import { GetVariableOptionsContext, VariableOption, VariablePlugin } from '../../model';
-import {
-  useAllVariableValues,
-  useDatasourceStore,
-  usePlugin,
-  usePlugins,
-  useTimeRange,
-  VariableStateMap,
-} from '../../runtime';
+import type { GetVariableOptionsContext, VariableOption, VariablePlugin } from '../../model';
+import type { VariableStateMap } from '../../runtime';
+import { useAllVariableValues, useDatasourceStore, usePlugin, usePlugins, useTimeRange } from '../../runtime';
 
 export function filterVariableList(data: VariableOption[], capturedRegexp: RegExp): VariableOption[] {
   const result: VariableOption[] = [];

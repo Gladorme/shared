@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { JsonParam, useQueryParam } from 'use-query-params';
 
-import { DashboardProvider, DashboardProviderProps } from './DashboardProvider';
+import type { DashboardProviderProps } from './DashboardProvider';
+import { DashboardProvider } from './DashboardProvider';
 
 export function DashboardProviderWithQueryParams({ children, initialState }: DashboardProviderProps): ReactElement {
   const [viewPanelRef, setViewPanelRef] = useQueryParam('viewPanelRef', JsonParam);

@@ -11,11 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Button, Stack, StackProps } from '@mui/material';
+import type { StackProps } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import AddIcon from 'mdi-material-ui/Plus';
-import { ReactElement, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useState } from 'react';
 
-import { Transform } from '../model';
+import type { Transform } from '../model';
 import { TransformEditorContainer } from './TransformEditorContainer';
 
 export interface TransformsEditorProps extends Omit<StackProps, 'onChange'> {

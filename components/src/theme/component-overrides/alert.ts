@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Components, Theme, alertClasses, linkClasses } from '@mui/material';
+import type { Components, Theme } from '@mui/material';
+import { alertClasses, linkClasses } from '@mui/material';
 
 export const MuiAlert: Components<Theme>['MuiAlert'] = {
   defaultProps: {

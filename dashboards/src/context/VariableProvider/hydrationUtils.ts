@@ -11,10 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { VariableStoreStateMap, VariableState } from '@perses-dev/plugin-system';
-import { DEFAULT_ALL_VALUE, VariableValue, VariableDefinition } from '@perses-dev/spec';
+import type { VariableState } from '@perses-dev/plugin-system';
+import { VariableStoreStateMap } from '@perses-dev/plugin-system';
+import type { VariableValue, VariableDefinition } from '@perses-dev/spec';
+import { DEFAULT_ALL_VALUE } from '@perses-dev/spec';
 
-import { ExternalVariableDefinition } from '../../model/VariableDefinition';
+import type { ExternalVariableDefinition } from '../../model/VariableDefinition';
 
 // TODO: move to VariableProvider/utils.ts
 function hydrateVariableState(variable: VariableDefinition, initialValue?: VariableValue): VariableState {

@@ -15,9 +15,12 @@ import { ChartsProvider, SnackbarProvider, testChartsTheme } from '@perses-dev/c
 import { mockPluginRegistry, PluginRegistry } from '@perses-dev/plugin-system';
 import { HotkeysProvider } from '@tanstack/react-hotkeys';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, RenderOptions, RenderResult } from '@testing-library/react';
-import { createMemoryHistory, MemoryHistory } from 'history';
-import { ReactElement, useLayoutEffect, useState } from 'react';
+import type { RenderOptions, RenderResult } from '@testing-library/react';
+import { render } from '@testing-library/react';
+import type { MemoryHistory } from 'history';
+import { createMemoryHistory } from 'history';
+import type { ReactElement } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { Router } from 'react-router-dom';
 import { QueryParamProvider } from 'use-query-params';
 import { ReactRouter6Adapter } from 'use-query-params/adapters/react-router-6';

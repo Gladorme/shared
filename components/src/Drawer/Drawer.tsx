@@ -11,8 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Drawer as MuiDrawer, DrawerProps as MuiDrawerProps, useMediaQuery } from '@mui/material';
-import { ReactElement } from 'react';
+import type { DrawerProps as MuiDrawerProps } from '@mui/material';
+import { Drawer as MuiDrawer, useMediaQuery } from '@mui/material';
+import type { ReactElement } from 'react';
 
 import { combineSx } from '../utils';
 

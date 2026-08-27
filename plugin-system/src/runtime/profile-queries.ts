@@ -11,8 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { QueryDefinition, UnknownSpec, ProfileData } from '@perses-dev/spec';
-import { useQueries, UseQueryResult } from '@tanstack/react-query';
+import type { QueryDefinition, UnknownSpec, ProfileData } from '@perses-dev/spec';
+import type { UseQueryResult } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 
 import { useDatasourceStore } from './datasources';
 import { usePluginRegistry } from './plugin-registry';

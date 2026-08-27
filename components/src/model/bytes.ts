@@ -15,7 +15,7 @@ import numbro from 'numbro';
 
 import { MAX_SIGNIFICANT_DIGITS } from './constants';
 import { getFormatterFromCache } from './formatterCache';
-import { UnitGroupConfig, UnitConfig } from './types';
+import type { UnitGroupConfig, UnitConfig } from './types';
 import { hasDecimalPlaces, limitDecimalPlaces, shouldShortenValues } from './utils';
 
 /**

@@ -11,8 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Button, styled, ButtonProps } from '@mui/material';
-import { ForwardedRef, forwardRef, ReactElement } from 'react';
+import type { ButtonProps } from '@mui/material';
+import { Button, styled } from '@mui/material';
+import type { ForwardedRef, ReactElement } from 'react';
+import { forwardRef } from 'react';
 
 type ToolbarIconButtonProps = ButtonProps;
 

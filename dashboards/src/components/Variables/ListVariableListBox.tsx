@@ -12,9 +12,10 @@
 // limitations under the License.
 
 import { Checkbox, Divider } from '@mui/material';
-import { VariableOption } from '@perses-dev/plugin-system';
+import type { VariableOption } from '@perses-dev/plugin-system';
 import { DEFAULT_ALL_VALUE } from '@perses-dev/spec';
-import React, { ForwardedRef, HTMLAttributes, ReactNode, forwardRef, useContext, useMemo } from 'react';
+import type { ForwardedRef, HTMLAttributes, ReactNode } from 'react';
+import React, { forwardRef, useContext, useMemo } from 'react';
 
 export interface ListVariableListBoxContextValue {
   options: VariableOption[];

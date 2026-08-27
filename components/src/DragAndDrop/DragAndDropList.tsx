@@ -20,10 +20,12 @@ import {
   dropTargetForElements,
 } from '@atlaskit/pragmatic-drag-and-drop/element/adapter';
 import { Stack } from '@mui/material';
-import { ReactElement, ReactNode, useEffect, useRef, useState } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import { DropIndicator } from './DropIndicator';
-import { idle, State } from './model';
+import type { State } from './model';
+import { idle } from './model';
 
 interface MonitorElementsProps {
   elements: Array<Record<string, unknown>>;

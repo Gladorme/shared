@@ -11,14 +11,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Theme } from '@mui/material';
-import { BarSeriesOption, LineSeriesOption } from 'echarts/charts';
-import { ECharts as EChartsInstance } from 'echarts/core';
+import type { Theme } from '@mui/material';
+import type { BarSeriesOption, LineSeriesOption } from 'echarts/charts';
+import type { ECharts as EChartsInstance } from 'echarts/core';
 
-import { TimeChartSeriesMapping } from '../model';
+import type { TimeChartSeriesMapping } from '../model';
+import type { CursorCoordinates, CursorData } from './tooltip-model';
 import {
-  CursorCoordinates,
-  CursorData,
   TOOLTIP_MAX_WIDTH,
   TOOLTIP_MAX_HEIGHT,
   TOOLTIP_MIN_WIDTH,

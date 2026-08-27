@@ -12,9 +12,10 @@
 // limitations under the License.
 
 import { FormControl, TextField, MenuItem, Typography } from '@mui/material';
-import { FormEventHandler, ReactElement, useState } from 'react';
+import type { FormEventHandler, ReactElement } from 'react';
+import { useState } from 'react';
 
-import { PanelGroupEditorValues } from '../../context';
+import type { PanelGroupEditorValues } from '../../context';
 
 export interface PanelGroupEditorFormProps {
   initialValues: PanelGroupEditorValues;

@@ -11,9 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { buildRelativeTimeOption, TimeOption } from '@perses-dev/components';
-import { DurationString } from '@perses-dev/spec';
-import { createContext, ReactElement, ReactNode, useContext, useMemo } from 'react';
+import type { TimeOption } from '@perses-dev/components';
+import { buildRelativeTimeOption } from '@perses-dev/components';
+import type { DurationString } from '@perses-dev/spec';
+import type { ReactElement, ReactNode } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 const DEFAULT_OPTIONS: DurationString[] = ['5m', '15m', '30m', '1h', '6h', '12h', '24h', '7d', '14d'];
 const defaultTimeRangeSettings: TimeRangeSettings = {

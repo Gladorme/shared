@@ -15,12 +15,13 @@ import { IconButton, ToggleButton, ToggleButtonGroup, Typography } from '@mui/ma
 import { Stack } from '@mui/system';
 import { produce } from 'immer';
 import PlusIcon from 'mdi-material-ui/Plus';
-import React, { ReactElement, useEffect, useRef } from 'react';
+import type { ReactElement } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { OptionsColorPicker } from '../ColorPicker/OptionsColorPicker';
 import { useChartsTheme } from '../context/ChartsProvider';
 import { InfoTooltip } from '../InfoTooltip';
-import { ThresholdOptions } from '../model';
+import type { ThresholdOptions } from '../model';
 import { OptionsEditorControl, OptionsEditorGroup } from '../OptionsEditorLayout';
 import { ThresholdInput } from './ThresholdInput';
 

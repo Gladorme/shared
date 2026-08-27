@@ -12,7 +12,8 @@
 // limitations under the License.
 
 // Allows extending Lab types/components also
-import type {} from '@mui/lab/themeAugmentation';
+// oxlint-disable-next-line import/no-unassigned-import -- This declaration intentionally loads MUI Lab's type augmentation.
+import '@mui/lab/themeAugmentation';
 
 // Use Typescript interface augmentation to extend the MUI type definition
 declare module '@mui/material' {

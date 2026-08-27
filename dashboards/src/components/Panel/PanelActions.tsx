@@ -13,8 +13,8 @@
 
 import { Stack, Box, CircularProgress, styled, Popper, ClickAwayListener } from '@mui/material';
 import { InfoTooltip } from '@perses-dev/components';
-import { QueryData } from '@perses-dev/plugin-system';
-import { Link, Notice } from '@perses-dev/spec';
+import type { QueryData } from '@perses-dev/plugin-system';
+import type { Link, Notice } from '@perses-dev/spec';
 import AlertIcon from 'mdi-material-ui/Alert';
 import AlertCircleIcon from 'mdi-material-ui/AlertCircle';
 import ArrowCollapseIcon from 'mdi-material-ui/ArrowCollapse';
@@ -27,7 +27,8 @@ import InformationOutlineIcon from 'mdi-material-ui/InformationOutline';
 import LightningBoltIcon from 'mdi-material-ui/LightningBolt';
 import MenuIcon from 'mdi-material-ui/Menu';
 import PencilIcon from 'mdi-material-ui/PencilOutline';
-import { isValidElement, PropsWithChildren, ReactElement, ReactNode, useMemo, useState, MouseEvent } from 'react';
+import type { PropsWithChildren, ReactElement, ReactNode, MouseEvent } from 'react';
+import { isValidElement, useMemo, useState } from 'react';
 
 import {
   ARIA_LABEL_TEXT,
@@ -38,7 +39,7 @@ import {
 } from '../../constants';
 import { LinksDisplay } from '../LinksDisplay';
 import { HeaderIconButton } from './HeaderIconButton';
-import { PanelOptions } from './Panel';
+import type { PanelOptions } from './Panel';
 
 const noticeTypeToIcon: Record<Notice['type'], ReactNode> = {
   error: <AlertCircleIcon color="error" />,

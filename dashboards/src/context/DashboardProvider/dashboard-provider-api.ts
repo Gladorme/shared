@@ -11,21 +11,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DashboardResource } from '@perses-dev/client';
-import { PanelGroupId } from '@perses-dev/plugin-system';
-import { DurationString, Link, PanelDefinition } from '@perses-dev/spec';
+import type { DashboardResource } from '@perses-dev/client';
+import type { PanelGroupId } from '@perses-dev/plugin-system';
+import type { DurationString, Link, PanelDefinition } from '@perses-dev/spec';
 import { useCallback, useMemo } from 'react';
 
-import { PanelGroupDefinition, PanelGroupItemId, PanelGroupItemLayout } from '../../model';
-import { DashboardStoreState, useDashboardStore } from './DashboardProvider';
-import { DeletePanelGroupDialogState } from './delete-panel-group-slice';
-import { DeletePanelDialogState } from './delete-panel-slice';
-import { DiscardChangesConfirmationDialogState } from './discard-changes-dialog-slice';
-import { EditJsonDialogState } from './edit-json-dialog-slice';
-import { PanelEditorState } from './panel-editor-slice';
-import { PanelGroupEditor } from './panel-group-editor-slice';
-import { SaveChangesConfirmationDialogState } from './save-changes-dialog-slice';
-import { ViewPanelSlice } from './view-panel-slice';
+import type { PanelGroupDefinition, PanelGroupItemId, PanelGroupItemLayout } from '../../model';
+import type { DashboardStoreState } from './DashboardProvider';
+import { useDashboardStore } from './DashboardProvider';
+import type { DeletePanelGroupDialogState } from './delete-panel-group-slice';
+import type { DeletePanelDialogState } from './delete-panel-slice';
+import type { DiscardChangesConfirmationDialogState } from './discard-changes-dialog-slice';
+import type { EditJsonDialogState } from './edit-json-dialog-slice';
+import type { PanelEditorState } from './panel-editor-slice';
+import type { PanelGroupEditor } from './panel-group-editor-slice';
+import type { SaveChangesConfirmationDialogState } from './save-changes-dialog-slice';
+import type { ViewPanelSlice } from './view-panel-slice';
 
 const selectEditMode: ({ isEditMode, setEditMode }: DashboardStoreState) => {
   setEditMode: (isEditMode: boolean) => void;

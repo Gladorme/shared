@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { dynamicImportPluginLoader, PluginLoader, PluginModuleResource } from '../../model';
+import type { PluginLoader, PluginModuleResource } from '../../model';
+import { dynamicImportPluginLoader } from '../../model';
 import bertResource from './bert/plugin.json';
 import ernieResource from './ernie/plugin.json';
 

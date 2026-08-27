@@ -27,7 +27,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-import { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
+import type { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
 import { usePluginRuntime } from './PluginRuntime';
 
 interface PluginLoaderProps<P> {

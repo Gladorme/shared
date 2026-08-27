@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { SAVE_DASHBOARD_EVENT, REFRESH_DASHBOARD_EVENT, TOGGLE_EDIT_MODE_EVENT } from '../events';
-import { PersesShortcutDef } from '../types';
+import type { PersesShortcutDef } from '../types';
 
 export const SAVE_DASHBOARD_SHORTCUT: PersesShortcutDef = {
   id: 'save-dashboard',

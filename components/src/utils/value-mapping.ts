@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { MappedValue, ValueMapping } from '../model';
+import type { MappedValue, ValueMapping } from '../model';
 import { createRegexFromString } from './regexp';
 
 export function applyValueMapping(value: number | string, mappings: ValueMapping[] = []): MappedValue {

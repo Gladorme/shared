@@ -13,7 +13,8 @@
 
 import { Stack, Box, useTheme, useMediaQuery } from '@mui/material';
 import { TimeRangeControls, useTimeZoneParams } from '@perses-dev/plugin-system';
-import React, { ReactElement } from 'react';
+import type { ReactElement } from 'react';
+import React from 'react';
 
 export interface ExploreToolbarProps {
   exploreTitleComponent?: React.ReactNode;

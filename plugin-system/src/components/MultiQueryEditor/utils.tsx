@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { QueryDefinition } from '@perses-dev/spec';
+import type { QueryDefinition } from '@perses-dev/spec';
 
 export function defaultQueryName(index: number): string {
   return `Query #${index + 1}`;

@@ -12,15 +12,18 @@
 // limitations under the License.
 
 import { Collapse, useTheme } from '@mui/material';
-import { useVariableValues, PanelGroupId } from '@perses-dev/plugin-system';
-import { ReactElement, useEffect, useMemo, useState } from 'react';
-import { Layout, Layouts, Responsive, WidthProvider } from 'react-grid-layout';
+import type { PanelGroupId } from '@perses-dev/plugin-system';
+import { useVariableValues } from '@perses-dev/plugin-system';
+import type { ReactElement } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import type { Layout, Layouts } from 'react-grid-layout';
+import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import { DEFAULT_MARGIN, GRID_LAYOUT_COLS, GRID_LAYOUT_SMALL_BREAKPOINT, ROW_HEIGHT } from '../../constants';
 import { useRepeatVariableMaxValues, useViewPanelGroup } from '../../context';
-import { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
+import type { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
 import { buildRepeatMeta, restoreRepeatLayouts } from '../../utils';
-import { PanelOptions } from '../Panel/Panel';
+import type { PanelOptions } from '../Panel/Panel';
 import { GridContainer } from './GridContainer';
 import { GridItemRenderer } from './GridItemRenderer';
 import { GridTitle } from './GridTitle';

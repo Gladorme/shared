@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AbsoluteTimeRange, isRelativeTimeRange, TimeRangeValue } from '@perses-dev/spec';
+import type { AbsoluteTimeRange, TimeRangeValue } from '@perses-dev/spec';
+import { isRelativeTimeRange } from '@perses-dev/spec';
 import { isBefore, isValid } from 'date-fns';
 
 import { formatWithTimeZone } from '../utils';

@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { Checkbox, FormControlLabel, Stack } from '@mui/material';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
 import { TextField } from '../controls';
 

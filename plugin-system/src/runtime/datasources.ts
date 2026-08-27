@@ -11,8 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DatasourceSelector, DatasourceSpec } from '@perses-dev/spec';
-import { useQuery, UseQueryResult } from '@tanstack/react-query';
+import type { DatasourceSelector, DatasourceSpec } from '@perses-dev/spec';
+import type { UseQueryResult } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { createContext, useContext } from 'react';
 
 export interface DatasourceStore {

@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Table as MuiTable, styled, TableProps as MuiTableProps } from '@mui/material';
+import type { TableProps as MuiTableProps } from '@mui/material';
+import { Table as MuiTable, styled } from '@mui/material';
 import { forwardRef } from 'react';
 
-import { TableDensity } from './model/table-model';
+import type { TableDensity } from './model/table-model';
 
 const StyledMuiTable = styled(MuiTable)(({ theme }) => ({
   // This value is needed to have a consistent table layout when scrolling.

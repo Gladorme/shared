@@ -11,10 +11,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { AlertsData, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
-import { QueryKey, useQueries, UseQueryResult } from '@tanstack/react-query';
+import type { AlertsData, QueryDefinition, UnknownSpec } from '@perses-dev/spec';
+import type { QueryKey, UseQueryResult } from '@tanstack/react-query';
+import { useQueries } from '@tanstack/react-query';
 
-import { AlertsQueryContext, AlertsQueryPlugin } from '../model';
+import type { AlertsQueryContext, AlertsQueryPlugin } from '../model';
 import { useDatasourceStore } from './datasources';
 import { usePluginRegistry, usePlugins } from './plugin-registry';
 import { filterVariableStateMap, getVariableValuesKey } from './utils';

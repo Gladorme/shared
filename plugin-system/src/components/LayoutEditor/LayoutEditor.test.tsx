@@ -13,13 +13,14 @@
 
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
-import { PanelEditorValues } from '../../model';
+import type { PanelEditorValues } from '../../model';
 import { VariableContext } from '../../runtime';
 import { renderWithContext } from '../../test';
-import { LayoutEditor, LayoutEditorProps } from './LayoutEditor';
+import type { LayoutEditorProps } from './LayoutEditor';
+import { LayoutEditor } from './LayoutEditor';
 
 describe('LayoutEditor', () => {
   const renderComponent = (

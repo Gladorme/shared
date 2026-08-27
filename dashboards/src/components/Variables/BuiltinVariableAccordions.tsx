@@ -24,9 +24,10 @@ import {
   Typography,
 } from '@mui/material';
 import { InfoTooltip } from '@perses-dev/components';
-import { BuiltinVariableDefinition } from '@perses-dev/spec';
+import type { BuiltinVariableDefinition } from '@perses-dev/spec';
 import ExpandMoreIcon from 'mdi-material-ui/ChevronUp';
-import { ReactElement, useMemo } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo } from 'react';
 
 type BuiltinVariableAccordionsProps = {
   builtinVariableDefinitions: BuiltinVariableDefinition[];

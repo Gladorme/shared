@@ -17,10 +17,12 @@ import ChevronRight from 'mdi-material-ui/ChevronRight';
 import DeleteIcon from 'mdi-material-ui/DeleteOutline';
 import EyeOffIcon from 'mdi-material-ui/EyeOffOutline';
 import EyeIcon from 'mdi-material-ui/EyeOutline';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
-import { Transform, TRANSFORM_TEXT } from '../model';
-import { TransformEditor, TransformEditorProps } from './TransformEditor';
+import type { Transform } from '../model';
+import { TRANSFORM_TEXT } from '../model';
+import type { TransformEditorProps } from './TransformEditor';
+import { TransformEditor } from './TransformEditor';
 
 export interface TransformEditorContainerProps extends TransformEditorProps {
   index?: number;

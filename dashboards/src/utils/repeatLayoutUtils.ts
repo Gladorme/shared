@@ -11,11 +11,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DEFAULT_MAX_PER_ROW, DEFAULT_REPEAT_ALIGNMENT, VariableStateMap } from '@perses-dev/plugin-system';
-import { Layout, Layouts } from 'react-grid-layout';
+import type { VariableStateMap } from '@perses-dev/plugin-system';
+import { DEFAULT_MAX_PER_ROW, DEFAULT_REPEAT_ALIGNMENT } from '@perses-dev/plugin-system';
+import type { Layout, Layouts } from 'react-grid-layout';
 
 import { DEFAULT_MARGIN, ROW_HEIGHT } from '../constants';
-import { PanelGroupItemLayout, RepeatVariable } from '../model';
+import type { PanelGroupItemLayout, RepeatVariable } from '../model';
 
 /**
  * Resolves the list of string values for a repeat variable given the current variable state map.
