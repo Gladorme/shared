@@ -16,13 +16,15 @@ import { Stack, IconButton, Typography, Box, CircularProgress, TextField, InputA
 import { InfoTooltip } from '@perses-dev/components';
 import type { QueryDefinition, QueryPluginType } from '@perses-dev/spec';
 import { produce } from 'immer';
-import AlertIcon from 'mdi-material-ui/Alert';
-import CheckIcon from 'mdi-material-ui/Check';
-import ChevronDown from 'mdi-material-ui/ChevronDown';
-import ChevronRight from 'mdi-material-ui/ChevronRight';
-import CloseIcon from 'mdi-material-ui/Close';
-import DeleteIcon from 'mdi-material-ui/DeleteOutline';
-import PencilIcon from 'mdi-material-ui/Pencil';
+import {
+  Alert as AlertIcon,
+  Check as CheckIcon,
+  ChevronDown,
+  ChevronRight,
+  Close as CloseIcon,
+  DeleteOutline as DeleteIcon,
+  Pencil as PencilIcon,
+} from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { forwardRef, useState } from 'react';
 

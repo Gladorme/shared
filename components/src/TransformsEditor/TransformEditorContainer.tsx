@@ -12,11 +12,13 @@
 // limitations under the License.
 
 import { Divider, IconButton, Stack, Tooltip, Typography } from '@mui/material';
-import ChevronDown from 'mdi-material-ui/ChevronDown';
-import ChevronRight from 'mdi-material-ui/ChevronRight';
-import DeleteIcon from 'mdi-material-ui/DeleteOutline';
-import EyeOffIcon from 'mdi-material-ui/EyeOffOutline';
-import EyeIcon from 'mdi-material-ui/EyeOutline';
+import {
+  ChevronDown,
+  ChevronRight,
+  DeleteOutline as DeleteIcon,
+  EyeOffOutline as EyeOffIcon,
+  EyeOutline as EyeIcon,
+} from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 
 import type { Transform } from '../model';

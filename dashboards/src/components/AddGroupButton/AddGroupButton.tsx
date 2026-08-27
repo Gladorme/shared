@@ -13,7 +13,7 @@
 
 import { Button } from '@mui/material';
 import { InfoTooltip } from '@perses-dev/components';
-import AddGroupIcon from 'mdi-material-ui/PlusBoxOutline';
+import { PlusBoxOutline as AddGroupIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 
 import { TOOLTIP_TEXT, editButtonStyle } from '../../constants';

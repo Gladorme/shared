@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { InfoTooltip, ToolbarIconButton } from '@perses-dev/components';
-import CodeIcon from 'mdi-material-ui/CodeBraces';
+import { CodeBraces as CodeIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 
 import { TOOLTIP_TEXT } from '../../constants';

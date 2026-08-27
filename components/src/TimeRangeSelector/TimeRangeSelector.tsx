@@ -14,8 +14,7 @@
 import { Box, MenuItem, Popover, Select, IconButton, TextField, Stack } from '@mui/material';
 import type { TimeRangeValue, AbsoluteTimeRange } from '@perses-dev/spec';
 import { isRelativeTimeRange, toAbsoluteTimeRange } from '@perses-dev/spec';
-import Calendar from 'mdi-material-ui/Calendar';
-import EarthIcon from 'mdi-material-ui/Earth';
+import { Calendar, Earth as EarthIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { useMemo, useRef, useState } from 'react';
 

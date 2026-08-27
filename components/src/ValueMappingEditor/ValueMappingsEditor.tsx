@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { Button, Divider, Stack, Typography, Grid2 as Grid } from '@mui/material';
-import AddIcon from 'mdi-material-ui/Plus';
+import { Plus as AddIcon } from 'mdi-material-ui';
 import type { FC } from 'react';
 import { useState } from 'react';
 

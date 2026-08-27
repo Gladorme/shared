@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { Button } from '@mui/material';
-import PencilIcon from 'mdi-material-ui/PencilOutline';
+import { PencilOutline as PencilIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 
 export interface EditButtonProps {

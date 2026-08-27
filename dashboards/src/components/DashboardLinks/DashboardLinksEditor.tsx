@@ -27,12 +27,14 @@ import {
 } from '@mui/material';
 import { InfoTooltip, LinkEditorForm } from '@perses-dev/components';
 import type { Link } from '@perses-dev/spec';
-import ArrowDown from 'mdi-material-ui/ArrowDown';
-import ArrowUp from 'mdi-material-ui/ArrowUp';
-import ChevronUp from 'mdi-material-ui/ChevronUp';
-import PencilIcon from 'mdi-material-ui/Pencil';
-import AddIcon from 'mdi-material-ui/Plus';
-import TrashIcon from 'mdi-material-ui/TrashCan';
+import {
+  ArrowDown,
+  ArrowUp,
+  ChevronUp,
+  Pencil as PencilIcon,
+  Plus as AddIcon,
+  TrashCan as TrashIcon,
+} from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { useState } from 'react';
 import { useImmer } from 'use-immer';

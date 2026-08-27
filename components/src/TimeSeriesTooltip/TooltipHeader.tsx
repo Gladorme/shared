@@ -12,8 +12,7 @@
 // limitations under the License.
 
 import { Box, Divider, Typography, Stack, Switch } from '@mui/material';
-import Pin from 'mdi-material-ui/Pin';
-import PinOutline from 'mdi-material-ui/PinOutline';
+import { Pin, PinOutline } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { memo } from 'react';
 

@@ -14,7 +14,7 @@
 import { IconButton, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { Stack } from '@mui/system';
 import { produce } from 'immer';
-import PlusIcon from 'mdi-material-ui/Plus';
+import { Plus as PlusIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import React, { useEffect, useRef } from 'react';
 

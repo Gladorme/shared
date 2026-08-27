@@ -44,7 +44,8 @@ touch without expanding the task into unrelated cleanup.
 
 - Start with existing Perses and Material UI components. Use theme tokens and `sx`; avoid hard-coded colors and
   arbitrary spacing when a theme value exists.
-- Import Material Design icons directly from their icon module instead of the `mdi-material-ui` package barrel.
+- Import Material Design icons as named exports from the `mdi-material-ui` package barrel. Rspack's lazy barrel
+  optimization keeps unused icons out of the module graph.
 - Keep state as close as possible to its consumers. Use TanStack Query for server state and avoid copying query data
   into local state without a clear reason.
 - Introduce context only for genuinely cross-cutting state. Library components should allow consumers to own

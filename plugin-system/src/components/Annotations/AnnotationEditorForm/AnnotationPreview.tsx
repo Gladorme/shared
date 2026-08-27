@@ -25,7 +25,7 @@ import {
 } from '@mui/material';
 import { getDateAndTime, InfoTooltip, useTimeZone } from '@perses-dev/components';
 import type { AnnotationData, AnnotationSpec } from '@perses-dev/spec';
-import AlertIcon from 'mdi-material-ui/Alert';
+import { Alert as AlertIcon } from 'mdi-material-ui';
 import type { ReactNode } from 'react';
 import { useMemo, useState } from 'react';
 

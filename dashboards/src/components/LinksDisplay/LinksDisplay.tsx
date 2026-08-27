@@ -16,7 +16,7 @@ import { IconButton, Link as LinkComponent, Menu, MenuItem, Chip, capitalize, St
 import { InfoTooltip } from '@perses-dev/components';
 import { useReplaceVariablesInString } from '@perses-dev/plugin-system';
 import type { Link } from '@perses-dev/spec';
-import LaunchIcon from 'mdi-material-ui/Launch';
+import { Launch as LaunchIcon } from 'mdi-material-ui';
 import type { MouseEvent, ReactElement } from 'react';
 import { useState } from 'react';
 

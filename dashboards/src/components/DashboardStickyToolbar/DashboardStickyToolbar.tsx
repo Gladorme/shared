@@ -14,8 +14,7 @@
 import type { SxProps, Theme } from '@mui/material';
 import { AppBar, Box, IconButton, Stack, useMediaQuery, useScrollTrigger, useTheme } from '@mui/material';
 import { TimeRangeControls, useTimeZoneParams } from '@perses-dev/plugin-system';
-import PinOffOutline from 'mdi-material-ui/PinOffOutline';
-import PinOutline from 'mdi-material-ui/PinOutline';
+import { PinOffOutline, PinOutline } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { useState } from 'react';
 

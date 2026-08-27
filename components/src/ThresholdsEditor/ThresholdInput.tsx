@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { Stack, FormLabel, TextField, IconButton, Box } from '@mui/material';
-import DeleteIcon from 'mdi-material-ui/DeleteOutline';
+import { DeleteOutline as DeleteIcon } from 'mdi-material-ui';
 import type { ReactElement, RefObject } from 'react';
 import { useState } from 'react';
 

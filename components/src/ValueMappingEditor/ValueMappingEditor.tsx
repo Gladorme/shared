@@ -13,8 +13,7 @@
 
 import type { Grid2Props as GridProps, StackProps } from '@mui/material';
 import { IconButton, MenuItem, Stack, TextField, Tooltip, Typography, Grid2 as Grid } from '@mui/material';
-import DeleteIcon from 'mdi-material-ui/DeleteOutline';
-import PlusIcon from 'mdi-material-ui/Plus';
+import { DeleteOutline as DeleteIcon, Plus as PlusIcon } from 'mdi-material-ui';
 import type { FC } from 'react';
 
 import { OptionsColorPicker } from '../ColorPicker/OptionsColorPicker';

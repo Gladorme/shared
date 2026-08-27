@@ -28,7 +28,7 @@ import {
   Dialog as MuiDialog,
   styled,
 } from '@mui/material';
-import CloseIcon from 'mdi-material-ui/Close';
+import { Close as CloseIcon } from 'mdi-material-ui';
 import type { MouseEvent, ReactElement } from 'react';
 
 import { combineSx } from '../utils';

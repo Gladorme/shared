@@ -25,7 +25,7 @@ import {
 } from '@perses-dev/components';
 import type { AnnotationSpec } from '@perses-dev/spec';
 import { useQueryClient } from '@tanstack/react-query';
-import InvertColorsIcon from 'mdi-material-ui/InvertColors';
+import { InvertColors as InvertColorsIcon } from 'mdi-material-ui';
 import type { DispatchWithoutAction, ReactElement } from 'react';
 import { useCallback, useState } from 'react';
 import type { Control, SubmitHandler } from 'react-hook-form';

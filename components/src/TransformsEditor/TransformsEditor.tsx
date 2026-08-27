@@ -13,7 +13,7 @@
 
 import type { StackProps } from '@mui/material';
 import { Button, Stack } from '@mui/material';
-import AddIcon from 'mdi-material-ui/Plus';
+import { Plus as AddIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { useState } from 'react';
 

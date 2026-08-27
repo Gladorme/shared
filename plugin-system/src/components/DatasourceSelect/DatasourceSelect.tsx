@@ -14,7 +14,7 @@
 import type { OutlinedSelectProps, BaseSelectProps } from '@mui/material';
 import { Stack, ListItemText, Chip, IconButton, Box, Autocomplete, TextField } from '@mui/material';
 import type { DatasourceSelector, VariableName } from '@perses-dev/spec';
-import OpenInNewIcon from 'mdi-material-ui/OpenInNew';
+import { OpenInNew as OpenInNewIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { useMemo } from 'react';
 

@@ -13,7 +13,7 @@
 
 import type { IconButtonProps, MenuProps } from '@mui/material';
 import { IconButton, Menu, MenuItem } from '@mui/material';
-import DragIcon from 'mdi-material-ui/Drag';
+import { Drag as DragIcon } from 'mdi-material-ui';
 import type { MouseEvent, ReactElement } from 'react';
 import { useState, forwardRef } from 'react';
 

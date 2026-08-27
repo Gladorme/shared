@@ -13,7 +13,7 @@
 
 import { ClickAwayListener, Menu, MenuItem, MenuList } from '@mui/material';
 import { ToolbarIconButton } from '@perses-dev/components';
-import DownloadIcon from 'mdi-material-ui/DownloadOutline';
+import { DownloadOutline as DownloadIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import React, { useRef } from 'react';
 

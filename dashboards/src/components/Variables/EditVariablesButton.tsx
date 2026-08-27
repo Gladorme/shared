@@ -16,7 +16,7 @@ import { Button } from '@mui/material';
 import { Drawer, InfoTooltip } from '@perses-dev/components';
 import { useBuiltinVariableDefinitions } from '@perses-dev/plugin-system';
 import type { BuiltinVariableDefinition, VariableDefinition } from '@perses-dev/spec';
-import PencilIcon from 'mdi-material-ui/PencilOutline';
+import { PencilOutline as PencilIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { useState } from 'react';
 

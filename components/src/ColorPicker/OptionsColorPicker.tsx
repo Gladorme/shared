@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { styled, IconButton, Popover } from '@mui/material';
-import CircleIcon from 'mdi-material-ui/Circle';
+import { Circle as CircleIcon } from 'mdi-material-ui';
 import type { ReactElement, MouseEvent } from 'react';
 import { useState } from 'react';
 

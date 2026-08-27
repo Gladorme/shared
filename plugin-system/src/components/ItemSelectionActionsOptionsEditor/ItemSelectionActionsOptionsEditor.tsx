@@ -46,26 +46,28 @@ import {
   OptionsEditorGroup,
   useDragAndDropMonitor,
 } from '@perses-dev/components';
-import AlertIcon from 'mdi-material-ui/Alert';
-import CheckIcon from 'mdi-material-ui/Check';
-import ChevronDown from 'mdi-material-ui/ChevronDown';
-import ChevronRight from 'mdi-material-ui/ChevronRight';
-import CloseIcon from 'mdi-material-ui/Close';
-import SettingsIcon from 'mdi-material-ui/Cog';
-import DeleteIcon from 'mdi-material-ui/DeleteOutline';
-import DownloadIcon from 'mdi-material-ui/Download';
-import InfoIcon from 'mdi-material-ui/InformationOutline';
-import LinkIcon from 'mdi-material-ui/Link';
-import MagnifyScan from 'mdi-material-ui/MagnifyScan';
-import PauseIcon from 'mdi-material-ui/Pause';
-import PlayIcon from 'mdi-material-ui/Play';
-import PlusIcon from 'mdi-material-ui/Plus';
-import RefreshIcon from 'mdi-material-ui/Refresh';
-import RobotOutline from 'mdi-material-ui/RobotOutline';
-import SendIcon from 'mdi-material-ui/Send';
-import StopIcon from 'mdi-material-ui/Stop';
-import SyncIcon from 'mdi-material-ui/Sync';
-import UploadIcon from 'mdi-material-ui/Upload';
+import {
+  Alert as AlertIcon,
+  Check as CheckIcon,
+  ChevronDown,
+  ChevronRight,
+  Close as CloseIcon,
+  Cog as SettingsIcon,
+  DeleteOutline as DeleteIcon,
+  Download as DownloadIcon,
+  InformationOutline as InfoIcon,
+  Link as LinkIcon,
+  MagnifyScan,
+  Pause as PauseIcon,
+  Play as PlayIcon,
+  Plus as PlusIcon,
+  Refresh as RefreshIcon,
+  RobotOutline,
+  Send as SendIcon,
+  Stop as StopIcon,
+  Sync as SyncIcon,
+  Upload as UploadIcon,
+} from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { useCallback, useMemo, useState } from 'react';
 

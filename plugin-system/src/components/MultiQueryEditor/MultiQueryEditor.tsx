@@ -14,7 +14,7 @@
 import { Button, Stack } from '@mui/material';
 import type { QueryDefinition, QueryPluginType } from '@perses-dev/spec';
 import { produce } from 'immer';
-import AddIcon from 'mdi-material-ui/Plus';
+import { Plus as AddIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { forwardRef, useState } from 'react';
 

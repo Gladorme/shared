@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { IconButton, InputAdornment, TextField } from '@mui/material';
-import ClearIcon from 'mdi-material-ui/Close';
+import { Close as ClearIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 
 import type { FormatOptions, UnitConfig } from '../model';

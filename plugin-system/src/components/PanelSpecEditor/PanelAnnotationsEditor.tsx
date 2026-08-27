@@ -28,11 +28,7 @@ import {
 } from '@mui/material';
 import type { Action } from '@perses-dev/client';
 import type { AnnotationSpec, Definition, UnknownSpec } from '@perses-dev/spec';
-import ArrowDown from 'mdi-material-ui/ArrowDown';
-import ArrowUp from 'mdi-material-ui/ArrowUp';
-import PencilIcon from 'mdi-material-ui/Pencil';
-import AddIcon from 'mdi-material-ui/Plus';
-import TrashIcon from 'mdi-material-ui/TrashCan';
+import { ArrowDown, ArrowUp, Pencil as PencilIcon, Plus as AddIcon, TrashCan as TrashIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { useMemo, useState } from 'react';
 

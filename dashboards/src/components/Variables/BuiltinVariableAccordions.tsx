@@ -25,7 +25,7 @@ import {
 } from '@mui/material';
 import { InfoTooltip } from '@perses-dev/components';
 import type { BuiltinVariableDefinition } from '@perses-dev/spec';
-import ExpandMoreIcon from 'mdi-material-ui/ChevronUp';
+import { ChevronUp as ExpandMoreIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import { useMemo } from 'react';
 

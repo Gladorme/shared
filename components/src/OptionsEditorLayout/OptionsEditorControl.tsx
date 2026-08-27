@@ -13,7 +13,7 @@
 
 import type { FormControlLabelProps } from '@mui/material';
 import { FormControl, FormLabel, Stack, Box, IconButton } from '@mui/material';
-import InformationOutlineIcon from 'mdi-material-ui/InformationOutline';
+import { InformationOutline as InformationOutlineIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import React from 'react';
 

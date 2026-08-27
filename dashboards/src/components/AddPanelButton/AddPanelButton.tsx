@@ -14,7 +14,7 @@
 import type { ButtonProps } from '@mui/material';
 import { Button } from '@mui/material';
 import { InfoTooltip } from '@perses-dev/components';
-import AddPanelIcon from 'mdi-material-ui/ChartBoxPlusOutline';
+import { ChartBoxPlusOutline as AddPanelIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 
 import { TOOLTIP_TEXT, editButtonStyle } from '../../constants';

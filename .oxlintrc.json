@@ -52,18 +52,7 @@
       { "props": "never", "children": "never", "propElementValues": "always" }
     ],
     "import/consistent-type-specifier-style": ["error", "prefer-top-level"],
-    "import/no-duplicates": "error",
-    "no-restricted-imports": [
-      "error",
-      {
-        "patterns": [
-          {
-            "group": ["mdi-material-ui", "!mdi-material-ui/"],
-            "message": "Please use the default import from the icon file directly rather than using a named import.\n\nGood:\nimport IconName from 'mdi-material-ui/IconName';\n\nBad:\nimport { IconName } from 'mdi-material-ui';"
-          }
-        ]
-      }
-    ]
+    "import/no-duplicates": "error"
   },
   "ignorePatterns": ["**/dist", "**/lib"]
 }

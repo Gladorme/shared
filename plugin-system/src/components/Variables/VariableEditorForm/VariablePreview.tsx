@@ -14,7 +14,7 @@
 import { Alert, Box, Card, Chip, CircularProgress, IconButton, Stack, Typography } from '@mui/material';
 import { InfoTooltip, useSnackbar } from '@perses-dev/components';
 import type { ListVariableDefinition } from '@perses-dev/spec';
-import Clipboard from 'mdi-material-ui/ClipboardOutline';
+import { ClipboardOutline as Clipboard } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import React, { useMemo, useState } from 'react';
 

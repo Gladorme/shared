@@ -13,8 +13,7 @@
 
 import { Divider, IconButton, Stack, Typography } from '@mui/material';
 import { LinkEditorForm } from '@perses-dev/components';
-import MinusIcon from 'mdi-material-ui/Minus';
-import PlusIcon from 'mdi-material-ui/Plus';
+import { Minus as MinusIcon, Plus as PlusIcon } from 'mdi-material-ui';
 import type { HTMLAttributes, ReactElement } from 'react';
 import { Fragment } from 'react';
 import type { Control } from 'react-hook-form';

@@ -15,8 +15,7 @@ import { Box, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/mat
 import type { RequestHeaders } from '@perses-dev/client';
 import type { HTTPDatasourceSpec } from '@perses-dev/spec';
 import { produce } from 'immer';
-import MinusIcon from 'mdi-material-ui/Minus';
-import PlusIcon from 'mdi-material-ui/Plus';
+import { Minus as MinusIcon, Plus as PlusIcon } from 'mdi-material-ui';
 import type { ReactElement } from 'react';
 import React, { Fragment, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';

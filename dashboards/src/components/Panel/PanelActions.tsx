@@ -15,18 +15,20 @@ import { Stack, Box, CircularProgress, styled, Popper, ClickAwayListener } from 
 import { InfoTooltip } from '@perses-dev/components';
 import type { QueryData } from '@perses-dev/plugin-system';
 import type { Link, Notice } from '@perses-dev/spec';
-import AlertIcon from 'mdi-material-ui/Alert';
-import AlertCircleIcon from 'mdi-material-ui/AlertCircle';
-import ArrowCollapseIcon from 'mdi-material-ui/ArrowCollapse';
-import ArrowExpandIcon from 'mdi-material-ui/ArrowExpand';
-import ContentCopyIcon from 'mdi-material-ui/ContentCopy';
-import DatabaseSearch from 'mdi-material-ui/DatabaseSearch';
-import DeleteIcon from 'mdi-material-ui/DeleteOutline';
-import DragIcon from 'mdi-material-ui/DragVertical';
-import InformationOutlineIcon from 'mdi-material-ui/InformationOutline';
-import LightningBoltIcon from 'mdi-material-ui/LightningBolt';
-import MenuIcon from 'mdi-material-ui/Menu';
-import PencilIcon from 'mdi-material-ui/PencilOutline';
+import {
+  Alert as AlertIcon,
+  AlertCircle as AlertCircleIcon,
+  ArrowCollapse as ArrowCollapseIcon,
+  ArrowExpand as ArrowExpandIcon,
+  ContentCopy as ContentCopyIcon,
+  DatabaseSearch,
+  DeleteOutline as DeleteIcon,
+  DragVertical as DragIcon,
+  InformationOutline as InformationOutlineIcon,
+  LightningBolt as LightningBoltIcon,
+  Menu as MenuIcon,
+  PencilOutline as PencilIcon,
+} from 'mdi-material-ui';
 import type { PropsWithChildren, ReactElement, ReactNode, MouseEvent } from 'react';
 import { isValidElement, useMemo, useState } from 'react';
 
