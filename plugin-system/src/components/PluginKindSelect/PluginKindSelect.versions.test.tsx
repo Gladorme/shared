@@ -15,10 +15,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { dynamicImportPluginLoader, PluginModuleResource } from '../../model';
-import { PluginEditorSelection } from '../PluginEditor';
+import type { PluginModuleResource } from '../../model';
+import { dynamicImportPluginLoader } from '../../model';
+import type { PluginEditorSelection } from '../PluginEditor';
 import { PluginRegistry } from '../PluginRegistry';
-import { PluginKindSelect, PluginKindSelectProps } from './PluginKindSelect';
+import type { PluginKindSelectProps } from './PluginKindSelect';
+import { PluginKindSelect } from './PluginKindSelect';
 
 /** A plugin module exposing a single Panel plugin, installed under the given version/registry. */
 function buildResource(pluginName: string, version: string, registry?: string): PluginModuleResource {

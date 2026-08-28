@@ -13,9 +13,10 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen } from '@testing-library/react';
-import { ReactElement, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
 
-import { dynamicImportPluginLoader, PluginModuleResource } from '../../model';
+import type { PluginModuleResource } from '../../model';
+import { dynamicImportPluginLoader } from '../../model';
 import { usePlugin } from '../../runtime';
 import { PluginRegistry } from './PluginRegistry';
 
@@ -68,7 +69,7 @@ function renderWithLoader(children: ReactNode): void {
 }
 
 function Consumer({ version }: { version?: string }): ReactElement {
-  const { data, isLoading, error } = usePlugin('Variable', PLUGIN_NAME, undefined, version ? { version } : undefined);
+  const { data, isLoading, error } = usePlugin('Variable', PLUGIN_NAME, version ? { version } : undefined);
   if (isLoading) return <div>loading</div>;
   if (error) return <div>error: {error.message}</div>;
   return <div>source: {(data as unknown as { source?: string })?.source}</div>;

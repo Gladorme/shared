@@ -14,8 +14,9 @@
 import { Alert, Box, Chip, Stack, Typography } from '@mui/material';
 import { ErrorAlert, ErrorBoundary } from '@perses-dev/components';
 import { DataQueriesProvider } from '@perses-dev/plugin-system';
-import { PanelDefinition } from '@perses-dev/spec';
-import { ReactElement, useMemo } from 'react';
+import type { PanelDefinition } from '@perses-dev/spec';
+import type { ReactElement } from 'react';
+import { useMemo } from 'react';
 
 import { Panel } from '../Panel/Panel';
 

@@ -16,7 +16,8 @@ import { Dialog } from '@perses-dev/components';
 import { useListPluginMetadata } from '@perses-dev/plugin-system';
 import LockOpenOutline from 'mdi-material-ui/LockOpenOutline';
 import LockOutline from 'mdi-material-ui/LockOutline';
-import { ReactElement, useCallback, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useDashboard } from '../../context/useDashboard';
 import {

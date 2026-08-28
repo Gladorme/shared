@@ -27,10 +27,12 @@ import { Drawer, ErrorAlert, ErrorBoundary } from '@perses-dev/components';
 import ArrowRight from 'mdi-material-ui/ArrowRight';
 import ChevronDown from 'mdi-material-ui/ChevronDown';
 import ChevronUp from 'mdi-material-ui/ChevronUp';
-import { ReactElement, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useDashboard } from '../../context/useDashboard';
-import { OutdatedPlugin, getOutdatedPluginId } from '../../utils/pluginVersioning';
+import type { OutdatedPlugin } from '../../utils/pluginVersioning';
+import { getOutdatedPluginId } from '../../utils/pluginVersioning';
 import { PanelVersionDiff } from './PanelVersionDiff';
 
 export interface UpdatePluginsDrawerProps {

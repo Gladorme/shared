@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import type { BuiltinVariableDefinition, Definition, PluginDefinitionMetadata } from '@perses-dev/spec';
+import type { BuiltinVariableDefinition, PluginDefinitionMetadata } from '@perses-dev/spec';
 import type { UseQueryOptions, UseQueryResult } from '@tanstack/react-query';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import { createContext, useContext } from 'react';
@@ -23,7 +23,6 @@ import type {
   PluginType,
   PluginCompoundKey,
 } from '../model';
-import { LATEST_PLUGIN_VERSION } from '../utils/plugin-versions';
 
 export interface PluginRegistryContextType {
   getPlugin<T extends PluginType>(compoundKey: PluginCompoundKey<T>): Promise<PluginImplementation<T>>;
@@ -45,60 +44,41 @@ export function usePluginRegistry(): PluginRegistryContextType {
   return ctx;
 }
 
+type UsePluginQueryKey = [string, PluginType | undefined, string, string, string];
+
 // Allows consumers to pass useQuery options from react-query when loading a plugin
 type UsePluginOptions<T extends PluginType> = Omit<
-  UseQueryOptions<
-    PluginImplementation<T>,
-    Error,
-    PluginImplementation<T>,
-    [string, PluginType | undefined, string, string, string]
-  >,
+  UseQueryOptions<PluginImplementation<T>, Error, PluginImplementation<T>, UsePluginQueryKey>,
   'queryKey' | 'queryFn'
->;
-
-/**
- * Extract the pinned version/registry from a plugin definition's `metadata`, if any. Returns `undefined` when nothing
- * is pinned so the plugin resolves to its latest available version.
- */
-export function getPluginOverrides(
-  plugin: Pick<Definition<unknown>, 'metadata'> | undefined,
-): PluginDefinitionMetadata | undefined {
-  const metadata = plugin?.metadata;
-  if (!metadata) {
-    return undefined;
-  }
-  // `latest` means "resolve the latest available version", so it must not be treated as an exact-version pin.
-  const version = metadata.version === LATEST_PLUGIN_VERSION ? undefined : metadata.version;
-  const registry = metadata.registry;
-  if (version === undefined && registry === undefined) {
-    return undefined;
-  }
-  return { version, registry };
-}
+> & {
+  /** Pin resolution to a specific plugin version. When omitted, the latest available version is used. */
+  version?: string;
+  /** Pin resolution to a specific plugin registry. */
+  registry?: string;
+};
 
 /**
  * Loads a plugin and returns the plugin implementation, along with loading/error state.
  *
- * When `overrides.version` is provided, the plugin is resolved with an exact version match: if that version is not
+ * When `options.version` is provided, the plugin is resolved with an exact version match: if that version is not
  * installed, the query fails instead of silently falling back to the latest available version.
  */
 export function usePlugin<T extends PluginType>(
   pluginType: T | undefined,
   kind: string,
   options?: UsePluginOptions<T>,
-  overrides?: PluginDefinitionMetadata,
 ): UseQueryResult<PluginImplementation<T>, Error> {
-  const { version, registry } = overrides ?? {};
+  const { version, registry, ...queryOptions } = options ?? {};
   // We never want to ask for a plugin when the kind isn't set yet, so disable those queries automatically
-  options = {
-    ...options,
-    enabled: (options?.enabled ?? true) && pluginType !== undefined && kind !== '',
+  const useQueryOptions = {
+    ...queryOptions,
+    enabled: (queryOptions.enabled ?? true) && pluginType !== undefined && kind !== '',
   };
   const { getPlugin } = usePluginRegistry();
   return useQuery({
     queryKey: ['getPlugin', pluginType, kind, version ?? '', registry ?? ''],
     queryFn: () => getPlugin({ kind: pluginType!, name: kind, version, registry }),
-    ...options,
+    ...useQueryOptions,
   });
 }
 

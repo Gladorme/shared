@@ -17,7 +17,7 @@ import { useQueries } from '@tanstack/react-query';
 
 import type { AlertsQueryContext, AlertsQueryPlugin } from '../model';
 import { useDatasourceStore } from './datasources';
-import { usePluginRegistry, usePlugins, getPluginOverrides } from './plugin-registry';
+import { usePluginRegistry, usePlugins } from './plugin-registry';
 import { filterVariableStateMap, getVariableValuesKey } from './utils';
 import { useAllVariableValues } from './variables';
 
@@ -35,7 +35,11 @@ export function useAlertsQueries(definitions: AlertsQueryDefinition[]): Array<Us
 
   const pluginLoaderResponse = usePlugins(
     'AlertsQuery',
-    definitions.map((d) => ({ kind: d.spec.plugin.kind, ...getPluginOverrides(d.spec.plugin) })),
+    definitions.map((d) => ({
+      kind: d.spec.plugin.kind,
+      version: d.spec.plugin.metadata?.version,
+      registry: d.spec.plugin.metadata?.registry,
+    })),
   );
 
   return useQueries({
@@ -54,7 +58,8 @@ export function useAlertsQueries(definitions: AlertsQueryDefinition[]): Array<Us
           const plugin = await getPlugin({
             kind: ALERTS_QUERY_KEY,
             name: alertsQueryKind,
-            ...getPluginOverrides(definition.spec.plugin),
+            version: definition.spec.plugin.metadata?.version,
+            registry: definition.spec.plugin.metadata?.registry,
           });
           const data = await plugin.getAlertsData(definition.spec.plugin.spec, context, signal);
           return data;

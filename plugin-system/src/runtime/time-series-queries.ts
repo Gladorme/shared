@@ -17,7 +17,7 @@ import { useQueries, useQuery, useQueryClient } from '@tanstack/react-query';
 
 import type { TimeSeriesDataQuery, TimeSeriesQueryContext, TimeSeriesQueryMode, TimeSeriesQueryPlugin } from '../model';
 import { useDatasourceStore } from './datasources';
-import { usePlugin, usePluginRegistry, usePlugins, getPluginOverrides } from './plugin-registry';
+import { usePlugin, usePluginRegistry, usePlugins } from './plugin-registry';
 import { useTimeRange } from './TimeRangeProvider';
 import { filterVariableStateMap, getVariableValuesKey } from './utils';
 import { useAllVariableValues } from './variables';
@@ -82,12 +82,10 @@ export const useTimeSeriesQuery = (
   options?: UseTimeSeriesQueryOptions,
   queryOptions?: QueryObserverOptions<TimeSeriesData>,
 ): UseQueryResult<TimeSeriesData> => {
-  const { data: plugin } = usePlugin(
-    TIME_SERIES_QUERY_KEY,
-    definition.spec.plugin.kind,
-    undefined,
-    getPluginOverrides(definition.spec.plugin),
-  );
+  const { data: plugin } = usePlugin(TIME_SERIES_QUERY_KEY, definition.spec.plugin.kind, {
+    version: definition.spec.plugin.metadata?.version,
+    registry: definition.spec.plugin.metadata?.registry,
+  });
   const context = useTimeSeriesQueryContext();
   const { queryEnabled, queryKey } = getQueryOptions({ plugin, definition, context });
   return useQuery({
@@ -122,7 +120,11 @@ export function useTimeSeriesQueries(
 
   const pluginLoaderResponse = usePlugins(
     TIME_SERIES_QUERY_KEY,
-    definitions.map((d) => ({ kind: d.spec.plugin.kind, ...getPluginOverrides(d.spec.plugin) })),
+    definitions.map((d) => ({
+      kind: d.spec.plugin.kind,
+      version: d.spec.plugin.metadata?.version,
+      registry: d.spec.plugin.metadata?.registry,
+    })),
   );
   return useQueries({
     queries: definitions.map((definition, idx) => {
@@ -140,7 +142,8 @@ export function useTimeSeriesQueries(
           const plugin = await getPlugin({
             kind: TIME_SERIES_QUERY_KEY,
             name: definition.spec.plugin.kind,
-            ...getPluginOverrides(definition.spec.plugin),
+            version: definition.spec.plugin.metadata?.version,
+            registry: definition.spec.plugin.metadata?.registry,
           });
           const data = await plugin.getTimeSeriesData(definition.spec.plugin.spec, context, signal);
           return data;

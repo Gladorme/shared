@@ -17,7 +17,7 @@ import { produce } from 'immer';
 import { useState, useRef, useEffect } from 'react';
 
 import type { PanelPlugin, PluginType } from '../../model';
-import { getPluginOverrides, usePlugin, usePluginRegistry } from '../../runtime';
+import { usePlugin, usePluginRegistry } from '../../runtime';
 import { useEvent } from '../../utils';
 import type { PluginKindSelectProps } from '../PluginKindSelect';
 import type { PluginSpecEditorProps } from '../PluginSpecEditor';
@@ -136,7 +136,10 @@ export function usePluginEditor(props: UsePluginEditorProps): {
     data: plugin,
     isFetching,
     error,
-  } = usePlugin(pendingSelection?.type, pendingSelection?.kind || '', undefined, getPluginOverrides(pendingSelection));
+  } = usePlugin(pendingSelection?.type, pendingSelection?.kind || '', {
+    version: pendingSelection?.metadata?.version,
+    registry: pendingSelection?.metadata?.registry,
+  });
 
   useEffect(() => {
     // Nothing to do if no new plugin kind is pending

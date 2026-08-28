@@ -22,7 +22,7 @@ import {
   getTitleAction,
 } from '@perses-dev/components';
 import type { PanelEditorValues } from '@perses-dev/plugin-system';
-import { getPluginOverrides, PluginKindSelect, usePluginEditor, useValidationSchemas } from '@perses-dev/plugin-system';
+import { PluginKindSelect, usePluginEditor, useValidationSchemas } from '@perses-dev/plugin-system';
 import type { Definition, PanelDefinition, UnknownSpec } from '@perses-dev/spec';
 import type { ReactElement } from 'react';
 import { useCallback, useEffect, useState } from 'react';
@@ -62,16 +62,14 @@ export function PanelEditorForm(props: PanelEditorFormProps): ReactElement {
     mode: 'onBlur',
     defaultValues: initialValues,
   });
-
-  // The version/registry the panel is currently pinned to, if any. `latest` is not a pin, so it is filtered out.
-  const pinnedPluginMetadata = getPluginOverrides(plugin);
+  const pluginMetadata = plugin.metadata;
 
   // Use common plugin editor logic even though we've split the inputs up in this form
   const pluginEditor = usePluginEditor({
     pluginTypes: ['Panel'],
     // Carry the current pin so that editing the options doesn't silently drop it, and so the options editor is loaded
     // from the pinned implementation.
-    value: { selection: { kind: plugin.kind, type: 'Panel', metadata: pinnedPluginMetadata }, spec: plugin.spec },
+    value: { selection: { kind: plugin.kind, type: 'Panel', metadata: pluginMetadata }, spec: plugin.spec },
     onChange: (next) => {
       // Persist the selected version/registry (if any) as plugin metadata so the panel uses that exact implementation.
       // When nothing is selected (a single version/registry is available), metadata is omitted so the latest version
@@ -236,7 +234,7 @@ export function PanelEditorForm(props: PanelEditorFormProps): ReactElement {
                     disabled={pluginEditor.isLoading}
                     error={!!pluginEditor.error || !!fieldState.error}
                     helperText={pluginEditor.error?.message ?? fieldState.error?.message}
-                    value={{ type: 'Panel', kind: watchedPluginKind, metadata: pinnedPluginMetadata }}
+                    value={{ type: 'Panel', kind: watchedPluginKind, metadata: pluginMetadata }}
                     onChange={(selection) => {
                       field.onChange(selection.kind);
                       pluginEditor.onSelectionChange(selection);

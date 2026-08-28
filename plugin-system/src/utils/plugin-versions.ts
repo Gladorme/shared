@@ -11,7 +11,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { coerce, compare, parse, SemVer } from 'semver';
+import type { SemVer } from 'semver';
+import { coerce, compare, parse } from 'semver';
 
 /**
  * Sentinel version meaning "the latest version available in the Perses instance". It mirrors the backend

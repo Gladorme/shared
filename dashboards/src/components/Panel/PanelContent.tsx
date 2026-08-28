@@ -14,7 +14,7 @@
 import { Skeleton } from '@mui/material';
 import { LoadingOverlay } from '@perses-dev/components';
 import type { PanelProps, QueryData, PanelPlugin } from '@perses-dev/plugin-system';
-import { getPluginOverrides, usePlugin } from '@perses-dev/plugin-system';
+import { usePlugin } from '@perses-dev/plugin-system';
 import type { UnknownSpec, PanelDefinition, QueryDataType } from '@perses-dev/spec';
 import type { ReactElement } from 'react';
 
@@ -32,12 +32,11 @@ export interface PanelContentProps extends Omit<PanelProps<UnknownSpec>, 'queryR
  */
 export function PanelContent(props: PanelContentProps): ReactElement {
   const { panelPluginKind, definition, queryResults, spec, contentDimensions } = props;
-  const { data: plugin, isLoading: isPanelLoading } = usePlugin(
-    'Panel',
-    panelPluginKind,
-    { useErrorBoundary: true },
-    getPluginOverrides(definition?.spec.plugin),
-  );
+  const { data: plugin, isLoading: isPanelLoading } = usePlugin('Panel', panelPluginKind, {
+    useErrorBoundary: true,
+    version: definition?.spec.plugin.metadata?.version,
+    registry: definition?.spec.plugin.metadata?.registry,
+  });
 
   // Show fullsize skeleton if the panel plugin is loading.
   if (isPanelLoading) {
