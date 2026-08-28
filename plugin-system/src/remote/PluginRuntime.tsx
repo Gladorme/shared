@@ -1,18 +1,4 @@
 // Copyright The Perses Authors
-// Licensed under the Apache License, Version 2.0 (the \"License\");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an \"AS IS\" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/* eslint-disable @typescript-eslint/no-require-imports */
-// Copyright The Perses Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -36,6 +22,13 @@ import * as ReactRouterDOM from 'react-router-dom';
 import type { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
 
 let instance: ModuleFederation | null = null;
+
+function createSharedModuleLoader<TModule>(loadModule: () => Promise<TModule>): () => Promise<() => TModule> {
+  return async () => {
+    const module = await loadModule();
+    return () => module;
+  };
+}
 
 const getPluginRuntime = (): ModuleFederation => {
   if (instance === null) {
@@ -85,7 +78,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         echarts: {
           version: '5.5.0',
-          lib: () => import('echarts'),
+          get: createSharedModuleLoader(() => import('echarts')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^5.5.0',
@@ -93,7 +86,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/spec': {
           version: '0.3.0-beta.5',
-          lib: () => import('@perses-dev/spec'),
+          get: createSharedModuleLoader(() => import('@perses-dev/spec')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.3.0-beta.5',
@@ -101,7 +94,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/client': {
           version: '0.55.0-beta.6',
-          lib: () => import('@perses-dev/client'),
+          get: createSharedModuleLoader(() => import('@perses-dev/client')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -109,7 +102,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/components': {
           version: '0.55.0-beta.6',
-          lib: () => import('@perses-dev/components'),
+          get: createSharedModuleLoader(() => import('@perses-dev/components')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -117,7 +110,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/plugin-system': {
           version: '0.55.0-beta.6',
-          lib: () => import('@perses-dev/plugin-system'),
+          get: createSharedModuleLoader(() => import('@perses-dev/plugin-system')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -125,7 +118,10 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/explore': {
           version: '0.55.0-beta.6',
-          lib: () => import('@perses-dev/explore'),
+          get: createSharedModuleLoader(
+            // @ts-ignore -- The host provides this higher-layer package; declaring it here would create a cycle.
+            () => import('@perses-dev/explore'),
+          ),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -133,7 +129,10 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/dashboards': {
           version: '0.55.0-beta.6',
-          lib: () => import('@perses-dev/dashboards'),
+          get: createSharedModuleLoader(
+            // @ts-ignore -- The host provides this higher-layer package; declaring it here would create a cycle.
+            () => import('@perses-dev/dashboards'),
+          ),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -142,7 +141,7 @@ const getPluginRuntime = (): ModuleFederation => {
         // Below are the shared modules that are used by the plugins, this can be part of the SDK
         'date-fns': {
           version: '4.1.0',
-          lib: () => import('date-fns'),
+          get: createSharedModuleLoader(() => import('date-fns')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^4.1.0',
@@ -150,7 +149,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'date-fns-tz': {
           version: '3.2.0',
-          lib: () => import('date-fns-tz'),
+          get: createSharedModuleLoader(() => import('date-fns-tz')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^3.2.0',
@@ -158,7 +157,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         lodash: {
           version: '4.17.21',
-          lib: () => import('lodash'),
+          get: createSharedModuleLoader(() => import('lodash')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^4.17.21',
@@ -166,7 +165,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@emotion/react': {
           version: '11.11.3',
-          lib: () => import('@emotion/react'),
+          get: createSharedModuleLoader(() => import('@emotion/react')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^11.11.3',
@@ -174,7 +173,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@emotion/styled': {
           version: '11.11.0',
-          lib: () => import('@emotion/styled'),
+          get: createSharedModuleLoader(() => import('@emotion/styled')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^11.11.0',
@@ -182,7 +181,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@hookform/resolvers/zod': {
           version: '3.3.4',
-          lib: () => import('@hookform/resolvers/zod'),
+          get: createSharedModuleLoader(() => import('@hookform/resolvers/zod')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^3.3.4',
@@ -190,7 +189,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'use-resize-observer': {
           version: '9.1.0',
-          lib: () => import('use-resize-observer'),
+          get: createSharedModuleLoader(() => import('use-resize-observer')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^9.1.0',
@@ -198,7 +197,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'mdi-material-ui': {
           version: '7.4.0',
-          lib: () => import('mdi-material-ui'),
+          get: createSharedModuleLoader(() => import('mdi-material-ui')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^7.4.0',
@@ -206,7 +205,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         immer: {
           version: '10.1.1',
-          lib: () => import('immer'),
+          get: createSharedModuleLoader(() => import('immer')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^10.1.1',
