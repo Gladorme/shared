@@ -17,7 +17,7 @@ import { useQueries, useQuery } from '@tanstack/react-query';
 
 import type { AnnotationContext, AnnotationPlugin } from '../model';
 import { useDatasourceStore } from './datasources';
-import { usePlugin, usePluginRegistry, usePlugins, getPluginOverrides } from './plugin-registry';
+import { usePlugin, usePluginRegistry, usePlugins } from './plugin-registry';
 import { useTimeRange } from './TimeRangeProvider';
 import { filterVariableStateMap, getVariableValuesKey } from './utils';
 import { useAllVariableValues } from './variables';
@@ -75,7 +75,11 @@ export function useAnnotations(definitions: AnnotationSpec[]): Array<UseQueryRes
 
   const pluginLoaderResponse = usePlugins(
     'Annotation',
-    definitions.map((d) => ({ kind: d.plugin.kind, ...getPluginOverrides(d.plugin) })),
+    definitions.map((d) => ({
+      kind: d.plugin.kind,
+      version: d.plugin.metadata?.version,
+      registry: d.plugin.metadata?.registry,
+    })),
   );
 
   // useQueries() handles data fetching from query plugins
@@ -95,7 +99,8 @@ export function useAnnotations(definitions: AnnotationSpec[]): Array<UseQueryRes
           const plugin = await getPlugin({
             kind: ANNOTATION_KEY,
             name: annotationKind,
-            ...getPluginOverrides(definition.plugin),
+            version: definition.plugin.metadata?.version,
+            registry: definition.plugin.metadata?.registry,
           });
           const data = await plugin.getAnnotationData(definition.plugin.spec, context, signal);
           return data;
@@ -106,12 +111,10 @@ export function useAnnotations(definitions: AnnotationSpec[]): Array<UseQueryRes
 }
 
 export function useAnnotationData(spec: AnnotationSpec): UseQueryResult<AnnotationData[]> {
-  const { data: annotationPlugin } = usePlugin(
-    'Annotation',
-    spec.plugin.kind,
-    undefined,
-    getPluginOverrides(spec.plugin),
-  );
+  const { data: annotationPlugin } = usePlugin('Annotation', spec.plugin.kind, {
+    version: spec.plugin.metadata?.version,
+    registry: spec.plugin.metadata?.registry,
+  });
 
   const datasourceStore = useDatasourceStore();
   const allVariables = useAllVariableValues();

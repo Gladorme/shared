@@ -13,7 +13,7 @@
 
 import { Skeleton } from '@mui/material';
 import type { PanelProps } from '@perses-dev/plugin-system';
-import { getPluginOverrides, usePlugin } from '@perses-dev/plugin-system';
+import { usePlugin } from '@perses-dev/plugin-system';
 import type { UnknownSpec, QueryDataType } from '@perses-dev/spec';
 import type { ReactElement } from 'react';
 
@@ -27,12 +27,11 @@ interface PanelPluginProps extends PanelProps<UnknownSpec, QueryDataType> {
  */
 export function PanelPluginLoader(props: PanelPluginProps): ReactElement {
   const { kind, spec, contentDimensions, definition, queryResults } = props;
-  const { data: plugin, isLoading: isPanelLoading } = usePlugin(
-    'Panel',
-    kind,
-    { useErrorBoundary: true },
-    getPluginOverrides(definition?.spec.plugin),
-  );
+  const { data: plugin, isLoading: isPanelLoading } = usePlugin('Panel', kind, {
+    useErrorBoundary: true,
+    version: definition?.spec.plugin.metadata?.version,
+    registry: definition?.spec.plugin.metadata?.registry,
+  });
   const PanelComponent = plugin?.PanelComponent;
   const supportedQueryTypes = plugin?.supportedQueryTypes || [];
   // Clear out the queryResults parameter for plugins which don't support any query types

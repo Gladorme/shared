@@ -18,14 +18,7 @@ import { useCallback, useMemo, useState } from 'react';
 
 import type { GetVariableOptionsContext, VariableOption, VariablePlugin } from '../../model';
 import type { VariableStateMap } from '../../runtime';
-import {
-  getPluginOverrides,
-  useAllVariableValues,
-  useDatasourceStore,
-  usePlugin,
-  usePlugins,
-  useTimeRange,
-} from '../../runtime';
+import { useAllVariableValues, useDatasourceStore, usePlugin, usePlugins, useTimeRange } from '../../runtime';
 
 export function filterVariableList(data: VariableOption[], capturedRegexp: RegExp): VariableOption[] {
   const result: VariableOption[] = [];
@@ -97,12 +90,10 @@ function resolveDependsOnVariables(
 }
 
 export function useListVariablePluginValues(definition: ListVariableDefinition): UseQueryResult<VariableOption[]> {
-  const { data: variablePlugin } = usePlugin(
-    'Variable',
-    definition.spec.plugin.kind,
-    undefined,
-    getPluginOverrides(definition.spec.plugin),
-  );
+  const { data: variablePlugin } = usePlugin('Variable', definition.spec.plugin.kind, {
+    version: definition.spec.plugin.metadata?.version,
+    registry: definition.spec.plugin.metadata?.registry,
+  });
 
   const variablePluginCtx = useVariablePluginContext();
 
@@ -145,7 +136,11 @@ export function useResolveListVariableValues(variableDefinitions: VariableDefini
 
   const pluginResults = usePlugins(
     'Variable',
-    listVariables.map((d) => ({ kind: d.spec.plugin.kind, ...getPluginOverrides(d.spec.plugin) })),
+    listVariables.map((d) => ({
+      kind: d.spec.plugin.kind,
+      version: d.spec.plugin.metadata?.version,
+      registry: d.spec.plugin.metadata?.registry,
+    })),
   );
 
   // Resolved variable state. Updated by onFetched when queries resolve.

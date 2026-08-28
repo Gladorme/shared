@@ -14,15 +14,12 @@
 import { Badge, Button, Tooltip } from '@mui/material';
 import { useListPluginMetadata } from '@perses-dev/plugin-system';
 import UpdateIcon from 'mdi-material-ui/Update';
-import { ReactElement, useMemo, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useMemo, useState } from 'react';
 
 import { useDashboard } from '../../context/useDashboard';
-import {
-  buildLatestPluginVersions,
-  findOutdatedPlugins,
-  OutdatedPlugin,
-  updatePluginVersions,
-} from '../../utils/pluginVersioning';
+import type { OutdatedPlugin } from '../../utils/pluginVersioning';
+import { buildLatestPluginVersions, findOutdatedPlugins, updatePluginVersions } from '../../utils/pluginVersioning';
 import { UpdatePluginsDrawer } from '../UpdatePluginsDrawer';
 
 /**

@@ -22,7 +22,6 @@ import type {
   DatasourceSelectItemGroup,
   DatasourceClient,
   DatasourceSelectItem,
-  getPluginOverrides,
 } from '@perses-dev/plugin-system';
 import { DatasourceStoreContext, usePluginRegistry, useEvent } from '@perses-dev/plugin-system';
 import type { DashboardSpec, DatasourceSelector, DatasourceSpec } from '@perses-dev/spec';
@@ -133,7 +132,12 @@ export function DatasourceStoreProvider(props: DatasourceStoreProviderProps): Re
     async function getClient<Client extends DatasourceClient>(selector: DatasourceSelector): Promise<Client> {
       const { kind } = selector;
       const { spec, proxyUrl } = await findDatasource(selector);
-      const plugin = await getPlugin({ kind: 'Datasource', name: kind, ...getPluginOverrides(spec.plugin) });
+      const plugin = await getPlugin({
+        kind: 'Datasource',
+        name: kind,
+        version: spec.plugin.metadata?.version,
+        registry: spec.plugin.metadata?.registry,
+      });
 
       // allows extending client
       const client = plugin.createClient(spec.plugin.spec, { proxyUrl }) as Client;

@@ -11,9 +11,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { DashboardResource } from '@perses-dev/client';
-import { PluginMetadataWithModule } from '@perses-dev/plugin-system';
+import type { DashboardResource } from '@perses-dev/client';
+import type { PluginMetadataWithModule } from '@perses-dev/plugin-system';
 
+import type { LatestPluginVersions } from './pluginVersioning';
 import {
   applyPluginVersions,
   buildLatestPluginVersions,
@@ -21,7 +22,6 @@ import {
   getOutdatedPluginId,
   getPluginIdentityKey,
   isDashboardLocked,
-  LatestPluginVersions,
   removePluginVersions,
   updatePluginVersions,
 } from './pluginVersioning';
