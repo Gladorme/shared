@@ -20,7 +20,7 @@ import {
   combineSx,
   useId,
 } from '@perses-dev/components';
-import { ActionOptions, useDataQueriesContext, usePluginRegistry, getPluginOverrides } from '@perses-dev/plugin-system';
+import { ActionOptions, useDataQueriesContext, usePluginRegistry } from '@perses-dev/plugin-system';
 import { PanelDefinition } from '@perses-dev/spec';
 import { ReactNode, memo, useEffect, useMemo, useState } from 'react';
 import useResizeObserver from 'use-resize-observer';
@@ -135,7 +135,8 @@ export const Panel = memo(function Panel(props: PanelProps) {
         const plugin = await getPlugin({
           kind: 'Panel',
           name: panelPluginKind,
-          ...getPluginOverrides(definition.spec.plugin),
+          version: definition.spec.plugin.metadata?.version,
+          registry: definition.spec.plugin.metadata?.registry,
         });
 
         // More defensive checking for plugin and actions

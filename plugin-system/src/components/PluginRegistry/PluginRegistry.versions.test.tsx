@@ -53,7 +53,7 @@ function renderConsumer(children: ReactNode, resources: Array<[PluginModuleResou
 }
 
 function Consumer({ version, registry }: { version?: string; registry?: string }): ReactElement {
-  const { data, isLoading, error } = usePlugin('Variable', PLUGIN_NAME, undefined, { version, registry });
+  const { data, isLoading, error } = usePlugin('Variable', PLUGIN_NAME, { version, registry });
   if (isLoading) return <div>loading</div>;
   if (error) return <div>error: {error.message}</div>;
   return <div>source: {(data as unknown as { source?: string })?.source}</div>;

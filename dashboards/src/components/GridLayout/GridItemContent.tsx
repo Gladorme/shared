@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import { Box, useForkRef } from '@mui/material';
-import { DataQueriesProvider, usePlugin, useSuggestedStepMs, getPluginOverrides } from '@perses-dev/plugin-system';
+import { DataQueriesProvider, usePlugin, useSuggestedStepMs } from '@perses-dev/plugin-system';
 import React, { ReactElement, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
@@ -103,12 +103,10 @@ export function GridItemContent(props: GridItemContentProps): ReactElement {
   // map TimeSeriesQueryDefinition to Definition<UnknownSpec>
   const suggestedStepMs = useSuggestedStepMs(width);
 
-  const { data: plugin } = usePlugin(
-    'Panel',
-    panelDefinition.spec.plugin.kind,
-    undefined,
-    getPluginOverrides(panelDefinition.spec.plugin),
-  );
+  const { data: plugin } = usePlugin('Panel', panelDefinition.spec.plugin.kind, {
+    version: panelDefinition.spec.plugin.metadata?.version,
+    registry: panelDefinition.spec.plugin.metadata?.registry,
+  });
 
   const pluginQueryOptions =
     typeof plugin?.queryOptions === 'function'

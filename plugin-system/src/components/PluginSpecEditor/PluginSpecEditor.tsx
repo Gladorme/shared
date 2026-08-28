@@ -17,7 +17,7 @@ import { DatasourceSpec, UnknownSpec } from '@perses-dev/spec';
 import { ReactElement } from 'react';
 
 import { DatasourcePlugin, OptionsEditorProps, Plugin, PluginType } from '../../model';
-import { getPluginOverrides, usePlugin } from '../../runtime';
+import { usePlugin } from '../../runtime';
 import { PluginEditorSelection } from '../PluginEditor';
 import { DatasourceSpecEditor } from './DatasourceSpecEditor';
 
@@ -46,7 +46,10 @@ export function PluginSpecEditor(props: PluginSpecEditorProps): ReactElement | n
     data: plugin,
     isLoading,
     error,
-  } = usePlugin(pluginType, pluginKind, undefined, getPluginOverrides({ metadata: pluginMetadata }));
+  } = usePlugin(pluginType, pluginKind, {
+    version: pluginMetadata?.version,
+    registry: pluginMetadata?.registry,
+  });
 
   if (error) {
     return <ErrorAlert error={error} />;
