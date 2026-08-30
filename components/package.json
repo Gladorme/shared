@@ -18,7 +18,7 @@
   "scripts": {
     "clean": "rimraf dist/",
     "build": "concurrently \"npm:build:*\"",
-    "build:esm": "vite build",
+    "build:esm": "vite build --config ../vite.config.ts",
     "build:types": "tsc --project tsconfig.build.json",
     "type-check": "tsc --noEmit",
     "start": "concurrently -P \"npm:build:* -- {*}\" -- --watch",

@@ -13,6 +13,28 @@
 
 import { resolve } from 'node:path';
 
-import { definePackageViteConfig } from '../vite.shared';
+import { defineConfig } from 'vite';
 
-export default definePackageViteConfig(resolve(__dirname));
+const sourceDir = resolve('src');
+
+export default defineConfig({
+  build: {
+    // Turborepo cleans dist before builds. Avoid racing with the concurrent
+    // TypeScript declaration build by leaving existing output in place.
+    emptyOutDir: false,
+    lib: {
+      entry: resolve(sourceDir, 'index.ts'),
+      formats: ['es'],
+    },
+    rollupOptions: {
+      external: /^[^./]/,
+      output: {
+        entryFileNames: '[name].js',
+        preserveModules: true,
+        preserveModulesRoot: sourceDir,
+      },
+    },
+    sourcemap: true,
+    target: 'es2023',
+  },
+});

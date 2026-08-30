@@ -54,7 +54,7 @@
     "rimraf": "^5.0.5",
     "turbo": "^2.3.4",
     "typescript": "5.9.3",
-    "vite": "^7.3.6",
+    "vite": "8.2.2",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "4.1.11"
   },
