@@ -34,7 +34,8 @@ npm install
 
 ### Development
 
-This monorepo uses [Turborepo](https://turbo.build/repo) for efficient task running and caching.
+This monorepo uses [Turborepo](https://turbo.build/repo) for efficient task running and caching. Package JavaScript is
+built as ES modules with [Vite](https://vite.dev/), while TypeScript emits the corresponding declarations.
 
 #### Build all packages
 

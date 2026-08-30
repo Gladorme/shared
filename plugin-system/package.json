@@ -19,7 +19,7 @@
   "scripts": {
     "clean": "rimraf dist/",
     "build": "concurrently \"npm:build:*\"",
-    "build:esm": "swc ./src -d dist --strip-leading-paths --config-file ../.swcrc",
+    "build:esm": "vite build",
     "build:types": "tsc --project tsconfig.build.json",
     "type-check": "tsc --noEmit",
     "start": "concurrently -P \"npm:build:* -- {*}\" -- --watch",
@@ -29,7 +29,7 @@
     "lint:fix": "oxlint --fix src"
   },
   "dependencies": {
-    "@module-federation/enhanced": "^2.8.0",
+    "@module-federation/runtime": "^2.8.0",
     "@perses-dev/client": "0.55.0-beta.6",
     "@perses-dev/components": "0.55.0-beta.6",
     "@perses-dev/spec": "0.3.0-beta.5",

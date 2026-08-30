@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import type { ModuleFederation } from '@module-federation/enhanced/runtime';
+import type { ModuleFederation } from '@module-federation/runtime';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
@@ -21,7 +21,7 @@ import * as PluginRuntime from './PluginRuntime';
 
 globalThis.fetch = vi.fn(() => Promise.resolve({ ok: true } as Response));
 
-vi.mock('@module-federation/enhanced/runtime', () => ({
+vi.mock('@module-federation/runtime', () => ({
   init: vi.fn(() => ({
     options: {
       remotes: [],
