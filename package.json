@@ -9,19 +9,18 @@
     "pnpm": ">=12"
   },
   "scripts": {
-    "build": "turbo run build",
-    "test": "turbo run test",
-    "lint": "turbo run lint",
-    "lint:fix": "turbo run lint -- --fix",
-    "format": "turbo run format:root",
-    "format:check": "turbo run format:root:check",
+    "build": "pnpm run clean && pnpm -r --if-present run build",
+    "test": "pnpm -r --parallel --if-present run test",
+    "lint": "pnpm -r --parallel --if-present run lint",
+    "lint:fix": "pnpm -r --parallel --if-present run lint:fix",
+    "format": "pnpm run format:root",
+    "format:check": "pnpm run format:root:check",
     "format:root": "oxfmt",
     "format:root:check": "oxfmt --check",
-    "type-check": "turbo run type-check",
-    "start": "turbo run start",
-    "clean": "turbo run clean",
+    "type-check": "pnpm run build && pnpm -r --parallel --if-present run type-check",
+    "start": "pnpm run build && pnpm -r --parallel --if-present run start",
+    "clean": "pnpm -r --parallel --if-present run clean",
     "reinstall": "pnpm clean && rm -rf **/node_modules && pnpm install",
-    "clear-turbo-cache": "rimraf ./.turbo/cache",
     "doctor": "pnpm dlx react-doctor@latest"
   },
   "workspaces": [
@@ -54,7 +53,6 @@
     "react-dom": "^18.3.0",
     "react-refresh": "^0.16.0",
     "rimraf": "^6.1.0",
-    "turbo": "^2.6.1",
     "typescript": "5.9.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "4.1.11"

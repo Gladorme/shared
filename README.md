@@ -34,7 +34,7 @@ pnpm install
 
 ### Development
 
-This monorepo uses [Turborepo](https://turbo.build/repo) for efficient task running and caching.
+This monorepo uses pnpm workspaces and recursive commands to run tasks across packages.
 
 #### Build all packages
 
@@ -84,8 +84,6 @@ pnpm clean
 # Clean and reinstall all dependencies
 pnpm reinstall
 
-# Clear Turborepo cache
-pnpm clear-turbo-cache
 ```
 
 ### Linking with Local Projects

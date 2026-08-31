@@ -20,7 +20,7 @@ Before editing:
 - `dashboards/`: reusable dashboard UI components and logic.
 - `explore/`: explorer UI components and logic.
 - `scripts/`: local development, publishing, and cross-repository linking utilities.
-- `dist/`, `.turbo/`, and `node_modules/` are generated or downloaded outputs. Do not edit or commit them.
+- `dist/` and `node_modules/` are generated or downloaded outputs. Do not edit or commit them.
 
 Keep dependencies moving toward lower layers: `explore` can use `dashboards`; both can use `plugin-system`,
 `components`, `client`, and `spec`. Lower layers must not import higher-level features. Product-specific routes,
