@@ -1,0 +1,15 @@
+packages:
+  - client
+  - components
+  - dashboards
+  - explore
+  - plugin-system
+
+linkWorkspacePackages: true
+
+nodeLinker: hoisted
+
+allowBuilds:
+  '@swc/core': true
+  core-js: false
+  esbuild: true

@@ -43,23 +43,23 @@ authentication, and administration belong in the main `perses` repository; offic
 
 ## Validation
 
-Use Node.js from `.nvmrc` and npm from `package.json`. While iterating, start with the affected workspace:
+Use Node.js from `.nvmrc` and pnpm 12 from `package.json`. While iterating, start with the affected workspace:
 
 ```sh
-npm ci
-npm run lint -w <workspace>
-npm run type-check -w <workspace>
-npm run test -w <workspace>
+pnpm install --frozen-lockfile
+pnpm --filter <workspace> lint
+pnpm --filter <workspace> type-check
+pnpm --filter <workspace> test
 ```
 
 Before completion, run the relevant repository checks:
 
 ```sh
-npm run lint
-npm run format:check
-npm run type-check
-npm run test
-npm run build
+pnpm lint
+pnpm format:check
+pnpm type-check
+pnpm test
+pnpm build
 make checklicense
 ```
 

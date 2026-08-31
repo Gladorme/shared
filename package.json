@@ -6,7 +6,7 @@
   "type": "module",
   "engines": {
     "node": ">=24",
-    "npm": ">=11"
+    "pnpm": ">=12"
   },
   "scripts": {
     "build": "turbo run build",
@@ -20,9 +20,9 @@
     "type-check": "turbo run type-check",
     "start": "turbo run start",
     "clean": "turbo run clean",
-    "reinstall": "npm run clean && rm -rf **/node_modules && npm install",
+    "reinstall": "pnpm clean && rm -rf **/node_modules && pnpm install",
     "clear-turbo-cache": "rimraf ./.turbo/cache",
-    "doctor": "npx react-doctor@latest"
+    "doctor": "pnpm dlx react-doctor@latest"
   },
   "workspaces": [
     "components",
@@ -59,5 +59,5 @@
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "4.1.11"
   },
-  "packageManager": "npm@11.17.0"
+  "packageManager": "pnpm@12.1.0"
 }
