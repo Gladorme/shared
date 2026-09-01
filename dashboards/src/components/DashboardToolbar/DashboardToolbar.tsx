@@ -49,6 +49,11 @@ export interface DashboardToolbarProps {
    * already-pinned plugins is shown regardless of this flag.
    */
   isLockModeAvailable?: boolean;
+  /**
+   * When true, offers the button that updates all plugins to their latest version.
+   * Based on plugins available. It will open a drawer that shows the plugins that can be updated and allows the user to update them.
+   */
+  isUpdateButtonAvailable?: boolean;
   timezone: string;
   onEditButtonClick: () => void;
   onCancelButtonClick: () => void;
@@ -66,6 +71,7 @@ export const DashboardToolbar = (props: DashboardToolbarProps): ReactElement => 
     isDatasourceEnabled,
     isLinksEnabled = true,
     isLockModeAvailable = false,
+    isUpdateButtonAvailable = false,
     timezone: toolbarTimezone,
     onEditButtonClick,
     onCancelButtonClick,
@@ -116,12 +122,8 @@ export const DashboardToolbar = (props: DashboardToolbarProps): ReactElement => 
                 {isLinksEnabled && <EditDashboardLinksButton />}
                 <AddPanelButton />
                 <AddGroupButton />
-                {isLockModeAvailable && (
-                  <>
-                    <UpdatePluginsButton />
-                    <LockDashboardButton />
-                  </>
-                )}
+                {isUpdateButtonAvailable && <UpdatePluginsButton />}
+                {isLockModeAvailable && <LockDashboardButton />}
               </Stack>
               <SaveDashboardButton onSave={onSave} isDisabled={isReadonly} />
               <Button variant="outlined" onClick={onCancelButtonClick}>
