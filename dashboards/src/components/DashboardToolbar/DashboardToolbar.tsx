@@ -116,8 +116,12 @@ export const DashboardToolbar = (props: DashboardToolbarProps): ReactElement => 
                 {isLinksEnabled && <EditDashboardLinksButton />}
                 <AddPanelButton />
                 <AddGroupButton />
-                <UpdatePluginsButton />
-                {isLockModeAvailable && <LockDashboardButton />}
+                {isLockModeAvailable && (
+                  <>
+                    <UpdatePluginsButton />
+                    <LockDashboardButton />
+                  </>
+                )}
               </Stack>
               <SaveDashboardButton onSave={onSave} isDisabled={isReadonly} />
               <Button variant="outlined" onClick={onCancelButtonClick}>
