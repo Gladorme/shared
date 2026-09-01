@@ -39,8 +39,8 @@ func updatePackageVersion(workspaces []string, workspacePath string, newVersion 
 
 	// Then, update all @perses-dev/* dependencies to the new version
 	for _, workspace := range workspaces {
-		bumpPackageDeps := regexp.MustCompile(fmt.Sprintf(`"@perses-dev/%s":\s*"(\^)?[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?"`, workspace))
-		data = bumpPackageDeps.ReplaceAll(data, []byte(fmt.Sprintf(`"@perses-dev/%s": "%s"`, workspace, newVersion)))
+		bumpPackageDeps := regexp.MustCompile(fmt.Sprintf(`"@perses-dev/%s":\s*"(workspace:)?\^?[0-9]+\.[0-9]+\.[0-9]+(-(alpha|beta|rc)\.[0-9]+)?"`, workspace))
+		data = bumpPackageDeps.ReplaceAll(data, []byte(fmt.Sprintf(`"@perses-dev/%s": "${1}%s"`, workspace, newVersion)))
 	}
 	if writeErr := os.WriteFile(pkgPath, data, 0644); writeErr != nil {
 		logrus.WithError(writeErr).Fatalf("unable to write the file %s", pkgPath)

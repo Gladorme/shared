@@ -38,10 +38,10 @@ func publishPackageWithOutput(workspacePath string, dryRun bool, stdout io.Write
 		return err
 	}
 
-	// Get the absolute dist directory path
-	libraryPath, err := filepath.Abs(filepath.Join(workspacePath, "dist"))
+	// Resolve the workspace directory. pnpm requires package.json in the publish working directory.
+	libraryPath, err := filepath.Abs(workspacePath)
 	if err != nil {
-		return fmt.Errorf("unable to resolve dist directory for package %s@%s: %w", pck.Name, pck.Version, err)
+		return fmt.Errorf("unable to resolve workspace directory for package %s@%s: %w", pck.Name, pck.Version, err)
 	}
 
 	// Prepare the pnpm publish command

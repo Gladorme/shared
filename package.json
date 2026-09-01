@@ -10,7 +10,7 @@
   },
   "scripts": {
     "build": "pnpm run clean && pnpm -r --if-present run build",
-    "test": "pnpm -r --parallel --if-present run test",
+    "test": "pnpm -r --if-present run test",
     "lint": "pnpm -r --parallel --if-present run lint",
     "lint:fix": "pnpm -r --parallel --if-present run lint:fix",
     "format": "pnpm run format:root",

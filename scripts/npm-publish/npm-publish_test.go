@@ -56,7 +56,7 @@ func TestPublishPackageWithOutput(t *testing.T) {
 			if got, want := normalizeOutput(stdout.String()), "pnpm stdout: "+wantArgs+"\n"; got != want {
 				t.Errorf("stdout = %q, want %q", got, want)
 			}
-			if got, want := normalizeOutput(stderr.String()), "pnpm stderr from: "+filepath.Join(workspacePath, "dist")+"\n"; got != want {
+			if got, want := normalizeOutput(stderr.String()), "pnpm stderr from: "+workspacePath+"\n"; got != want {
 				t.Errorf("stderr = %q, want %q", got, want)
 			}
 
@@ -73,7 +73,7 @@ func TestPublishPackageWithOutput(t *testing.T) {
 			for _, detail := range []string{
 				"pnpm " + wantArgs + " failed",
 				"@perses-dev/test@" + test.version,
-				filepath.Join(workspacePath, "dist"),
+				workspacePath,
 				fmt.Sprintf("exit status %d", test.exitCode),
 			} {
 				if !strings.Contains(err.Error(), detail) {
