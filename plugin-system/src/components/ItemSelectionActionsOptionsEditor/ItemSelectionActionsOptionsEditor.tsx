@@ -147,7 +147,7 @@ const CONTENT_TYPES: Array<{ value: ContentType; label: string }> = [
   { value: 'json', label: 'JSON' },
   { value: 'text', label: 'Text' },
 ];
-const BODY_METHODS: HttpMethod[] = ['POST', 'PUT', 'PATCH'];
+const BODY_METHODS: Set<HttpMethod> = new Set(['POST', 'PUT', 'PATCH']);
 const BODY_CLEAR_CONFIRM_MESSAGE = 'Changing this option will remove the current body template. Continue?';
 
 /** Available action icons with their display components */
@@ -439,7 +439,7 @@ function WebhookActionEditor({
   >(null);
   const contentTypeValue = webhookAction.contentType ?? 'none';
   const hasBodyTemplate = (webhookAction.bodyTemplate ?? '').trim().length > 0;
-  const supportsBody = BODY_METHODS.includes(webhookAction.method);
+  const supportsBody = BODY_METHODS.has(webhookAction.method);
 
   const [isCollapsed, setIsCollapsed] = useState(true);
 
@@ -481,7 +481,7 @@ function WebhookActionEditor({
         return;
       }
 
-      const nextSupportsBody = BODY_METHODS.includes(nextMethod);
+      const nextSupportsBody = BODY_METHODS.has(nextMethod);
       if (!nextSupportsBody && hasBodyTemplate) {
         setPendingChange({ kind: 'method', value: nextMethod });
         return;
