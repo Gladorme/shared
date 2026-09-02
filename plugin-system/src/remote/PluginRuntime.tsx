@@ -44,9 +44,9 @@ type HostSharedModuleName = keyof HostSharedModules;
 const hostSharedModules = new Map<HostSharedModuleName, unknown>();
 
 /*
-* Shared singletons must be provided to Module Federation *synchronously* (via `lib`) so the host's
-* copy wins singleton negotiation to avoid loader deadlocks or multiple instances.
-*/
+ * Shared singletons must be provided to Module Federation *synchronously* (via `lib`) so the host's
+ * copy wins singleton negotiation to avoid loader deadlocks or multiple instances.
+ */
 export function registerHostSharedModules(modules: HostSharedModules): void {
   for (const [name, module] of Object.entries(modules) as Array<[HostSharedModuleName, unknown]>) {
     hostSharedModules.set(name, module);
@@ -58,7 +58,7 @@ function getHostSharedModule(name: HostSharedModuleName): unknown {
   if (!module) {
     throw new Error(
       `Shared module "${name}" was not registered before a plugin tried to consume it. ` +
-        `Call registerHostSharedModules() during app bootstrap.`
+        `Call registerHostSharedModules() during app bootstrap.`,
     );
   }
   return module;
