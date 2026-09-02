@@ -283,7 +283,7 @@ export const exportDataAsCSV = ({ data }: ExportDataOptions): Blob => {
   const columnNames = seriesInfo.map((info) => info.columnName);
   csvString += `DateTime,${columnNames.join(',')}\n`;
 
-  const sortedDateTimes = Object.keys(result).sort((a, b) => {
+  const sortedDateTimes = Object.keys(result).toSorted((a, b) => {
     const dateA = new Date(a).getTime();
     const dateB = new Date(b).getTime();
     return dateA - dateB;

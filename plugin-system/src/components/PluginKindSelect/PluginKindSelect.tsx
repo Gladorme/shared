@@ -42,10 +42,10 @@ export const PluginKindSelect = forwardRef((props: PluginKindSelectProps, ref): 
     if (filteredQueryPlugins?.length) {
       return data
         ?.filter((i) => filteredQueryPlugins.includes(i.spec.name))
-        ?.sort((a, b) => a.spec.display.name.localeCompare(b.spec.display.name));
+        ?.toSorted((a, b) => a.spec.display.name.localeCompare(b.spec.display.name));
     }
 
-    return data?.sort((a, b) => a.spec.display.name.localeCompare(b.spec.display.name));
+    return data?.toSorted((a, b) => a.spec.display.name.localeCompare(b.spec.display.name));
   }, [data, filteredQueryPlugins]);
 
   // Pass an empty value while options are still loading so MUI doesn't complain about us using an "out of range" value
