@@ -30,6 +30,40 @@ function createSharedModuleLoader<TModule>(loadModule: () => Promise<TModule>): 
   };
 }
 
+export interface HostSharedModules {
+  '@perses-dev/spec': unknown;
+  '@perses-dev/client': unknown;
+  '@perses-dev/components': unknown;
+  '@perses-dev/plugin-system': unknown;
+  '@perses-dev/explore': unknown;
+  '@perses-dev/dashboards': unknown;
+}
+
+type HostSharedModuleName = keyof HostSharedModules;
+
+const hostSharedModules = new Map<HostSharedModuleName, unknown>();
+
+/*
+* Shared singletons must be provided to Module Federation *synchronously* (via `lib`) so the host's
+* copy wins singleton negotiation to avoid loader deadlocks or multiple instances.
+*/
+export function registerHostSharedModules(modules: HostSharedModules): void {
+  for (const [name, module] of Object.entries(modules) as Array<[HostSharedModuleName, unknown]>) {
+    hostSharedModules.set(name, module);
+  }
+}
+
+function getHostSharedModule(name: HostSharedModuleName): unknown {
+  const module = hostSharedModules.get(name);
+  if (!module) {
+    throw new Error(
+      `Shared module "${name}" was not registered before a plugin tried to consume it. ` +
+        `Call registerHostSharedModules() during app bootstrap.`
+    );
+  }
+  return module;
+}
+
 const getPluginRuntime = (): ModuleFederation => {
   if (instance === null) {
     const pluginRuntime = createInstance({
@@ -76,6 +110,56 @@ const getPluginRuntime = (): ModuleFederation => {
             requiredVersion: '^7.52.2',
           },
         },
+        '@perses-dev/spec': {
+          version: '0.3.0-beta.5',
+          lib: () => getHostSharedModule('@perses-dev/spec'),
+          shareConfig: {
+            singleton: true,
+            requiredVersion: '^0.3.0-beta.5',
+          },
+        },
+        '@perses-dev/client': {
+          version: '0.55.0-beta.6',
+          lib: () => getHostSharedModule('@perses-dev/client'),
+          shareConfig: {
+            singleton: true,
+            requiredVersion: '^0.55.0-beta.6',
+          },
+        },
+        '@perses-dev/components': {
+          version: '0.55.0-beta.6',
+          lib: () => getHostSharedModule('@perses-dev/components'),
+          shareConfig: {
+            singleton: true,
+            requiredVersion: '^0.55.0-beta.6',
+          },
+        },
+        '@perses-dev/plugin-system': {
+          version: '0.55.0-beta.6',
+          lib: () => getHostSharedModule('@perses-dev/plugin-system'),
+          shareConfig: {
+            singleton: true,
+            requiredVersion: '^0.55.0-beta.6',
+          },
+        },
+        '@perses-dev/explore': {
+          version: '0.55.0-beta.6',
+          lib: () => getHostSharedModule('@perses-dev/explore'),
+          shareConfig: {
+            singleton: true,
+            requiredVersion: '^0.55.0-beta.6',
+          },
+        },
+        '@perses-dev/dashboards': {
+          version: '0.55.0-beta.6',
+          lib: () => getHostSharedModule('@perses-dev/dashboards'),
+          shareConfig: {
+            singleton: true,
+            requiredVersion: '^0.55.0-beta.6',
+          },
+        },
+        // Below are the shared modules that are used by the plugins and are loaded asynchronously on demand using get rather than lib.
+        // This is to avoid loading the modules if they are not used by the plugin.
         echarts: {
           version: '5.5.0',
           get: createSharedModuleLoader(() => import('echarts')),
@@ -84,61 +168,6 @@ const getPluginRuntime = (): ModuleFederation => {
             requiredVersion: '^5.5.0',
           },
         },
-        '@perses-dev/spec': {
-          version: '0.3.0-beta.5',
-          get: createSharedModuleLoader(() => import('@perses-dev/spec')),
-          shareConfig: {
-            singleton: true,
-            requiredVersion: '^0.3.0-beta.5',
-          },
-        },
-        '@perses-dev/client': {
-          version: '0.55.0-beta.6',
-          get: createSharedModuleLoader(() => import('@perses-dev/client')),
-          shareConfig: {
-            singleton: true,
-            requiredVersion: '^0.55.0-beta.6',
-          },
-        },
-        '@perses-dev/components': {
-          version: '0.55.0-beta.6',
-          get: createSharedModuleLoader(() => import('@perses-dev/components')),
-          shareConfig: {
-            singleton: true,
-            requiredVersion: '^0.55.0-beta.6',
-          },
-        },
-        '@perses-dev/plugin-system': {
-          version: '0.55.0-beta.6',
-          get: createSharedModuleLoader(() => import('@perses-dev/plugin-system')),
-          shareConfig: {
-            singleton: true,
-            requiredVersion: '^0.55.0-beta.6',
-          },
-        },
-        '@perses-dev/explore': {
-          version: '0.55.0-beta.6',
-          get: createSharedModuleLoader(
-            // @ts-ignore -- The host provides this higher-layer package; declaring it here would create a cycle.
-            () => import('@perses-dev/explore'),
-          ),
-          shareConfig: {
-            singleton: true,
-            requiredVersion: '^0.55.0-beta.6',
-          },
-        },
-        '@perses-dev/dashboards': {
-          version: '0.55.0-beta.6',
-          get: createSharedModuleLoader(
-            // @ts-ignore -- The host provides this higher-layer package; declaring it here would create a cycle.
-            () => import('@perses-dev/dashboards'),
-          ),
-          shareConfig: {
-            singleton: true,
-            requiredVersion: '^0.55.0-beta.6',
-          },
-        },
-        // Below are the shared modules that are used by the plugins, this can be part of the SDK
         'date-fns': {
           version: '4.1.0',
           get: createSharedModuleLoader(() => import('date-fns')),
