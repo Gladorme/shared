@@ -42,7 +42,7 @@ function ShortcutRegistrationProbe(): ReactElement {
     }
   });
 
-  return <div data-testid="registered-shortcut-categories">{Array.from(categories).sort().join(',')}</div>;
+  return <div data-testid="registered-shortcut-categories">{Array.from(categories).toSorted().join(',')}</div>;
 }
 
 function DashboardViewUnderTest(): ReactElement {

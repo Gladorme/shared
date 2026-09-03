@@ -43,10 +43,10 @@ const DEFAULT_ACTIVE_CELL: TableCellPosition = {
   column: 0,
 };
 
-const ARROW_KEYS = ['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown'];
+const ARROW_KEYS = new Set(['ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown']);
 
 function isArrowKey(key: string): boolean {
-  return ARROW_KEYS.includes(key);
+  return ARROW_KEYS.has(key);
 }
 
 /**

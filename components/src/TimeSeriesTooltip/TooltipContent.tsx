@@ -28,7 +28,7 @@ export function TooltipContent(props: TooltipContentProps): ReactElement | null 
 
   const sortedFocusedSeries = useMemo(() => {
     if (series === null) return null;
-    return series.sort((a, b) => (a.y > b.y ? -1 : 1));
+    return series.toSorted((a, b) => (a.y > b.y ? -1 : 1));
   }, [series]);
 
   if (series === null || sortedFocusedSeries === null) {

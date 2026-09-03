@@ -122,7 +122,7 @@ export function hydrateVariableDefinitionStates(
   overridingNames = {};
   externalDefinitions
     .slice()
-    .reverse()
+    .toReversed()
     .forEach((externalDef) => {
       const source = externalDef.source;
       externalDef.definitions.forEach((v) => {

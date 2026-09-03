@@ -216,7 +216,7 @@ export function ThresholdsEditor({
               onBlur={handleThresholdBlur}
             />
           ))
-          .reverse()}
+          .toReversed()}
       {!hideDefault && (
         <Stack flex={1} direction="row" alignItems="center" spacing={1}>
           <OptionsColorPicker label="default" color={defaultThresholdColor} onColorChange={handleDefaultColorChange} />

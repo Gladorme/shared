@@ -13,7 +13,7 @@
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { DataQueriesProvider, TimeRangeProviderBasic } from '@perses-dev/plugin-system';
-import { Link } from '@perses-dev/spec';
+import type { Link } from '@perses-dev/spec';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
