@@ -1,18 +1,4 @@
 // Copyright The Perses Authors
-// Licensed under the Apache License, Version 2.0 (the \"License\");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an \"AS IS\" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
-/* eslint-disable @typescript-eslint/no-require-imports */
-// Copyright The Perses Authors
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -36,6 +22,47 @@ import * as ReactRouterDOM from 'react-router-dom';
 import type { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
 
 let instance: ModuleFederation | null = null;
+
+function createSharedModuleLoader<TModule>(loadModule: () => Promise<TModule>): () => Promise<() => TModule> {
+  return async () => {
+    const module = await loadModule();
+    return () => module;
+  };
+}
+
+export interface HostSharedModules {
+  '@perses-dev/spec': unknown;
+  '@perses-dev/client': unknown;
+  '@perses-dev/components': unknown;
+  '@perses-dev/plugin-system': unknown;
+  '@perses-dev/explore': unknown;
+  '@perses-dev/dashboards': unknown;
+}
+
+type HostSharedModuleName = keyof HostSharedModules;
+
+const hostSharedModules = new Map<HostSharedModuleName, unknown>();
+
+/*
+ * Shared singletons must be provided to Module Federation *synchronously* (via `lib`) so the host's
+ * copy wins singleton negotiation to avoid loader deadlocks or multiple instances.
+ */
+export function registerHostSharedModules(modules: HostSharedModules): void {
+  for (const [name, module] of Object.entries(modules) as Array<[HostSharedModuleName, unknown]>) {
+    hostSharedModules.set(name, module);
+  }
+}
+
+function getHostSharedModule(name: HostSharedModuleName): unknown {
+  const module = hostSharedModules.get(name);
+  if (!module) {
+    throw new Error(
+      `Shared module "${name}" was not registered before a plugin tried to consume it. ` +
+        `Call registerHostSharedModules() during app bootstrap.`,
+    );
+  }
+  return module;
+}
 
 const getPluginRuntime = (): ModuleFederation => {
   if (instance === null) {
@@ -83,17 +110,9 @@ const getPluginRuntime = (): ModuleFederation => {
             requiredVersion: '^7.52.2',
           },
         },
-        echarts: {
-          version: '5.5.0',
-          lib: () => require('echarts'),
-          shareConfig: {
-            singleton: true,
-            requiredVersion: '^5.5.0',
-          },
-        },
         '@perses-dev/spec': {
           version: '0.3.0-beta.5',
-          lib: () => require('@perses-dev/spec'),
+          lib: () => getHostSharedModule('@perses-dev/spec'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.3.0-beta.5',
@@ -101,7 +120,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/client': {
           version: '0.55.0-beta.6',
-          lib: () => require('@perses-dev/client'),
+          lib: () => getHostSharedModule('@perses-dev/client'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -109,7 +128,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/components': {
           version: '0.55.0-beta.6',
-          lib: () => require('@perses-dev/components'),
+          lib: () => getHostSharedModule('@perses-dev/components'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -117,7 +136,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/plugin-system': {
           version: '0.55.0-beta.6',
-          lib: () => require('@perses-dev/plugin-system'),
+          lib: () => getHostSharedModule('@perses-dev/plugin-system'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -125,7 +144,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/explore': {
           version: '0.55.0-beta.6',
-          lib: () => require('@perses-dev/explore'),
+          lib: () => getHostSharedModule('@perses-dev/explore'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
@@ -133,16 +152,25 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@perses-dev/dashboards': {
           version: '0.55.0-beta.6',
-          lib: () => require('@perses-dev/dashboards'),
+          lib: () => getHostSharedModule('@perses-dev/dashboards'),
           shareConfig: {
             singleton: true,
             requiredVersion: '^0.55.0-beta.6',
           },
         },
-        // Below are the shared modules that are used by the plugins, this can be part of the SDK
+        // Below are the shared modules that are used by the plugins and are loaded asynchronously on demand using get rather than lib.
+        // This is to avoid loading the modules if they are not used by the plugin.
+        echarts: {
+          version: '5.5.0',
+          get: createSharedModuleLoader(() => import('echarts')),
+          shareConfig: {
+            singleton: true,
+            requiredVersion: '^5.5.0',
+          },
+        },
         'date-fns': {
           version: '4.1.0',
-          lib: () => require('date-fns'),
+          get: createSharedModuleLoader(() => import('date-fns')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^4.1.0',
@@ -150,7 +178,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'date-fns-tz': {
           version: '3.2.0',
-          lib: () => require('date-fns-tz'),
+          get: createSharedModuleLoader(() => import('date-fns-tz')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^3.2.0',
@@ -158,7 +186,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         lodash: {
           version: '4.17.21',
-          lib: () => require('lodash'),
+          get: createSharedModuleLoader(() => import('lodash')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^4.17.21',
@@ -166,7 +194,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@emotion/react': {
           version: '11.11.3',
-          lib: () => require('@emotion/react'),
+          get: createSharedModuleLoader(() => import('@emotion/react')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^11.11.3',
@@ -174,7 +202,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@emotion/styled': {
           version: '11.11.0',
-          lib: () => require('@emotion/styled'),
+          get: createSharedModuleLoader(() => import('@emotion/styled')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^11.11.0',
@@ -182,7 +210,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         '@hookform/resolvers/zod': {
           version: '3.3.4',
-          lib: () => require('@hookform/resolvers/zod'),
+          get: createSharedModuleLoader(() => import('@hookform/resolvers/zod')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^3.3.4',
@@ -190,7 +218,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'use-resize-observer': {
           version: '9.1.0',
-          lib: () => require('use-resize-observer'),
+          get: createSharedModuleLoader(() => import('use-resize-observer')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^9.1.0',
@@ -198,7 +226,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'mdi-material-ui': {
           version: '7.4.0',
-          lib: () => require('mdi-material-ui'),
+          get: createSharedModuleLoader(() => import('mdi-material-ui')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^7.4.0',
@@ -206,7 +234,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         immer: {
           version: '10.1.1',
-          lib: () => require('immer'),
+          get: createSharedModuleLoader(() => import('immer')),
           shareConfig: {
             singleton: true,
             requiredVersion: '^10.1.1',
