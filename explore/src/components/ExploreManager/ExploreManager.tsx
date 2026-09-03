@@ -98,7 +98,7 @@ export function ExploreManager(props: ExploreManagerProps): ReactElement {
             }}
           >
             {plugins.data
-              ?.sort((a, b) => a.spec.display.name.localeCompare(b.spec.display.name))
+              ?.toSorted((a, b) => a.spec.display.name.localeCompare(b.spec.display.name))
               .map((plugin) => (
                 <Tab
                   key={`${plugin.module.name}-${plugin.spec.name}`}

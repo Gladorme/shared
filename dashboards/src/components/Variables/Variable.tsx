@@ -94,6 +94,7 @@ export function useListVariableState(
 
     if (!sort || sort === 'none') return opts;
     const sortMethod = SORT_METHODS[sort as SortMethodName];
+    // oxlint-disable-next-line unicorn/no-array-sort Calling sort of object, not the built-in array sort function
     return !sortMethod ? opts : sortMethod.sort(opts);
   }, [options, sort]);
 

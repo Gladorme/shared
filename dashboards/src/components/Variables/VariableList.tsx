@@ -28,7 +28,7 @@ export function VariableList(): ReactElement {
     <>
       {externalVariableDefinitions
         .slice()
-        .reverse() // We reverse to have the most prioritized on top
+        .toReversed() // We reverse to have the most prioritized on top
         .map((def) =>
           def.definitions.map((v) => (
             <VariableListItem key={v.spec.name + def.source} spec={v.spec} source={def.source} />

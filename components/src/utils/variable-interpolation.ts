@@ -222,7 +222,7 @@ export function replaceVariables(text: string, variableState: VariableStateMap):
     // Sorting variables by their length.
     // In order to not have a variable name have contained in another variable name.
     // i.e.: $__range replacing $__range_ms => '3600_ms' instead of '3600000'
-    .sort((a, b) => b.length - a.length)
+    .toSorted((a, b) => b.length - a.length)
     .forEach((v) => {
       const variable = variableState[v];
       if (variable && variable.value !== undefined) {

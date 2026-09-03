@@ -44,6 +44,6 @@ export function createRegexFromString(input: string): RegExp {
   try {
     return new RegExp(pattern, flags);
   } catch (error) {
-    throw new Error(`Failed to create RegExp ${error}`);
+    throw new Error(`Failed to create RegExp ${error}`, { cause: error });
   }
 }

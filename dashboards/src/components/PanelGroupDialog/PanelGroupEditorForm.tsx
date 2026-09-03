@@ -71,7 +71,7 @@ export function PanelGroupEditorForm(props: PanelGroupEditorFormProps): ReactEle
               <Typography sx={{ fontStyle: 'italic' }}>None</Typography>
             </MenuItem>
             {variables
-              ?.sort((a, b) => a.localeCompare(b))
+              ?.toSorted((a, b) => a.localeCompare(b))
               .map((variable) => (
                 <MenuItem key={variable} value={variable}>
                   {variable}

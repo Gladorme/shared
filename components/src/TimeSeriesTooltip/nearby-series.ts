@@ -63,7 +63,7 @@ function gatherCandidates(
         sortedTimestamps.push(ts);
       }
     }
-    sortedTimestamps = sortedTimestamps.sort((a, b) => a - b);
+    sortedTimestamps = sortedTimestamps.toSorted((a, b) => a - b);
   }
 
   // Bar-only indexes: ECharts groups bars independently of lines, so bar-relative index and count must exclude line series.

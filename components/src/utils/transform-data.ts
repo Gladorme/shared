@@ -245,7 +245,7 @@ export function transformData(
   // Ordering data column alphabetically
   result = result.map((row) => {
     return Object.keys(row)
-      .sort()
+      .toSorted()
       .reduce((obj: Record<string, unknown>, key: string) => {
         obj[key] = row[key];
         return obj;
