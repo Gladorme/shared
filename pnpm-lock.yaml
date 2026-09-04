@@ -233,7 +233,7 @@ importers:
         specifier: ^7.23.1
         version: 7.29.4(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@mui/material@6.5.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(@mui/system@6.5.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react@18.3.1))(@types/react@18.3.31)(date-fns@4.4.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@perses-dev/client':
-        specifier: workspace:0.55.0-beta.6
+        specifier: workspace:0.55.0-beta.7
         version: link:../client
       '@perses-dev/spec':
         specifier: 0.3.0-beta.5
@@ -300,13 +300,13 @@ importers:
         specifier: ^6.1.10
         version: 6.5.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@perses-dev/client':
-        specifier: workspace:0.55.0-beta.6
+        specifier: workspace:0.55.0-beta.7
         version: link:../client
       '@perses-dev/components':
-        specifier: workspace:0.55.0-beta.6
+        specifier: workspace:0.55.0-beta.7
         version: link:../components
       '@perses-dev/plugin-system':
-        specifier: workspace:0.55.0-beta.6
+        specifier: workspace:0.55.0-beta.7
         version: link:../plugin-system
       '@perses-dev/spec':
         specifier: 0.3.0-beta.5
@@ -373,13 +373,13 @@ importers:
         specifier: ^0.5.1
         version: 0.5.1
       '@perses-dev/components':
-        specifier: workspace:0.55.0-beta.6
+        specifier: workspace:0.55.0-beta.7
         version: link:../components
       '@perses-dev/dashboards':
-        specifier: workspace:0.55.0-beta.6
+        specifier: workspace:0.55.0-beta.7
         version: link:../dashboards
       '@perses-dev/plugin-system':
-        specifier: workspace:0.55.0-beta.6
+        specifier: workspace:0.55.0-beta.7
         version: link:../plugin-system
       '@tanstack/react-query':
         specifier: ^4.39.1
@@ -431,10 +431,10 @@ importers:
         specifier: ^6.1.10
         version: 6.5.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@perses-dev/client':
-        specifier: workspace:0.55.0-beta.6
+        specifier: workspace:0.55.0-beta.7
         version: link:../client
       '@perses-dev/components':
-        specifier: workspace:0.55.0-beta.6
+        specifier: workspace:0.55.0-beta.7
         version: link:../components
       '@perses-dev/spec':
         specifier: 0.3.0-beta.5
