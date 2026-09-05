@@ -122,7 +122,7 @@ importers:
         specifier: ^1.15.3
         version: 1.16.1
       '@tanstack/react-query':
-        specifier: ^4.39.1
+        specifier: ^4.44.0
         version: 4.44.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@testing-library/dom':
         specifier: ^10.4.0
@@ -251,22 +251,22 @@ importers:
         specifier: ^4.25.3
         version: 4.25.11(@babel/runtime@7.29.7)(@codemirror/autocomplete@6.20.3)(@codemirror/language@6.12.4)(@codemirror/lint@6.9.7)(@codemirror/search@6.7.1)(@codemirror/state@6.7.1)(@codemirror/theme-one-dark@6.1.3)(@codemirror/view@6.43.9)(codemirror@6.0.2)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.2.1
         version: 4.4.0
       echarts:
         specifier: 5.5.0
         version: 5.5.0
       immer:
-        specifier: ^10.1.1
+        specifier: ^10.2.0
         version: 10.2.0
       lodash:
-        specifier: ^4.17.21
+        specifier: ^4.18.1
         version: 4.18.1
       mathjs:
         specifier: ^15.1.1
         version: 15.2.0
       mdi-material-ui:
-        specifier: ^7.9.2
+        specifier: ^7.9.4
         version: 7.9.4(@mui/material@6.5.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       notistack:
         specifier: ^3.0.2
@@ -318,13 +318,13 @@ importers:
         specifier: ^0.9.1
         version: 0.9.1(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       '@tanstack/react-query':
-        specifier: ^4.39.1
+        specifier: ^4.44.0
         version: 4.44.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       immer:
-        specifier: ^10.1.1
+        specifier: ^10.2.0
         version: 10.2.0
       mdi-material-ui:
-        specifier: ^7.9.2
+        specifier: ^7.9.4
         version: 7.9.4(@mui/material@6.5.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       react:
         specifier: ^18.3.0
@@ -336,7 +336,7 @@ importers:
         specifier: ^1.3.4
         version: 1.5.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react-hook-form:
-        specifier: ^7.52.2
+        specifier: ^7.76.0
         version: 7.87.0(react@18.3.1)
       react-intersection-observer:
         specifier: ^9.4.0
@@ -382,10 +382,10 @@ importers:
         specifier: workspace:0.55.0-beta.7
         version: link:../plugin-system
       '@tanstack/react-query':
-        specifier: ^4.39.1
+        specifier: ^4.44.0
         version: 4.44.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       mdi-material-ui:
-        specifier: ^7.9.2
+        specifier: ^7.9.4
         version: 7.9.4(@mui/material@6.5.0(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       qs:
         specifier: ^6.14.0
@@ -410,7 +410,7 @@ importers:
         specifier: ^6.14.0
         version: 6.15.1
       react-router-dom:
-        specifier: ^6.30.3
+        specifier: ^6.30.4
         version: 6.30.6(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
 
   plugin-system:
@@ -422,7 +422,7 @@ importers:
         specifier: ^11.14.1
         version: 11.14.1(@emotion/react@11.14.0(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2))(@types/react@18.3.31)(react@18.3.1)(supports-color@10.2.2)
       '@hookform/resolvers':
-        specifier: ^3.2.0
+        specifier: ^3.10.0
         version: 3.10.0(react-hook-form@7.87.0(react@18.3.1))
       '@module-federation/enhanced':
         specifier: ^2.8.0
@@ -440,16 +440,16 @@ importers:
         specifier: 0.3.0-beta.5
         version: 0.3.0-beta.5
       '@tanstack/react-query':
-        specifier: ^4.39.1
+        specifier: ^4.44.0
         version: 4.44.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       date-fns:
-        specifier: ^4.1.0
+        specifier: ^4.2.1
         version: 4.4.0
       date-fns-tz:
         specifier: ^3.2.0
         version: 3.2.0(date-fns@4.4.0)
       immer:
-        specifier: ^10.1.1
+        specifier: ^10.2.0
         version: 10.2.0
       react:
         specifier: ^18.3.0
@@ -458,7 +458,7 @@ importers:
         specifier: ^18.3.0
         version: 18.3.1(react@18.3.1)
       react-hook-form:
-        specifier: ^7.52.2
+        specifier: ^7.76.0
         version: 7.87.0(react@18.3.1)
       semver:
         specifier: ^7.8.0
