@@ -17,20 +17,25 @@ import type {
   ExpandedState,
   OnChangeFn,
   Row,
+  RowData,
   RowSelectionState,
   SortingState,
   Table as TanstackTable,
+  TableOptions,
+  TableOptionsResolved,
+  TableState,
   VisibilityState,
 } from '@tanstack/react-table';
 import {
+  createTable,
+  functionalUpdate,
   getCoreRowModel,
   getExpandedRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable,
 } from '@tanstack/react-table';
-import type { ReactElement } from 'react';
-import { useCallback, useMemo, useState } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import { Component, useCallback, useMemo, useState } from 'react';
 
 import { useFuzzySearch } from './hooks/useFuzzySearch';
 import type { TableProps } from './model/table-model';
@@ -47,6 +52,55 @@ const DEFAULT_GET_ROW_ID = (data: unknown, index: number): string => {
 // does not do deep equality checking for objects and arrays.
 const DEFAULT_ROW_SELECTION: NonNullable<TableProps<unknown>['rowSelection']> = {};
 const DEFAULT_SORTING: NonNullable<TableProps<unknown>['sorting']> = [];
+
+interface ReactTableAdapterProps<TData extends RowData> {
+  options: TableOptions<TData>;
+  children: (table: TanstackTable<TData>) => ReactNode;
+}
+
+interface ReactTableAdapterState {
+  tableState: TableState;
+}
+
+/**
+ * Keeps TanStack Table's mutable store behind a class-component boundary. TanStack's useReactTable hook intentionally
+ * updates that store during render, which is incompatible with React Compiler memoization.
+ */
+class ReactTableAdapter<TData extends RowData> extends Component<
+  ReactTableAdapterProps<TData>,
+  ReactTableAdapterState
+> {
+  private readonly table: TanstackTable<TData>;
+
+  public constructor(props: ReactTableAdapterProps<TData>) {
+    super(props);
+    const resolvedOptions: TableOptionsResolved<TData> = {
+      state: {},
+      onStateChange: () => {},
+      renderFallbackValue: null,
+      ...props.options,
+    };
+    this.table = createTable(resolvedOptions);
+    this.state = { tableState: this.table.initialState };
+  }
+
+  public render(): ReactNode {
+    const { options, children } = this.props;
+    this.table.setOptions((previousOptions): TableOptionsResolved<TData> => ({
+      ...previousOptions,
+      ...options,
+      state: {
+        ...this.state.tableState,
+        ...options.state,
+      },
+      onStateChange: (updater) => {
+        this.setState(({ tableState }) => ({ tableState: functionalUpdate(updater, tableState) }));
+        options.onStateChange?.(updater);
+      },
+    }));
+    return children(this.table);
+  }
+}
 
 /**
  * Component used to render tabular data in Perses use cases. This component is
@@ -205,7 +259,7 @@ export function Table<TableData>({
     return initTableColumns;
   }, [columns, defaultColumnConfig, hasItemActions, checkboxSelection, actionsColumn, checkboxColumn]);
 
-  const table = useReactTable({
+  const tableOptions: TableOptions<TableData> = {
     data,
     columns: tableColumns,
     getRowId: getRowId,
@@ -235,44 +289,47 @@ export function Table<TableData>({
       ...(pagination ? { pagination } : {}),
       expanded,
     },
-  });
-
-  const handleRowClick = useCallback(
-    (e: React.MouseEvent<HTMLDivElement, MouseEvent>, rowId: string) => {
-      const row = table.getRow(rowId);
-      const isModifiedClick = e.metaKey || e.shiftKey;
-      handleRowSelectionEvent(table, row, isModifiedClick);
-    },
-    [handleRowSelectionEvent, table],
-  );
+  };
 
   return (
-    <VirtualizedTable
-      {...otherProps}
-      density={density}
-      defaultColumnWidth={defaultColumnWidth}
-      defaultColumnHeight={defaultColumnHeight}
-      onRowClick={handleRowClick}
-      rows={table.getRowModel().rows}
-      columns={table.getVisibleFlatColumns()}
-      columnSizing={table.getState().columnSizing}
-      columnSizingInfo={table.getState().columnSizingInfo}
-      headers={table.getHeaderGroups()}
-      cellConfigs={cellConfigs}
-      pagination={pagination}
-      onPaginationChange={onPaginationChange}
-      rowCount={table.getRowCount()}
-      toolbarConfig={{
-        isSearchEnabled: tableToolbarConfig?.isSearchEnabled,
-        globalFilter,
-        onGlobalFilterChange: setGlobalFilter,
-        isColumnFilterEnabled: tableToolbarConfig?.isColumnFilterEnabled,
-        columns: table.getAllColumns(),
-        columnFilterMenuMaxHeight: tableToolbarConfig?.columnFilterMenuMaxHeight,
-        isExpandAllEnabled: hasSubRows,
-        isAllExpanded: table.getIsAllRowsExpanded(),
-        onExpandAllChange: table.getToggleAllRowsExpandedHandler(),
+    <ReactTableAdapter options={tableOptions}>
+      {(table) => {
+        const handleRowClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>, rowId: string): void => {
+          const row = table.getRow(rowId);
+          const isModifiedClick = e.metaKey || e.shiftKey;
+          handleRowSelectionEvent(table, row, isModifiedClick);
+        };
+
+        return (
+          <VirtualizedTable
+            {...otherProps}
+            density={density}
+            defaultColumnWidth={defaultColumnWidth}
+            defaultColumnHeight={defaultColumnHeight}
+            onRowClick={handleRowClick}
+            rows={table.getRowModel().rows}
+            columns={table.getVisibleFlatColumns()}
+            columnSizing={table.getState().columnSizing}
+            columnSizingInfo={table.getState().columnSizingInfo}
+            headers={table.getHeaderGroups()}
+            cellConfigs={cellConfigs}
+            pagination={pagination}
+            onPaginationChange={onPaginationChange}
+            rowCount={table.getRowCount()}
+            toolbarConfig={{
+              isSearchEnabled: tableToolbarConfig?.isSearchEnabled,
+              globalFilter,
+              onGlobalFilterChange: setGlobalFilter,
+              isColumnFilterEnabled: tableToolbarConfig?.isColumnFilterEnabled,
+              columns: table.getAllColumns(),
+              columnFilterMenuMaxHeight: tableToolbarConfig?.columnFilterMenuMaxHeight,
+              isExpandAllEnabled: hasSubRows,
+              isAllExpanded: table.getIsAllRowsExpanded(),
+              onExpandAllChange: table.getToggleAllRowsExpandedHandler(),
+            }}
+          />
+        );
       }}
-    />
+    </ReactTableAdapter>
   );
 }

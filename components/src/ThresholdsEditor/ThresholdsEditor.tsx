@@ -47,14 +47,16 @@ export function ThresholdsEditor({
   const defaultThresholdColor = thresholds?.defaultColor ?? defaultColor;
 
   const steps = thresholds?.steps;
+  const stepCount = steps?.length;
   // every time a new threshold is added, we want to focus the recently added input
   const recentlyAddedInputRef = useRef<HTMLInputElement | null>(null);
   const focusRef = useRef(false);
   useEffect(() => {
+    if (stepCount === undefined) return;
     if (!recentlyAddedInputRef.current || !focusRef.current) return;
     recentlyAddedInputRef.current?.focus();
     focusRef.current = false;
-  }, [steps?.length]);
+  }, [stepCount]);
 
   const handleThresholdValueChange = (e: React.ChangeEvent<HTMLInputElement>, i: number): void => {
     if (thresholds !== undefined) {

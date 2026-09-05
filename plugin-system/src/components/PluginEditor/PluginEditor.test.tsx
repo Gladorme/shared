@@ -41,13 +41,16 @@ describe('PluginEditor', () => {
     };
 
     // A test helper component that includes the state that's controlled from outside
-    let onChange: MockedFunction<PluginEditorProps['onChange']> = vi.fn();
+    const onChange: MockedFunction<PluginEditorProps['onChange']> = vi.fn();
     function TestHelperForm(): ReactElement {
       const [value, setValue] = useState(testValue);
-      onChange = vi.fn((v) => setValue(v));
+      const handleChange = (nextValue: PluginEditorProps['value']): void => {
+        onChange(nextValue);
+        setValue(nextValue);
+      };
 
       return (
-        <PluginEditor pluginTypes={pluginTypes} pluginKindLabel="Variable Type" value={value} onChange={onChange} />
+        <PluginEditor pluginTypes={pluginTypes} pluginKindLabel="Variable Type" value={value} onChange={handleChange} />
       );
     }
 

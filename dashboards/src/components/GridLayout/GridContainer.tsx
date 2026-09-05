@@ -14,7 +14,7 @@
 import type { SxProps, Theme } from '@mui/material';
 import { styled } from '@mui/material';
 import type { ReactElement, ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef } from 'react';
 
 export interface GridContainerProps {
   children: ReactNode;
@@ -22,22 +22,23 @@ export interface GridContainerProps {
 }
 
 export function GridContainer(props: GridContainerProps): ReactElement {
-  const [isFirstRender, setIsFirstRender] = useState(true);
+  const containerRef = useRef<HTMLElement>(null);
+
   useEffect(() => {
-    if (isFirstRender) {
-      setIsFirstRender(false);
-    }
-  }, [isFirstRender]);
+    containerRef.current?.classList.remove('initial-render');
+  }, []);
 
   return (
     <ReactGridLayoutContainer
+      ref={containerRef}
+      className="initial-render"
       sx={[
         {
           // This adds spacing between grids (rows) in the overall dashboard
           '& + &': { marginTop: 1 },
           // This disables the animation of grid items when a grid is first rendered
           // (see https://github.com/react-grid-layout/react-grid-layout/issues/103)
-          '& .react-grid-item.cssTransforms': { transitionProperty: isFirstRender ? 'none' : 'transform' },
+          '&.initial-render .react-grid-item.cssTransforms': { transitionProperty: 'none' },
         },
         ...(Array.isArray(props.sx) ? props.sx : [props.sx]),
       ]}

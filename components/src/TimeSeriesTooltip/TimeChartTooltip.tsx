@@ -15,7 +15,7 @@ import { Box, Portal, Stack } from '@mui/material';
 import type { TimeSeries } from '@perses-dev/spec';
 import type { ECharts as EChartsInstance } from 'echarts/core';
 import type { MutableRefObject } from 'react';
-import { memo, useCallback, useLayoutEffect, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import useResizeObserver from 'use-resize-observer';
 
 import type { FormatOptions, TimeChartSeriesMapping } from '../model';
@@ -59,15 +59,14 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
   pinnedPos,
 }: TimeChartTooltipProps) {
   const [showAllSeries, setShowAllSeries] = useState(false);
-  const transform = useRef<string | undefined>();
+  const [chart, setChart] = useState<EChartsInstance>();
   const tooltipElementRef = useRef<HTMLDivElement | null>(null);
 
   const mousePos = useMousePosition();
-  const { height, width, ref: tooltipRef } = useResizeObserver();
+  const { ref: tooltipRef } = useResizeObserver();
 
   const isTooltipPinned = pinnedPos !== null && enablePinning;
 
-  // Stable callback — prevents the ResizeObserver from disconnecting/reconnecting on every render.
   const setTooltipRef = useCallback(
     (node: HTMLDivElement | null): void => {
       tooltipElementRef.current = node;
@@ -76,32 +75,31 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
     [tooltipRef],
   );
 
+  useEffect(() => {
+    const syncChart = (): void => setChart(chartRef.current);
+    window.addEventListener('mousemove', syncChart);
+    return (): void => window.removeEventListener('mousemove', syncChart);
+  }, [chartRef]);
+
   const containerElement = containerId ? document.querySelector(containerId) : undefined;
 
-  // Synchronously reposition after every render to prevent one-frame viewport overflow.
+  // Position synchronously after rendering so the tooltip cannot flash outside the viewport.
   useLayoutEffect(() => {
     if (mousePos === null) return;
     const node = tooltipElementRef.current;
     if (!node) return;
     const rect = node.getBoundingClientRect();
     if (rect.height === 0 || rect.width === 0) return;
-    const nextTransform = assembleTransform(mousePos, pinnedPos, rect.height, rect.width, containerElement);
-    if (nextTransform && nextTransform !== transform.current) {
-      transform.current = nextTransform;
-      node.style.transform = nextTransform;
-    }
+    const transform = assembleTransform(mousePos, pinnedPos, rect.height, rect.width, containerElement);
+    if (transform) node.style.transform = transform;
   });
 
   if (mousePos === null || mousePos.target === null || data === null) return null;
 
   if (pinnedPos === null && (mousePos.target as HTMLElement).tagName !== 'CANVAS') return null;
 
-  const chart = chartRef.current;
-
   // Cap height to container so the tooltip is not cut off.
   const maxHeight = containerElement ? containerElement.getBoundingClientRect().height : undefined;
-
-  transform.current = assembleTransform(mousePos, pinnedPos, height ?? 0, width ?? 0, containerElement);
 
   const nearbySeries = getNearbySeriesData({
     mousePos,
@@ -121,13 +119,7 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
 
   return (
     <Portal container={containerElement}>
-      <Box
-        ref={setTooltipRef}
-        sx={(theme) => getTooltipStyles(theme, pinnedPos, maxHeight)}
-        style={{
-          transform: transform.current,
-        }}
-      >
+      <Box ref={setTooltipRef} sx={(theme) => getTooltipStyles(theme, pinnedPos, maxHeight)}>
         <Stack spacing={0.5}>
           <TooltipHeader
             nearbySeries={nearbySeries}

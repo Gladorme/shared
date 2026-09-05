@@ -54,6 +54,7 @@ export interface PluginEditorRef {
 
 type PreviousSpecState = Record<string, Record<string, UnknownSpec>>;
 type HideQueryEditorState = Record<string, boolean>;
+const noopHideQueryEditor = (): void => {};
 
 /**
  * Props needed by the usePluginEditor hook.
@@ -76,8 +77,7 @@ export function usePluginEditor(props: UsePluginEditorProps): {
   onSpecChange: (next: UnknownSpec) => void;
   rememberCurrentSpecState: () => void;
 } {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  const { pluginTypes, value, onHideQueryEditorChange = (): void => {} } = props; // setting onHideQueryEditorChange to empty function here because useEvent requires a function
+  const { pluginTypes, value, onHideQueryEditorChange = noopHideQueryEditor } = props;
 
   // Keep a stable reference, so we don't run the effect below when we don't need to
   const onChange = useEvent(props.onChange);
@@ -115,14 +115,22 @@ export function usePluginEditor(props: UsePluginEditorProps): {
 
   // When kind changes and we haven't loaded that plugin before, we will need to enter a "pending" state so that we
   // can generate proper initial spec values that match the new plugin kind
-  const [pendingSelection, setPendingSelection] = useState<PluginEditorSelection | undefined>(initPendingSelection);
+  const [requestedSelection, setRequestedSelection] = useState<PluginEditorSelection | undefined>(initPendingSelection);
+  const pendingSelection =
+    requestedSelection &&
+    (requestedSelection.type !== value.selection.type || requestedSelection.kind !== value.selection.kind)
+      ? requestedSelection
+      : undefined;
 
   // Take a default kind in case user write explicitly an empty kind in the initial value
   useEffect(() => {
-    if (value.selection.kind === '') {
-      value.selection.kind = defaultPluginKind || '';
+    if (value.selection.kind === '' && defaultPluginKind) {
+      onChange({
+        ...value,
+        selection: { ...value.selection, kind: defaultPluginKind },
+      });
     }
-  }, [value.selection, defaultPluginKind]);
+  }, [defaultPluginKind, onChange, value]);
 
   const { data: plugin, isFetching, error } = usePlugin(pendingSelection?.type, pendingSelection?.kind || '');
 
@@ -147,7 +155,6 @@ export function usePluginEditor(props: UsePluginEditorProps): {
         onHideQuery(!!panelPlugin.hideQueryEditor);
       }
     }
-    setPendingSelection(undefined);
   }, [
     pendingSelection,
     plugin,
@@ -167,6 +174,7 @@ export function usePluginEditor(props: UsePluginEditorProps): {
     // If we already have state for this plugin type/kind from a previous selection, just use it
     const previousState = prevSpecState.current[nextSelection.type]?.[nextSelection.kind];
     if (previousState !== undefined) {
+      setRequestedSelection(undefined);
       rememberCurrentSpecState();
       onChange({
         selection: nextSelection,
@@ -174,7 +182,7 @@ export function usePluginEditor(props: UsePluginEditorProps): {
       });
     } else {
       // Otherwise, kick off the async loading process
-      setPendingSelection(nextSelection);
+      setRequestedSelection(nextSelection);
     }
 
     if (

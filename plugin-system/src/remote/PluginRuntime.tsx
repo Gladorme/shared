@@ -228,6 +228,7 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'mdi-material-ui': {
           version: '7.9.4',
+          // oxlint-disable-next-line no-restricted-imports -- Module Federation must load the package entry point.
           get: createSharedModuleLoader(() => import('mdi-material-ui')),
           shareConfig: {
             singleton: true,

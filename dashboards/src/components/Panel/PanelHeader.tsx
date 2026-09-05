@@ -18,7 +18,7 @@ import type { ItemAction, QueryData } from '@perses-dev/plugin-system';
 import { useAllVariableValues, useReplaceVariablesInString } from '@perses-dev/plugin-system';
 import type { Link } from '@perses-dev/spec';
 import type { ReactElement, ReactNode } from 'react';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import { HEADER_ACTIONS_CONTAINER_NAME } from '../../constants/styles';
 import type { PanelOptions } from './Panel';
@@ -71,9 +71,13 @@ export function PanelHeader({
   const description = useReplaceVariablesInString(rawDescription);
 
   const textRef = useRef<HTMLDivElement>(null);
-
-  const isEllipsisActive =
-    textRef.current && dimension?.width ? textRef.current.scrollWidth > textRef.current.clientWidth : false;
+  const [isEllipsisActive, setIsEllipsisActive] = useState(false);
+  const handleTitleMouseEnter = (): void => {
+    const textElement = textRef.current;
+    setIsEllipsisActive(
+      textElement !== null && dimension?.width !== undefined && textElement.scrollWidth > textElement.clientWidth,
+    );
+  };
 
   const { actionButtons, confirmDialog } = useSelectionItemActions({
     actions: itemActionsListConfig,
@@ -97,6 +101,7 @@ export function PanelHeader({
                   id={titleElementId}
                   variant="subtitle1"
                   ref={textRef}
+                  onMouseEnter={handleTitleMouseEnter}
                   sx={{
                     minWidth: 0,
                     flexShrink: 1,
