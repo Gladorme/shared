@@ -42,7 +42,7 @@ interface HTTPHeaderPolicyEditorProps {
 
 export function HTTPHeaderPolicyEditor({ value, onChange, isReadonly }: HTTPHeaderPolicyEditorProps): ReactElement {
   return (
-    <Stack spacing={2} mb={2}>
+    <Stack spacing={1} mb={2}>
       <Typography variant="h5">Request header forwarding</Typography>
       <Typography variant="body2">
         Configure either allowed headers or dropped headers. Clear the current list before using the other. Type a
@@ -82,9 +82,13 @@ function HeaderPolicyField({ policy, value, onChange, isReadonly }: HeaderPolicy
         label={label}
         error={hasConflict}
         helperText={hasConflict ? 'Allowed headers and dropped headers cannot both be configured.' : description}
+        InputProps={{
+          readOnly: isReadonly,
+        }}
+        InputLabelProps={{ shrink: isReadonly ? true : undefined }}
       />
     ),
-    [label, hasConflict, description],
+    [isReadonly, label, hasConflict, description],
   );
 
   return (

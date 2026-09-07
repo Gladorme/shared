@@ -11,7 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { Box, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
+import { Box, Grid, IconButton, MenuItem, Stack, TextField, Typography } from '@mui/material';
 import type { RequestHeaders } from '@perses-dev/client';
 import type { HTTPDatasourceSpec, HTTPProxySpec } from '@perses-dev/spec';
 import { produce } from 'immer';
@@ -415,33 +415,36 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
             />
           )}
 
-          <Controller
-            name="Secret"
-            render={({ field, fieldState }) => (
-              <TextField
-                {...field}
-                fullWidth
-                label="Secret"
-                value={value.proxy?.spec.secret || ''}
-                error={!!fieldState.error}
-                helperText={fieldState.error?.message}
-                InputProps={{
-                  readOnly: isReadonly,
-                }}
-                InputLabelProps={{ shrink: isReadonly ? true : undefined }}
-                onChange={(e) => {
-                  field.onChange(e);
-                  onChange(
-                    produce(value, (draft) => {
-                      if (draft.proxy !== undefined) {
-                        draft.proxy.spec.secret = e.target.value;
-                      }
-                    }),
-                  );
-                }}
-              />
-            )}
-          />
+          <Stack spacing={1}>
+            <Typography variant="h5">Secret</Typography>
+            <Controller
+              name="Secret"
+              render={({ field, fieldState }) => (
+                <TextField
+                  {...field}
+                  fullWidth
+                  label="Secret"
+                  value={value.proxy?.spec.secret || ''}
+                  error={!!fieldState.error}
+                  helperText={fieldState.error?.message}
+                  InputProps={{
+                    readOnly: isReadonly,
+                  }}
+                  InputLabelProps={{ shrink: isReadonly ? true : undefined }}
+                  onChange={(e) => {
+                    field.onChange(e);
+                    onChange(
+                      produce(value, (draft) => {
+                        if (draft.proxy !== undefined) {
+                          draft.proxy.spec.secret = e.target.value;
+                        }
+                      }),
+                    );
+                  }}
+                />
+              )}
+            />
+          </Stack>
         </>
       ),
     },
