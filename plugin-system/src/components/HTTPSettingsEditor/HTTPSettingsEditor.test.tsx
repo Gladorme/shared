@@ -17,7 +17,6 @@ import type { HTTPDatasourceSpec } from '@perses-dev/spec';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
-import { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { HTTPSettingsEditor } from './HTTPSettingsEditor';
