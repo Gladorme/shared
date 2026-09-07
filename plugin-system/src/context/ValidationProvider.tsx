@@ -28,10 +28,10 @@ import type { PanelEditorValues } from '../model';
 import { buildPanelEditorSchema, panelEditorSchema as defaultPanelEditorSchema } from '../schema';
 
 export interface ValidationSchemas {
-  datasourceEditorSchema: z.Schema<DatasourceDefinition>;
-  panelEditorSchema: z.Schema<PanelEditorValues>;
-  variableEditorSchema: z.Schema<VariableDefinition>;
-  annotationEditorSchema: z.Schema<AnnotationSpec>;
+  datasourceEditorSchema: z.ZodType<DatasourceDefinition, DatasourceDefinition>;
+  panelEditorSchema: z.ZodType<PanelEditorValues, PanelEditorValues>;
+  variableEditorSchema: z.ZodType<VariableDefinition, VariableDefinition>;
+  annotationEditorSchema: z.ZodType<AnnotationSpec, AnnotationSpec>;
   setDatasourceEditorSchemaPlugin: (pluginSchema: PluginSchema) => void;
   setPanelEditorSchemaPlugin: (pluginSchema: PluginSchema) => void;
   setVariableEditorSchemaPlugin: (pluginSchema: PluginSchema) => void;
@@ -57,11 +57,13 @@ interface ValidationProviderProps {
  */
 export function ValidationProvider({ children }: ValidationProviderProps): ReactElement {
   const [datasourceEditorSchema, setDatasourceEditorSchema] =
-    useState<z.Schema<DatasourceDefinition>>(datasourceDefinitionSchema);
-  const [panelEditorSchema, setPanelEditorSchema] = useState<z.Schema<PanelEditorValues>>(defaultPanelEditorSchema); // TODO I don't get why this does not compile
+    useState<z.ZodType<DatasourceDefinition, DatasourceDefinition>>(datasourceDefinitionSchema);
+  const [panelEditorSchema, setPanelEditorSchema] =
+    useState<z.ZodType<PanelEditorValues, PanelEditorValues>>(defaultPanelEditorSchema);
   const [variableEditorSchema, setVariableEditorSchema] =
-    useState<z.Schema<VariableDefinition>>(variableDefinitionSchema);
-  const [annotationEditorSchema, setAnnotationEditorSchema] = useState<z.Schema<AnnotationSpec>>(annotationSpecSchema);
+    useState<z.ZodType<VariableDefinition, VariableDefinition>>(variableDefinitionSchema);
+  const [annotationEditorSchema, setAnnotationEditorSchema] =
+    useState<z.ZodType<AnnotationSpec, AnnotationSpec>>(annotationSpecSchema);
 
   function setDatasourceEditorSchemaPlugin(pluginSchema: PluginSchema): void {
     setDatasourceEditorSchema(buildDatasourceDefinitionSchema(pluginSchema));

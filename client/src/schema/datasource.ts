@@ -30,17 +30,19 @@ export const globalDatasourceSchema = z.object({
   spec: datasourceSpecSchema,
 });
 
-export const datasourcesSchema: z.Schema<Datasource> = z.discriminatedUnion('kind', [
+export const datasourcesSchema: z.ZodType<Datasource> = z.discriminatedUnion('kind', [
   datasourceSchema,
   globalDatasourceSchema,
 ]);
 
-export const datasourceDefinitionSchema: z.Schema<DatasourceDefinition> = z.object({
+export const datasourceDefinitionSchema: z.ZodType<DatasourceDefinition, DatasourceDefinition> = z.object({
   name: z.string().min(1),
   spec: datasourceSpecSchema,
 });
 
-export function buildDatasourceDefinitionSchema(pluginSchema: PluginSchema): z.Schema<DatasourceDefinition> {
+export function buildDatasourceDefinitionSchema(
+  pluginSchema: PluginSchema,
+): z.ZodType<DatasourceDefinition, DatasourceDefinition> {
   return z.object({
     name: z.string().min(1),
     spec: buildDatasourceSpecSchema(pluginSchema),

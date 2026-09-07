@@ -16,7 +16,7 @@ import { z } from 'zod';
 import type { Permission, Role, RoleSpec } from '../model';
 import { metadataSchema, projectMetadataSchema } from './metadata';
 
-export const permissionSchema: z.ZodSchema<Permission> = z.object({
+export const permissionSchema: z.ZodType<Permission> = z.object({
   // TODO: use SCOPE & ACTIONS constants
   actions: z.array(z.enum(['*', 'create', 'read', 'update', 'delete'])).nonempty('Must contains at least 1 action'),
   scopes: z
@@ -43,7 +43,7 @@ export const permissionSchema: z.ZodSchema<Permission> = z.object({
     .nonempty('Must contains at least 1 scope'), // TODO: limit project role
 });
 
-export const roleSpecSchema: z.ZodSchema<RoleSpec> = z.object({
+export const roleSpecSchema: z.ZodType<RoleSpec> = z.object({
   permissions: z.array(permissionSchema),
 });
 
@@ -59,4 +59,4 @@ export const globalRoleSchema = z.object({
   spec: roleSpecSchema,
 });
 
-export const rolesEditorSchema: z.ZodSchema<Role> = z.discriminatedUnion('kind', [roleSchema, globalRoleSchema]);
+export const rolesEditorSchema: z.ZodType<Role> = z.discriminatedUnion('kind', [roleSchema, globalRoleSchema]);
