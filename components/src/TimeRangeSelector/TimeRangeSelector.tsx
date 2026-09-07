@@ -23,7 +23,6 @@ import { useTimeZone } from '../context';
 import type { TimeOption } from '../model';
 import type { TimeZoneOption } from '../model/timeZoneOption';
 import { getTimeZoneOptions } from '../model/timeZoneOption';
-import type { SettingsAutocompleteOption } from '../SettingsAutocomplete';
 import { SettingsAutocomplete } from '../SettingsAutocomplete';
 import { getGMTOffset } from '../utils/format';
 import { DateTimeRangePicker } from './DateTimeRangePicker';
@@ -97,11 +96,7 @@ export function TimeRangeSelector({
   const tzOffset = getGMTOffset(timeZone);
   const localOffset = getGMTOffset('local');
   const tzAutocompleteOptions = tzOptions.map((o) => ({ id: o.value, label: o.display }));
-  let tzAutocompleteValue: SettingsAutocompleteOption | undefined = undefined;
-  {
-    const current = tzOptions.find((o) => o.value === timeZone);
-    if (current) tzAutocompleteValue = { id: current.value, label: current.display };
-  }
+  const tzAutocompleteValue = tzAutocompleteOptions.find((option) => option.id === timeZone);
 
   return (
     <>

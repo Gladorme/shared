@@ -13,17 +13,18 @@
 
 import { Box, Grid, IconButton, MenuItem, TextField, Typography } from '@mui/material';
 import type { RequestHeaders } from '@perses-dev/client';
-import type { HTTPDatasourceSpec } from '@perses-dev/spec';
+import type { HTTPDatasourceSpec, HTTPProxySpec } from '@perses-dev/spec';
 import { produce } from 'immer';
 import MinusIcon from 'mdi-material-ui/Minus';
 import PlusIcon from 'mdi-material-ui/Plus';
 import type { ReactElement } from 'react';
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useCallback, useState } from 'react';
 import { Controller, useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { DatasourceTestConnectionButton } from '../DatasourceTestConnectionButton';
 import { OptionsEditorRadios } from '../OptionsEditorRadios';
+import { HTTPHeaderPolicyEditor } from './HTTPHeaderPolicyEditor';
 
 const urlSchema = z.string().url();
 
@@ -45,6 +46,7 @@ export interface HTTPSettingsEditor {
   testConnection?: () => Promise<void>;
 }
 
+/** Edits direct URLs and proxy settings, including mutually exclusive allow/drop request header lists. */
 export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
   const { value, onChange, isReadonly, initialSpecDirect, initialSpecProxy, testConnection } = props;
   const strDirect = 'Direct access';
@@ -107,6 +109,19 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
       }),
     );
   };
+
+  const handleHeaderPolicyChange = useCallback(
+    (next: HTTPProxySpec): void => {
+      onChange(
+        produce(value, (draft) => {
+          if (draft.proxy !== undefined) {
+            draft.proxy.spec = next;
+          }
+        }),
+      );
+    },
+    [value, onChange],
+  );
 
   const tabs = [
     {
@@ -391,6 +406,14 @@ export function HTTPSettingsEditor(props: HTTPSettingsEditor): ReactElement {
               </IconButton>
             </Grid>
           </Grid>
+
+          {value.proxy && (
+            <HTTPHeaderPolicyEditor
+              value={value.proxy.spec}
+              isReadonly={isReadonly}
+              onChange={handleHeaderPolicyChange}
+            />
+          )}
 
           <Controller
             name="Secret"

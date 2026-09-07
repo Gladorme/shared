@@ -17,12 +17,61 @@ import type { HTTPDatasourceSpec } from '@perses-dev/spec';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
+import { useCallback, useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 import { HTTPSettingsEditor } from './HTTPSettingsEditor';
 
 const mockSuccessSnackbar = vi.fn();
 const mockExceptionSnackbar = vi.fn();
+
+const headerPolicyValue: HTTPDatasourceSpec = {
+  proxy: {
+    kind: 'HTTPProxy',
+    spec: {
+      url: 'http://localhost:9090',
+      headers: { 'X-Custom': 'value' },
+      secret: 'datasource-secret',
+      allowedEndpoints: [{ endpointPattern: '/api/.*', method: 'GET' }],
+    },
+  },
+};
+const directValue: HTTPDatasourceSpec = { directUrl: '' };
+
+function HeaderPolicyEditorWrapper({
+  value: initialValue = headerPolicyValue,
+  onChange = vi.fn(),
+  isReadonly,
+}: Partial<Pick<HTTPSettingsEditor, 'value' | 'onChange' | 'isReadonly'>>): ReactElement {
+  const [value, setValue] = useState(initialValue);
+  const methods = useForm();
+  const handleChange = useCallback(
+    (next: HTTPDatasourceSpec): void => {
+      setValue(next);
+      onChange(next);
+    },
+    [onChange],
+  );
+  return (
+    <FormProvider {...methods}>
+      <HTTPSettingsEditor
+        value={value}
+        onChange={handleChange}
+        isReadonly={isReadonly}
+        initialSpecDirect={directValue}
+        initialSpecProxy={headerPolicyValue}
+      />
+    </FormProvider>
+  );
+}
+
+function renderHeaderPolicyEditor(
+  value: HTTPDatasourceSpec,
+  onChange: (next: HTTPDatasourceSpec) => void,
+  isReadonly = false,
+): ReturnType<typeof render> {
+  return render(<HeaderPolicyEditorWrapper value={value} onChange={onChange} isReadonly={isReadonly} />);
+}
 
 vi.mock('@perses-dev/components', async (importOriginal) => ({
   ...(await importOriginal<typeof ComponentsModule>()),
@@ -31,6 +80,103 @@ vi.mock('@perses-dev/components', async (importOriginal) => ({
     exceptionSnackbar: mockExceptionSnackbar,
   }),
 }));
+
+describe('HTTPSettingsEditor - Request header forwarding', () => {
+  it.each([
+    { name: 'allowHeaders', label: 'Allowed headers', otherLabel: 'Dropped headers' },
+    { name: 'dropHeaders', label: 'Dropped headers', otherLabel: 'Allowed headers' },
+  ] as const)('edits and clears $name while preserving other proxy settings', async ({ name, label, otherLabel }) => {
+    const onChange = vi.fn();
+    render(<HeaderPolicyEditorWrapper onChange={onChange} />);
+
+    const input = screen.getByRole('combobox', { name: label });
+    expect(screen.getByRole('combobox', { name: otherLabel })).toBeEnabled();
+    await userEvent.type(input, 'Accept{enter}Content-Type{enter}');
+
+    expect(onChange).toHaveBeenLastCalledWith({
+      proxy: {
+        ...headerPolicyValue.proxy,
+        spec: { ...headerPolicyValue.proxy?.spec, [name]: ['Accept', 'Content-Type'] },
+      },
+    });
+    expect(headerPolicyValue.proxy?.spec).not.toHaveProperty(name);
+    expect(screen.getByRole('combobox', { name: otherLabel })).toBeDisabled();
+
+    // Backspace on an empty input removes the last header chip.
+    await userEvent.type(input, '{backspace}');
+    expect(onChange.mock.lastCall?.[0].proxy.spec[name]).toEqual(['Accept']);
+    await userEvent.type(input, '{backspace}');
+    expect(onChange.mock.lastCall?.[0].proxy.spec[name]).toBeUndefined();
+    expect(screen.getByRole('combobox', { name: otherLabel })).toBeEnabled();
+
+    await userEvent.type(screen.getByRole('combobox', { name: otherLabel }), 'Origin{enter}');
+    expect(screen.getByRole('combobox', { name: label })).toBeDisabled();
+  });
+
+  it('trims header names, ignores blank entries, and commits on blur', async () => {
+    const onChange = vi.fn();
+    render(<HeaderPolicyEditorWrapper onChange={onChange} />);
+    const input = screen.getByRole('combobox', { name: 'Allowed headers' });
+
+    await userEvent.type(input, '   {enter}');
+    expect(onChange.mock.lastCall?.[0].proxy.spec.allowHeaders).toBeUndefined();
+    await userEvent.type(input, ' Accept ');
+    await userEvent.tab();
+    expect(onChange.mock.lastCall?.[0].proxy.spec.allowHeaders).toEqual(['Accept']);
+  });
+
+  it.each(['allowHeaders', 'dropHeaders'] as const)(
+    'displays existing %s and prevents read-only edits',
+    async (name) => {
+      const onChange = vi.fn();
+      const value: HTTPDatasourceSpec = {
+        proxy: { kind: 'HTTPProxy', spec: { url: 'http://localhost:9090', [name]: ['Accept'] } },
+      };
+      renderHeaderPolicyEditor(value, onChange, true);
+
+      expect(screen.getByText('Accept')).toBeInTheDocument();
+      const input = screen.getByRole('combobox', {
+        name: name === 'allowHeaders' ? 'Allowed headers' : 'Dropped headers',
+      });
+      expect(input).toHaveAttribute('readonly');
+      await userEvent.type(input, '{backspace}Origin{enter}');
+      expect(onChange).not.toHaveBeenCalled();
+      expect(screen.queryByRole('button', { name: 'Clear' })).not.toBeInTheDocument();
+    },
+  );
+
+  it('preserves header policies when switching between proxy and direct access', async () => {
+    const onChange = vi.fn();
+    render(<HeaderPolicyEditorWrapper onChange={onChange} />);
+    await userEvent.type(screen.getByRole('combobox', { name: 'Dropped headers' }), 'Origin{enter}');
+    await userEvent.click(screen.getByRole('radio', { name: 'Direct access' }));
+
+    expect(screen.queryByRole('combobox', { name: 'Dropped headers' })).not.toBeInTheDocument();
+    expect(onChange.mock.lastCall?.[0]).toEqual({ directUrl: '' });
+    await userEvent.click(screen.getByRole('radio', { name: 'Proxy' }));
+    expect(screen.getByText('Origin')).toBeInTheDocument();
+    expect(onChange.mock.lastCall?.[0].proxy.spec.dropHeaders).toEqual(['Origin']);
+  });
+
+  it('allows conflicting existing lists to be corrected', async () => {
+    const onChange = vi.fn();
+    const value: HTTPDatasourceSpec = {
+      proxy: {
+        kind: 'HTTPProxy',
+        spec: { url: 'http://localhost:9090', allowHeaders: ['Accept'], dropHeaders: ['Origin'] },
+      },
+    };
+    renderHeaderPolicyEditor(value, onChange);
+
+    expect(screen.getAllByText('Allowed headers and dropped headers cannot both be configured.')).toHaveLength(2);
+    await userEvent.type(screen.getByRole('combobox', { name: 'Dropped headers' }), '{backspace}');
+    expect(onChange.mock.lastCall?.[0].proxy.spec.dropHeaders).toBeUndefined();
+    expect(onChange.mock.lastCall?.[0].proxy.spec.allowHeaders).toEqual(['Accept']);
+    expect(
+      screen.queryByText('Allowed headers and dropped headers cannot both be configured.'),
+    ).not.toBeInTheDocument();
+  });
+});
 
 describe('HTTPSettingsEditor - Request Headers', () => {
   const initialSpecDirect: HTTPDatasourceSpec = {
