@@ -29,15 +29,15 @@ import { buildPanelEditorSchema, panelEditorSchema as defaultPanelEditorSchema }
 
 // Form inputs already have the editor's shape. Keep the schema's runtime validation
 // while exposing that input type to the Zod 4 form resolver.
-function formSchema<T>(schema: z.Schema<T>): z.Schema<T, T> {
+function formSchema<T>(schema: z.ZodType<T>): z.ZodType<T, T> {
   return z.preprocess((value: T): T => value, schema);
 }
 
 export interface ValidationSchemas {
-  datasourceEditorSchema: z.Schema<DatasourceDefinition, DatasourceDefinition>;
-  panelEditorSchema: z.Schema<PanelEditorValues, PanelEditorValues>;
-  variableEditorSchema: z.Schema<VariableDefinition, VariableDefinition>;
-  annotationEditorSchema: z.Schema<AnnotationSpec, AnnotationSpec>;
+  datasourceEditorSchema: z.ZodType<DatasourceDefinition, DatasourceDefinition>;
+  panelEditorSchema: z.ZodType<PanelEditorValues, PanelEditorValues>;
+  variableEditorSchema: z.ZodType<VariableDefinition, VariableDefinition>;
+  annotationEditorSchema: z.ZodType<AnnotationSpec, AnnotationSpec>;
   setDatasourceEditorSchemaPlugin: (pluginSchema: PluginSchema) => void;
   setPanelEditorSchemaPlugin: (pluginSchema: PluginSchema) => void;
   setVariableEditorSchemaPlugin: (pluginSchema: PluginSchema) => void;
@@ -63,15 +63,15 @@ interface ValidationProviderProps {
  */
 export function ValidationProvider({ children }: ValidationProviderProps): ReactElement {
   const [datasourceEditorSchema, setDatasourceEditorSchema] = useState<
-    z.Schema<DatasourceDefinition, DatasourceDefinition>
+    z.ZodType<DatasourceDefinition, DatasourceDefinition>
   >(() => formSchema(datasourceDefinitionSchema));
-  const [panelEditorSchema, setPanelEditorSchema] = useState<z.Schema<PanelEditorValues, PanelEditorValues>>(() =>
+  const [panelEditorSchema, setPanelEditorSchema] = useState<z.ZodType<PanelEditorValues, PanelEditorValues>>(() =>
     formSchema(defaultPanelEditorSchema),
   );
-  const [variableEditorSchema, setVariableEditorSchema] = useState<z.Schema<VariableDefinition, VariableDefinition>>(
+  const [variableEditorSchema, setVariableEditorSchema] = useState<z.ZodType<VariableDefinition, VariableDefinition>>(
     () => formSchema(variableDefinitionSchema),
   );
-  const [annotationEditorSchema, setAnnotationEditorSchema] = useState<z.Schema<AnnotationSpec, AnnotationSpec>>(() =>
+  const [annotationEditorSchema, setAnnotationEditorSchema] = useState<z.ZodType<AnnotationSpec, AnnotationSpec>>(() =>
     formSchema(annotationSpecSchema),
   );
 
