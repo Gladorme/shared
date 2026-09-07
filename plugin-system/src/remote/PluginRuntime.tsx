@@ -105,11 +105,11 @@ const getPluginRuntime = (): ModuleFederation => {
           },
         },
         'react-hook-form': {
-          version: '7.76.0',
+          version: '7.87.0',
           lib: () => ReactHookForm,
           shareConfig: {
             singleton: true,
-            requiredVersion: '^7.52.2',
+            requiredVersion: '^7.87.0',
           },
         },
         '@emotion/react': {
@@ -211,11 +211,11 @@ const getPluginRuntime = (): ModuleFederation => {
           },
         },
         '@hookform/resolvers/zod': {
-          version: '3.10.0',
+          version: '5.9.1',
           get: createSharedModuleLoader(() => import('@hookform/resolvers/zod')),
           shareConfig: {
             singleton: true,
-            requiredVersion: '^3.3.4',
+            requiredVersion: '^5.9.1',
           },
         },
         'use-resize-observer': {
