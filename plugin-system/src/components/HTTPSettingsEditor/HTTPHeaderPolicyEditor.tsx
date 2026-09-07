@@ -83,9 +83,10 @@ function HeaderPolicyField({ policy, value, onChange, isReadonly }: HeaderPolicy
         error={hasConflict}
         helperText={hasConflict ? 'Allowed headers and dropped headers cannot both be configured.' : description}
         InputProps={{
+          ...params.InputProps,
           readOnly: isReadonly,
         }}
-        InputLabelProps={{ shrink: isReadonly ? true : undefined }}
+        InputLabelProps={{ ...params.InputLabelProps, shrink: isReadonly ? true : undefined }}
       />
     ),
     [isReadonly, label, hasConflict, description],
