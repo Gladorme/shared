@@ -35,12 +35,14 @@ export const datasourcesSchema: z.ZodType<Datasource> = z.discriminatedUnion('ki
   globalDatasourceSchema,
 ]);
 
-export const datasourceDefinitionSchema: z.ZodType<DatasourceDefinition> = z.object({
+export const datasourceDefinitionSchema: z.ZodType<DatasourceDefinition, DatasourceDefinition> = z.object({
   name: z.string().min(1),
   spec: datasourceSpecSchema,
 });
 
-export function buildDatasourceDefinitionSchema(pluginSchema: PluginSchema): z.ZodType<DatasourceDefinition> {
+export function buildDatasourceDefinitionSchema(
+  pluginSchema: PluginSchema,
+): z.ZodType<DatasourceDefinition, DatasourceDefinition> {
   return z.object({
     name: z.string().min(1),
     spec: buildDatasourceSpecSchema(pluginSchema),

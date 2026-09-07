@@ -31,13 +31,13 @@ const layoutDefinitionSchema = z
   })
   .optional();
 
-export const panelEditorSchema: z.ZodType<PanelEditorValues> = z.object({
+export const panelEditorSchema: z.ZodType<PanelEditorValues, PanelEditorValues> = z.object({
   groupId: z.number(),
   panelDefinition: panelDefinitionSchema,
   layoutDefinition: layoutDefinitionSchema,
 });
 
-export function buildPanelEditorSchema(pluginSchema: PluginSchema): z.ZodType<PanelEditorValues> {
+export function buildPanelEditorSchema(pluginSchema: PluginSchema): z.ZodType<PanelEditorValues, PanelEditorValues> {
   return z.object({
     groupId: z.number(),
     panelDefinition: buildPanelDefinitionSchema(pluginSchema),
