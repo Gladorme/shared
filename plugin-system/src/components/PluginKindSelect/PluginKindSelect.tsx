@@ -28,10 +28,11 @@ export interface PluginKindSelectProps extends Omit<TextFieldProps, 'value' | 'o
   value?: PluginEditorSelection;
   onChange?: (s: PluginEditorSelection) => void;
   /**
-   * When true, a plugin that has more than one version available is listed once per version, labeled
-   * `<display name> - <version>`. Selecting such an option sets `metadata.version` on the selection so it can be
-   * persisted on the definition. A plugin with a single available version is listed without a version, so it keeps
-   * resolving to the latest one. Defaults to false.
+   * When true, a plugin that has more than one version available is listed with a `<display name> - Latest` option and
+   * once per version, labeled `<display name> - <version>`. Selecting a specific version sets `metadata.version` on the
+   * selection so it can be persisted on the definition, while selecting Latest leaves the version unpinned. A plugin
+   * with a single available version is listed without a version, so it keeps resolving to the latest one. Defaults to
+   * false.
    */
   enableVersionSelection?: boolean;
   /**
@@ -92,6 +93,15 @@ function getGroupOptions(
 
   const options: PluginKindOption[] = [];
   const seen = new Set<string>();
+  if (showVersion) {
+    const selection: PluginEditorSelection = { type: group.type, kind: group.kind };
+    options.push({
+      selection,
+      label: `${group.displayName} - Latest`,
+      value: selectionToOptionValue(selection),
+    });
+    seen.add(getVariantKey({}));
+  }
   for (const variant of group.variants) {
     const version = showVersion ? variant.version : undefined;
     const registry = showRegistry ? variant.registry : undefined;

@@ -46,11 +46,9 @@ export interface DashboardAppProps {
   isDatasourceEnabled: boolean;
   disableShortcuts?: boolean;
   isCreating?: boolean;
-  /**
-   * When true, offers the dashboard "lock/unlock" button that pins every plugin used by the dashboard to an exact
-   * version. It only makes the action available, it does not lock anything by itself. Not available by default.
-   */
+  // If true, add a button that locks/unlocks the dashboard: pins every plugin it uses to an exact version or unpin all versions.
   isLockModeAvailable?: boolean;
+  // If true, add a button will open a drawer that shows the plugins that can be updated and allows the user to update them.
   isUpdateButtonAvailable?: boolean;
   isInitialVariableSticky?: boolean;
   // If true, browser confirmation dialog will be shown when navigating away with unsaved changes (closing tab, ...).

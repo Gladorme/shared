@@ -43,15 +43,11 @@ export interface DashboardToolbarProps {
   isDatasourceEnabled: boolean;
   isLinksEnabled?: boolean;
   /**
-   * When true, offers the button that locks/unlocks the dashboard, i.e. pins every plugin it uses to an exact version.
-   * It only makes the action available: whether the dashboard is actually locked is derived from its plugin
-   * definitions. Not available by default. Plugin versioning itself is always on: the button that updates
-   * already-pinned plugins is shown regardless of this flag.
+   * When true, add a button that locks/unlocks the dashboard: pins every plugin it uses to an exact version or unpin all versions.
    */
   isLockModeAvailable?: boolean;
   /**
-   * When true, offers the button that updates all plugins to their latest version.
-   * Based on plugins available. It will open a drawer that shows the plugins that can be updated and allows the user to update them.
+   * When true, add a button will open a drawer that shows the plugins that can be updated and allows the user to update them.
    */
   isUpdateButtonAvailable?: boolean;
   timezone: string;

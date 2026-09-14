@@ -77,17 +77,19 @@ describe('PluginKindSelect version and registry selection', () => {
     expect(labels).toEqual(['Multi', 'Registries', 'Single']);
   });
 
-  it('lists one entry per version, newest first, when version selection is enabled', async () => {
+  it('lists Latest then each version, newest first, when version selection is enabled', async () => {
     renderSelect({ value: undefined, enableVersionSelection: true });
 
     const labels = await openSelect();
-    // `Multi` has several versions so each one is selectable, ordered with semver (1.10.0 sorts above 1.0.0, which a
-    // lexicographic comparison would get wrong). `Single` has one version only, so it stays version-less and keeps
-    // floating on the latest.
+    // `Multi` has several versions so Latest and each pinned version are selectable. Pinned versions are ordered with
+    // semver (1.10.0 sorts above 1.0.0, which a lexicographic comparison would get wrong). `Single` has one version
+    // only, so it stays version-less and keeps floating on the latest.
     expect(labels).toEqual([
+      'Multi - Latest',
       'Multi - 2.0.0',
       'Multi - 1.10.0',
       'Multi - 1.0.0',
+      'Registries - Latest',
       'Registries - 2.0.0',
       'Registries - 1.0.0',
       'Single',
@@ -102,6 +104,16 @@ describe('PluginKindSelect version and registry selection', () => {
     userEvent.click(screen.getByRole('option', { name: 'Multi - 1.0.0' }));
 
     expect(selection).toStrictEqual({ type: 'Panel', kind: 'Multi', metadata: { version: '1.0.0' } });
+  });
+
+  it('leaves the version unpinned when Latest is selected', async () => {
+    let selection: PluginEditorSelection | undefined = undefined;
+    renderSelect({ value: undefined, enableVersionSelection: true, onChange: (s) => (selection = s) });
+
+    await openSelect();
+    userEvent.click(screen.getByRole('option', { name: 'Multi - Latest' }));
+
+    expect(selection).toStrictEqual({ type: 'Panel', kind: 'Multi' });
   });
 
   it('does not pin anything when the plugin only has one version', async () => {
@@ -123,11 +135,10 @@ describe('PluginKindSelect version and registry selection', () => {
     expect(await screen.findByText('Multi - 1.0.0')).toBeInTheDocument();
   });
 
-  it('shows the version that will actually be used when the definition is not pinned', async () => {
+  it('shows Latest when the definition is not pinned', async () => {
     renderSelect({ value: { type: 'Panel', kind: 'Multi' }, enableVersionSelection: true });
 
-    // Unpinned means "latest", so the newest version is displayed rather than an out-of-range empty value.
-    expect(await screen.findByText('Multi - 2.0.0')).toBeInTheDocument();
+    expect(await screen.findByText('Multi - Latest')).toBeInTheDocument();
   });
 
   it('keeps a pin the select does not list rather than dropping it silently', async () => {
@@ -160,9 +171,11 @@ describe('PluginKindSelect version and registry selection', () => {
 
     const labels = await openSelect();
     expect(labels).toEqual([
+      'Multi - Latest',
       'Multi - 2.0.0',
       'Multi - 1.10.0',
       'Multi - 1.0.0',
+      'Registries - Latest',
       'Registries - 2.0.0 (beta)',
       'Registries - 1.0.0 (alpha)',
       'Single',
