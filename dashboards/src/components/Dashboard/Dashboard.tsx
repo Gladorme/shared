@@ -14,6 +14,7 @@
 import type { BoxProps } from '@mui/material';
 import { Box } from '@mui/material';
 import { ErrorBoundary, ErrorAlert } from '@perses-dev/components';
+import { SnapGridGroup } from '@snapgridjs/react';
 import type { ReactElement } from 'react';
 import { useRef } from 'react';
 
@@ -52,15 +53,17 @@ export function Dashboard({ emptyDashboardProps, panelOptions, ...boxProps }: Da
             <EmptyDashboard {...emptyDashboardProps} />
           </Box>
         )}
-        {!isEmpty &&
-          panelGroupIds.map((panelGroupId) => (
-            <GridLayout
-              key={panelGroupId}
-              panelGroupId={panelGroupId}
-              panelOptions={panelOptions}
-              panelFullHeight={panelFullHeight}
-            />
-          ))}
+        <SnapGridGroup>
+          {!isEmpty &&
+            panelGroupIds.map((panelGroupId) => (
+              <GridLayout
+                key={panelGroupId}
+                panelGroupId={panelGroupId}
+                panelOptions={panelOptions}
+                panelFullHeight={panelFullHeight}
+              />
+            ))}
+        </SnapGridGroup>
       </ErrorBoundary>
     </Box>
   );

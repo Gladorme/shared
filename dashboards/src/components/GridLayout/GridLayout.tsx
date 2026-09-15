@@ -13,12 +13,12 @@
 
 import type { PanelGroupId } from '@perses-dev/plugin-system';
 import { useVariableValues } from '@perses-dev/plugin-system';
+import type { Layout, ResponsiveLayouts } from '@snapgridjs/react';
 import type { ReactElement } from 'react';
-import { useState } from 'react';
-import type { Layout, Layouts } from 'react-grid-layout';
+import { useCallback, useState } from 'react';
 
 import { GRID_LAYOUT_SMALL_BREAKPOINT } from '../../constants';
-import { useEditMode, usePanelGroup, usePanelGroupActions, useViewPanelGroup } from '../../context';
+import { useDashboardStore, useEditMode, usePanelGroup, useViewPanelGroup } from '../../context';
 import type { PanelGroupDefinition } from '../../model';
 import type { PanelOptions } from '../Panel';
 import { FixedValueVariableProvider } from '../Variables';
@@ -37,7 +37,7 @@ export interface GridLayoutProps {
 export function GridLayout(props: GridLayoutProps): ReactElement {
   const { panelGroupId, panelOptions, panelFullHeight } = props;
   const groupDefinition: PanelGroupDefinition = usePanelGroup(panelGroupId);
-  const { updatePanelGroupLayouts } = usePanelGroupActions(panelGroupId);
+  const updatePanelGroupLayoutsFromGrid = useDashboardStore((state) => state.updatePanelGroupLayoutsFromGrid);
   const viewPanelItemId = useViewPanelGroup();
   const { isEditMode } = useEditMode();
 
@@ -45,33 +45,29 @@ export function GridLayout(props: GridLayoutProps): ReactElement {
 
   const hasViewPanel = viewPanelItemId?.panelGroupId === panelGroupId; // current panelGroup contains the panel extended?
 
-  const handleLayoutChange = (currentLayout: Layout[], allLayouts: Layouts): void => {
-    // Using the value from `allLayouts` instead of `currentLayout` because of
-    // a bug in react-layout-grid where `currentLayout` does not adjust properly
-    // when going to a smaller breakpoint and then back to a larger breakpoint.
-    // https://github.com/react-grid-layout/react-grid-layout/issues/1663
-    const smallLayout = allLayouts[GRID_LAYOUT_SMALL_BREAKPOINT];
-    if (smallLayout && !hasViewPanel) {
-      updatePanelGroupLayouts(smallLayout);
-    }
-  };
+  const handleLayoutChange = useCallback(
+    (_currentLayout: Layout, allLayouts: ResponsiveLayouts): void => {
+      const smallLayout = allLayouts[GRID_LAYOUT_SMALL_BREAKPOINT];
+      if (smallLayout && isEditMode && !hasViewPanel) {
+        updatePanelGroupLayoutsFromGrid(panelGroupId, [...smallLayout]);
+      }
+    },
+    [hasViewPanel, isEditMode, panelGroupId, updatePanelGroupLayoutsFromGrid],
+  );
 
   /**
    * Calculate the column width so we can determine the width of each panel for suggested step ms
-   * https://github.com/react-grid-layout/react-grid-layout/blob/master/lib/calculateUtils.js#L14-L35
    */
-  const handleWidthChange = (
-    containerWidth: number,
-    margin: [number, number],
-    cols: number,
-    containerPadding: [number, number],
-  ): void => {
-    const marginX = margin[0];
-    const marginWidth = marginX * (cols - 1);
-    const containerPaddingWidth = containerPadding[0] * 2;
-    // exclude margin and padding from total width
-    setGridColWidth((containerWidth - marginWidth - containerPaddingWidth) / cols);
-  };
+  const handleWidthChange = useCallback(
+    (containerWidth: number, margin: [number, number], cols: number, containerPadding: [number, number]): void => {
+      const marginX = margin[0];
+      const marginWidth = marginX * (cols - 1);
+      const containerPaddingWidth = containerPadding[0] * 2;
+      // exclude margin and padding from total width
+      setGridColWidth((containerWidth - marginWidth - containerPaddingWidth) / cols);
+    },
+    [],
+  );
 
   return (
     <>

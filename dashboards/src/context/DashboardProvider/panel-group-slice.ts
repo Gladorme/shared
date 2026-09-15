@@ -17,7 +17,8 @@ import { getPanelKeyFromRef } from '@perses-dev/spec';
 import type { WritableDraft } from 'immer';
 import type { StateCreator } from 'zustand';
 
-import type { PanelGroupDefinition } from '../../model';
+import { GRID_LAYOUT_COLS } from '../../constants';
+import type { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
 import type { Middleware } from './common';
 import { generateId } from './common';
 
@@ -44,6 +45,12 @@ export interface PanelGroupSlice {
    * Update the item layouts for a panel group when, for example, a panel is moved or resized.
    */
   updatePanelGroupLayouts: (panelGroupId: PanelGroupId, itemLayouts: PanelGroupDefinition['itemLayouts']) => void;
+
+  /**
+   * Commit a grid gesture, transferring panel references and repeat settings for received items.
+   * Source removals are completed by the receiving grid so either callback order preserves metadata.
+   */
+  updatePanelGroupLayoutsFromGrid: (panelGroupId: PanelGroupId, itemLayouts: PanelGroupItemLayout[]) => void;
 }
 
 /**
@@ -72,6 +79,47 @@ export function createPanelGroupSlice(
         }
         // assign yPanelGroup to layouts[x] and assign xGroup to layouts[y], swapping two panel groups
         [state.panelGroupOrder[x], state.panelGroupOrder[y]] = [yPanelGroup, xPanelGroup];
+      });
+    },
+
+    updatePanelGroupLayoutsFromGrid(panelGroupId, itemLayouts): void {
+      set((state) => {
+        const group = state.panelGroups[panelGroupId];
+        if (!group) {
+          throw new Error(`Cannot find panel group ${panelGroupId}`);
+        }
+        const nextLayouts = new Map<string, PanelGroupItemLayout>();
+        for (const layout of itemLayouts) {
+          const existing = group.itemLayouts.find((item) => item.i === layout.i);
+          if (existing) {
+            nextLayouts.set(layout.i, { ...existing, ...layout, repeatVariable: existing.repeatVariable });
+            continue;
+          }
+          const source = Object.values(state.panelGroups).find((candidate) =>
+            candidate.itemLayouts.some((item) => item.i === layout.i),
+          );
+          const original = source?.itemLayouts.find((item) => item.i === layout.i);
+          const panelKey = source?.itemPanelKeys[layout.i];
+          if (!source || !original || panelKey === undefined) {
+            throw new Error(`Cannot find panel for grid item ${layout.i}`);
+          }
+          // A received repeated panel carries an expanded display height. Keep its base height.
+          nextLayouts.set(layout.i, {
+            ...original,
+            x: Math.min(layout.x, GRID_LAYOUT_COLS.sm - original.w),
+            y: layout.y,
+          });
+          group.itemPanelKeys[layout.i] = panelKey;
+          source.itemLayouts = source.itemLayouts.filter((item) => item.i !== layout.i);
+          delete source.itemPanelKeys[layout.i];
+        }
+        // Snapgrid calls both grids independently. Retain outgoing metadata until the receiver commits.
+        for (const layout of group.itemLayouts) {
+          if (!nextLayouts.has(layout.i)) {
+            nextLayouts.set(layout.i, layout);
+          }
+        }
+        group.itemLayouts = [...nextLayouts.values()];
       });
     },
 

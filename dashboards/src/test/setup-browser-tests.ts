@@ -11,16 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { resolve } from 'node:path';
+vi.mock('echarts/core');
 
-import { configDefaults, mergeConfig } from 'vitest/config';
-
-import { definePackageVitestConfig } from '../vitest.shared';
-
-export default mergeConfig(
-  definePackageVitestConfig({
-    packageDir: resolve(__dirname),
-    setupFiles: ['src/test/setup-tests.ts'],
-  }),
-  { test: { exclude: [...configDefaults.exclude, '**/*.browser.test.tsx'] } },
-);
+// Playwright drives real browser events; React updates are observed through awaited DOM assertions.
+beforeEach(() => {
+  vi.stubGlobal('IS_REACT_ACT_ENVIRONMENT', false);
+});

@@ -23,3 +23,19 @@ vi.mock('echarts/core');
 // Tell react-intersection-observer that everything should be considered in-view for tests (see package documentation
 // for other options)
 defaultFallbackInView(true);
+
+// jsdom has no layout engine. Browser tests exercise the real ResizeObserver and drag geometry.
+if (typeof ResizeObserver === 'undefined') {
+  vi.stubGlobal(
+    'ResizeObserver',
+    class {
+      observe(): void {}
+      unobserve(): void {}
+      disconnect(): void {}
+    },
+  );
+}
+
+if (typeof PointerEvent === 'undefined') {
+  vi.stubGlobal('PointerEvent', MouseEvent);
+}

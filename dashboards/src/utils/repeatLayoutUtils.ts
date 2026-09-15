@@ -13,10 +13,9 @@
 
 import type { VariableStateMap } from '@perses-dev/plugin-system';
 import { DEFAULT_MAX_PER_ROW, DEFAULT_REPEAT_ALIGNMENT } from '@perses-dev/plugin-system';
-import type { Layout, Layouts } from 'react-grid-layout';
 
 import { DEFAULT_MARGIN, ROW_HEIGHT } from '../constants';
-import type { PanelGroupItemLayout, RepeatVariable } from '../model';
+import type { BaseLayout, PanelGroupItemLayout, RepeatVariable } from '../model';
 
 /**
  * Resolves the list of string values for a repeat variable given the current variable state map.
@@ -84,7 +83,7 @@ export interface RepeatItemMeta {
 
 /**
  * Restores a layout item to its single-item height and re-attaches repeatVariable after
- * react-grid-layout reports back an expanded (total) height. Used when persisting layouts,
+ * the grid reports back an expanded (total) height. Used when persisting layouts,
  * including after a user resize in edit mode.
  */
 export function restoreRepeatItemLayout(layout: PanelGroupItemLayout, meta: RepeatItemMeta): PanelGroupItemLayout {
@@ -100,17 +99,17 @@ export function restoreRepeatItemLayout(layout: PanelGroupItemLayout, meta: Repe
  * the provided meta map. Non-repeat items are returned unchanged.
  */
 export function restoreRepeatLayouts(
-  currentLayout: Layout[],
-  allLayouts: Layouts,
+  currentLayout: readonly BaseLayout[],
+  allLayouts: Record<string, readonly BaseLayout[] | undefined>,
   repeatMeta: Map<string, RepeatItemMeta>,
-): { currentLayout: PanelGroupItemLayout[]; allLayouts: Layouts } {
-  const restore = (layout: Layout): PanelGroupItemLayout => {
+): { currentLayout: PanelGroupItemLayout[]; allLayouts: Record<string, PanelGroupItemLayout[]> } {
+  const restore = (layout: BaseLayout): PanelGroupItemLayout => {
     const meta = repeatMeta.get(layout.i);
     return meta ? restoreRepeatItemLayout(layout, meta) : layout;
   };
-  const restoredAllLayouts: Layouts = {};
+  const restoredAllLayouts: Record<string, PanelGroupItemLayout[]> = {};
   for (const [breakpoint, layouts] of Object.entries(allLayouts)) {
-    restoredAllLayouts[breakpoint] = layouts.map(restore);
+    if (layouts) restoredAllLayouts[breakpoint] = layouts.map(restore);
   }
   return { currentLayout: currentLayout.map(restore), allLayouts: restoredAllLayouts };
 }

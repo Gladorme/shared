@@ -14,12 +14,12 @@
 import { Collapse, useTheme } from '@mui/material';
 import type { PanelGroupId } from '@perses-dev/plugin-system';
 import { useVariableValues } from '@perses-dev/plugin-system';
+import type { Layout } from '@snapgridjs/react';
+import { GridLayout as SnapgridLayout, useContainerWidth, useResponsiveLayout } from '@snapgridjs/react';
 import type { ReactElement } from 'react';
 import { useEffect, useMemo, useState } from 'react';
-import type { Layout, Layouts } from 'react-grid-layout';
-import { Responsive, WidthProvider } from 'react-grid-layout';
 
-import { DEFAULT_MARGIN, GRID_LAYOUT_COLS, GRID_LAYOUT_SMALL_BREAKPOINT, ROW_HEIGHT } from '../../constants';
+import { DEFAULT_MARGIN, GRID_LAYOUT_COLS, ROW_HEIGHT } from '../../constants';
 import { useRepeatVariableMaxValues, useViewPanelGroup } from '../../context';
 import type { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
 import { buildRepeatMeta, restoreRepeatLayouts } from '../../utils';
@@ -28,6 +28,10 @@ import { GridContainer } from './GridContainer';
 import { GridItemRenderer } from './GridItemRenderer';
 import { GridTitle } from './GridTitle';
 
+const GRID_MARGIN: [number, number] = [DEFAULT_MARGIN, DEFAULT_MARGIN];
+const GRID_PADDING: [number, number] = [0, 10];
+const DRAG_CONFIG = { handle: '.drag-handle' };
+
 export interface RowProps {
   panelGroupId: PanelGroupId;
   groupDefinition: PanelGroupDefinition;
@@ -35,7 +39,7 @@ export interface RowProps {
   panelFullHeight?: number;
   panelOptions?: PanelOptions;
   isEditMode?: boolean;
-  onLayoutChange?: (currentLayout: Layout[], allLayouts: Layouts) => void;
+  onLayoutChange?: (currentLayout: PanelGroupItemLayout[], allLayouts: Record<string, PanelGroupItemLayout[]>) => void;
   onWidthChange?: (
     containerWidth: number,
     margin: [number, number],
@@ -56,7 +60,7 @@ export function Row({
   onWidthChange,
   repeatVariable,
 }: RowProps): ReactElement {
-  const ResponsiveGridLayout = useMemo(() => WidthProvider(Responsive), []);
+  const { width, containerRef } = useContainerWidth();
   const theme = useTheme();
   const viewPanelItemId = useViewPanelGroup();
   const variableValues = useVariableValues();
@@ -85,99 +89,143 @@ export function Row({
   // If there is a panel in view mode, we should hide the grid if the panel is not in the current group.
   const isGridDisplayed = !viewPanelItemId || hasViewPanel;
 
-  // TODO: handle it without useEffect
+  const cols = width < theme.breakpoints.values.sm ? GRID_LAYOUT_COLS.xxs : GRID_LAYOUT_COLS.sm;
   useEffect(() => {
-    if (hasViewPanel) {
-      setIsOpen(true);
+    if (isGridDisplayed) {
+      onWidthChange?.(width, GRID_MARGIN, cols, GRID_PADDING);
     }
-  }, [hasViewPanel]);
+  }, [width, cols, isGridDisplayed, onWidthChange]);
 
   // Item layout is override if there is a panel in view mode
   const itemLayouts: PanelGroupItemLayout[] = useMemo(() => {
     if (itemLayoutViewed) {
-      return expandedItemLayouts.map((itemLayout) => {
-        if (itemLayout.i === itemLayoutViewed) {
-          const rowTitleHeight = 40 + 8; // 40 is the height of the row title and 8 is the margin height
-          return {
-            ...itemLayout,
-            h: Math.round(((panelFullHeight ?? window.innerHeight) - rowTitleHeight) / (ROW_HEIGHT + DEFAULT_MARGIN)), // Viewed panel should take the full height remaining
-            i: itemLayoutViewed,
-            w: 48,
-            x: 0,
-            y: 0,
-          } as PanelGroupItemLayout;
-        }
-        return itemLayout;
-      });
+      const viewedItem = expandedItemLayouts.find((item) => item.i === itemLayoutViewed);
+      if (!viewedItem) return [];
+      const rowTitleHeight = 40 + 8;
+      return [
+        {
+          ...viewedItem,
+          h: Math.max(
+            1,
+            Math.round(((panelFullHeight ?? window.innerHeight) - rowTitleHeight) / (ROW_HEIGHT + DEFAULT_MARGIN)),
+          ),
+          w: GRID_LAYOUT_COLS.sm,
+          x: 0,
+          y: 0,
+        },
+      ];
     }
     return expandedItemLayouts;
   }, [expandedItemLayouts, itemLayoutViewed, panelFullHeight]);
 
+  // Repeated rows share persisted items, but dnd-kit needs a unique ID for every rendered tile.
+  const layouts = useMemo(
+    () => ({
+      sm: itemLayouts.map((item) => ({
+        ...item,
+        i: `${encodeURIComponent(item.i)}|${encodeURIComponent(JSON.stringify(repeatVariable ?? []))}`,
+      })),
+    }),
+    [itemLayouts, repeatVariable],
+  );
+  const breakpoints = useMemo(() => ({ sm: theme.breakpoints.values.sm, xxs: 0 }), [theme.breakpoints.values.sm]);
+  const { layout: responsiveLayout } = useResponsiveLayout({ width, layouts, breakpoints, cols: GRID_LAYOUT_COLS });
+  const gridConfig = useMemo(
+    () => ({ cols, rowHeight: ROW_HEIGHT, margin: GRID_MARGIN, containerPadding: GRID_PADDING }),
+    [cols],
+  );
+
   const handleLayoutChange = useMemo(() => {
-    if (!onLayoutChange) {
-      return undefined;
-    }
-    return (currentLayout: Layout[], allLayouts: Layouts): void => {
-      const restored = restoreRepeatLayouts(currentLayout, allLayouts, repeatMeta);
+    if (!onLayoutChange) return undefined;
+    return (currentLayout: Layout): void => {
+      const canonicalLayout = currentLayout.map((item) => {
+        const id = decodeURIComponent(item.i.split('|')[0] ?? item.i);
+        const original = itemLayouts.find((layout) => layout.i === id);
+        const displayed = responsiveLayout.find((layout) => layout.i === item.i);
+        // Keep desktop coordinates for dimensions that were only adapted to a narrow screen.
+        const retain = cols !== GRID_LAYOUT_COLS.sm && original && displayed;
+        return {
+          ...item,
+          i: id,
+          x: retain && item.x === displayed.x ? original.x : (item.x * GRID_LAYOUT_COLS.sm) / cols,
+          y: retain && item.y === displayed.y ? original.y : item.y,
+          w: retain && item.w === displayed.w ? original.w : (item.w * GRID_LAYOUT_COLS.sm) / cols,
+        };
+      });
+      const restored = restoreRepeatLayouts(canonicalLayout, { sm: canonicalLayout }, repeatMeta);
       onLayoutChange(restored.currentLayout, restored.allLayouts);
     };
-  }, [onLayoutChange, repeatMeta]);
+  }, [onLayoutChange, repeatMeta, cols, itemLayouts, responsiveLayout]);
+
+  // Keep later groups stationary while Snapgrid previews removing a tile from this group.
+  const gridStyle = useMemo(
+    () =>
+      isEditMode
+        ? {
+            minHeight: Math.max(
+              ROW_HEIGHT * 3,
+              responsiveLayout.reduce((bottom, item) => Math.max(bottom, item.y + item.h), 0) *
+                (ROW_HEIGHT + DEFAULT_MARGIN) -
+                DEFAULT_MARGIN +
+                GRID_PADDING[1] * 2,
+            ),
+          }
+        : undefined,
+    [isEditMode, responsiveLayout],
+  );
+
+  const containerSx = useMemo(
+    () => ({
+      display: isGridDisplayed ? 'block' : 'none',
+      height: itemLayoutViewed ? `${panelFullHeight}px` : 'unset',
+      overflow: itemLayoutViewed ? 'hidden' : 'unset',
+    }),
+    [isGridDisplayed, itemLayoutViewed, panelFullHeight],
+  );
+  const collapse = useMemo(
+    () =>
+      groupDefinition.isCollapsed === undefined
+        ? undefined
+        : {
+            isOpen: isOpen || hasViewPanel,
+            onToggleOpen: (): void => setIsOpen((current) => !current),
+          },
+    [groupDefinition.isCollapsed, isOpen, hasViewPanel],
+  );
 
   return (
-    <GridContainer
-      sx={{
-        display: isGridDisplayed ? 'block' : 'none',
-        height: itemLayoutViewed ? `${panelFullHeight}px` : 'unset',
-        overflow: itemLayoutViewed ? 'hidden' : 'unset',
-      }}
-    >
+    <GridContainer sx={containerSx}>
       {groupDefinition.title && (
-        <GridTitle
-          panelGroupId={panelGroupId}
-          title={groupDefinition.title}
-          collapse={
-            groupDefinition.isCollapsed === undefined
-              ? undefined
-              : { isOpen: isOpen, onToggleOpen: () => setIsOpen((current) => !current) }
-          }
-        />
+        <GridTitle panelGroupId={panelGroupId} title={groupDefinition.title} collapse={collapse} />
       )}
-      <Collapse in={isOpen} unmountOnExit appear={false} data-testid="panel-group-content">
-        <ResponsiveGridLayout
-          className="layout"
-          breakpoints={{ [GRID_LAYOUT_SMALL_BREAKPOINT]: theme.breakpoints.values.sm, xxs: 0 }}
-          cols={GRID_LAYOUT_COLS}
-          rowHeight={ROW_HEIGHT}
-          draggableHandle=".drag-handle"
-          resizeHandles={['se']}
-          isDraggable={isEditMode && !hasViewPanel}
-          isResizable={isEditMode && !hasViewPanel}
-          margin={[DEFAULT_MARGIN, DEFAULT_MARGIN]}
-          containerPadding={[0, 10]}
-          layouts={{ sm: itemLayouts }}
-          onLayoutChange={handleLayoutChange}
-          onWidthChange={isGridDisplayed ? onWidthChange : undefined}
-          allowOverlap={hasViewPanel} // Enabling overlap when viewing a specific panel because panel in front of the viewed panel will add empty spaces (empty row height)
-        >
-          {itemLayouts.map(({ i, w }) => (
-            <div
-              key={i}
-              style={{
-                display: !itemLayoutViewed || itemLayoutViewed === i ? 'unset' : 'none',
-              }}
-            >
-              <GridItemRenderer
-                panelGroupId={panelGroupId}
-                panelGroupItemLayoutId={i}
-                width={calculateGridItemWidth(w, gridColWidth)}
-                repeatItemMeta={repeatMeta.get(i)}
-                groupRepeatVariable={repeatVariable}
-                panelOptions={panelOptions}
-                isEditMode={isEditMode}
-              />
-            </div>
-          ))}
-        </ResponsiveGridLayout>
+      <Collapse in={isOpen || hasViewPanel} unmountOnExit appear={false} data-testid="panel-group-content">
+        <div ref={containerRef}>
+          <SnapgridLayout
+            width={width}
+            className="layout"
+            gridConfig={gridConfig}
+            dragConfig={DRAG_CONFIG}
+            isDraggable={isEditMode && !hasViewPanel}
+            isResizable={isEditMode && !hasViewPanel}
+            layout={responsiveLayout}
+            onLayoutChange={handleLayoutChange}
+            style={gridStyle}
+          >
+            {itemLayouts.map(({ i, w }) => (
+              <div key={`${encodeURIComponent(i)}|${encodeURIComponent(JSON.stringify(repeatVariable ?? []))}`}>
+                <GridItemRenderer
+                  panelGroupId={panelGroupId}
+                  panelGroupItemLayoutId={i}
+                  width={calculateGridItemWidth(Math.min(w, cols), gridColWidth)}
+                  repeatItemMeta={repeatMeta.get(i)}
+                  groupRepeatVariable={repeatVariable}
+                  panelOptions={panelOptions}
+                  isEditMode={isEditMode}
+                />
+              </div>
+            ))}
+          </SnapgridLayout>
+        </div>
       </Collapse>
     </GridContainer>
   );
