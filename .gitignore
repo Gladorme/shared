@@ -38,6 +38,3 @@ coverage
 CHANGELOG.md
 
 .idea/
-
-# Vitest browser failure artifacts
-.vitest-attachments/

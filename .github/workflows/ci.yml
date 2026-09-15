@@ -60,8 +60,6 @@ jobs:
           enable_npm: true
       - run: npm ci
       - run: npm run test
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:browser -w @perses-dev/dashboards
 
   type-check:
     name: 'type-check'

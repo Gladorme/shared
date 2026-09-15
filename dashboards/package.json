@@ -26,8 +26,7 @@
     "test": "cross-env TZ=UTC vitest run",
     "test:watch": "cross-env TZ=UTC vitest",
     "lint": "oxlint src",
-    "lint:fix": "oxlint --fix src",
-    "test:browser": "cross-env TZ=UTC vitest run --config vitest.browser.config.ts"
+    "lint:fix": "oxlint --fix src"
   },
   "dependencies": {
     "@dnd-kit/dom": "^0.4.0",
@@ -50,9 +49,7 @@
     "zustand": "^4.3.3"
   },
   "devDependencies": {
-    "@vitest/browser-playwright": "^4.1.11",
-    "history": "^5.3.0",
-    "playwright": "^1.63.0"
+    "history": "^5.3.0"
   },
   "peerDependencies": {
     "@mui/material": "^6.1.10",

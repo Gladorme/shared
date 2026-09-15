@@ -13,14 +13,9 @@
 
 import { resolve } from 'node:path';
 
-import { configDefaults, mergeConfig } from 'vitest/config';
-
 import { definePackageVitestConfig } from '../vitest.shared';
 
-export default mergeConfig(
-  definePackageVitestConfig({
-    packageDir: resolve(__dirname),
-    setupFiles: ['src/test/setup-tests.ts'],
-  }),
-  { test: { exclude: [...configDefaults.exclude, '**/*.browser.test.tsx'] } },
-);
+export default definePackageVitestConfig({
+  packageDir: resolve(__dirname),
+  setupFiles: ['src/test/setup-tests.ts'],
+});

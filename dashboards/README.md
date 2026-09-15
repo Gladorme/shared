@@ -16,9 +16,3 @@ Custom grid styling should target Snapgrid's `.snapgrid`, `.snapgrid-item`, and 
 ## Validation
 
 Run unit tests with `npm run test -w @perses-dev/dashboards`.
-The browser regression test exercises panel dragging in Chromium:
-
-```sh
-npx playwright install chromium
-npm run test:browser -w @perses-dev/dashboards
-```

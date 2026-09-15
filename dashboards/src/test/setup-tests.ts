@@ -24,7 +24,7 @@ vi.mock('echarts/core');
 // for other options)
 defaultFallbackInView(true);
 
-// jsdom has no layout engine. Browser tests exercise the real ResizeObserver and drag geometry.
+// jsdom has no layout engine, so provide the observer API required by dnd-kit.
 if (typeof ResizeObserver === 'undefined') {
   vi.stubGlobal(
     'ResizeObserver',
