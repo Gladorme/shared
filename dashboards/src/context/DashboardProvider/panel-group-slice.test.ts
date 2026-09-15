@@ -40,15 +40,19 @@ const layouts: LayoutDefinition[] = [
   { kind: 'Grid', spec: { items: [] } },
 ];
 
-function setup(): { store: ReturnType<typeof createPanelGroupStore>; sourceId: number; destinationId: number } {
-  const store = createPanelGroupStore();
+function setup(definitions: LayoutDefinition[] = layouts): {
+  store: ReturnType<typeof createPanelGroupStore>;
+  sourceId: number;
+  destinationId: number;
+} {
+  const store = createPanelGroupStore(definitions);
   const [sourceId, destinationId] = store.getState().panelGroupOrder;
   if (sourceId === undefined || destinationId === undefined) throw new Error('Missing test groups');
   return { store, sourceId, destinationId };
 }
 
-function createPanelGroupStore(): StoreApi<PanelGroupSlice> {
-  return createStore<PanelGroupSlice>()(immer(devtools(createPanelGroupSlice(layouts))));
+function createPanelGroupStore(definitions: LayoutDefinition[]): StoreApi<PanelGroupSlice> {
+  return createStore<PanelGroupSlice>()(immer(devtools(createPanelGroupSlice(definitions))));
 }
 
 it.each(['source first', 'destination first'])('moves panel references and repeat settings (%s)', (order) => {
@@ -89,6 +93,67 @@ it('persists resizing without losing repeat settings or panel references', () =>
     repeatVariable: { value: 'instance', maxPer: 2 },
   });
   expect(store.getState().panelGroups[sourceId]?.itemPanelKeys).toEqual(group.itemPanelKeys);
+});
+
+it.each(['moving row first', 'receiving row first'])(
+  'reflows a panel moved between two rows of the same repeated group (%s)',
+  (order) => {
+    const { store, sourceId } = setup();
+    const [panel, remaining] = store.getState().panelGroups[sourceId]?.itemLayouts ?? [];
+    if (!panel || !remaining) throw new Error('Missing test panels');
+    // The row the panel left reports the compacted layout without it; the receiving row reports it dropped on top.
+    const movingRowLayout = [{ ...remaining, y: 0 }];
+    const receivingRowLayout = [
+      { ...panel, x: 0, y: 0 },
+      { ...remaining, y: 4 },
+    ];
+    const { updatePanelGroupLayoutsFromGrid } = store.getState();
+    if (order === 'moving row first') {
+      updatePanelGroupLayoutsFromGrid(sourceId, movingRowLayout);
+      updatePanelGroupLayoutsFromGrid(sourceId, receivingRowLayout);
+    } else {
+      updatePanelGroupLayoutsFromGrid(sourceId, receivingRowLayout);
+      updatePanelGroupLayoutsFromGrid(sourceId, movingRowLayout);
+    }
+    const itemLayouts = store.getState().panelGroups[sourceId]?.itemLayouts ?? [];
+    expect(itemLayouts).toHaveLength(2);
+    expect(itemLayouts.find((item) => item.i === panel.i)).toMatchObject({
+      h: 4,
+      repeatVariable: panel.repeatVariable,
+    });
+    expect(itemLayouts.find((item) => item.i === remaining.i)).toMatchObject({ h: 3 });
+    const [first, second] = itemLayouts;
+    const overlaps = first && second && first.y < second.y + second.h && second.y < first.y + first.h;
+    expect(overlaps).toBe(false);
+    expect(store.getState().panelGroups[sourceId]?.itemPanelKeys).toEqual({
+      [panel.i]: 'cpu',
+      [remaining.i]: 'memory',
+    });
+  },
+);
+
+it('reflows items around a received repeated panel restored to its base height', () => {
+  const [source] = layouts;
+  if (!source) throw new Error('Missing test layout');
+  const { store, sourceId, destinationId } = setup([
+    source,
+    {
+      kind: 'Grid',
+      spec: { items: [{ x: 0, y: 0, width: 24, height: 2, content: { $ref: '#/spec/panels/other' } }] },
+    },
+  ]);
+  const [panel] = store.getState().panelGroups[sourceId]?.itemLayouts ?? [];
+  const [other] = store.getState().panelGroups[destinationId]?.itemLayouts ?? [];
+  if (!panel || !other) throw new Error('Missing test panels');
+  // The destination grid laid out `other` below the expanded (h: 9) preview of the repeated panel.
+  store.getState().updatePanelGroupLayoutsFromGrid(destinationId, [
+    { ...panel, x: 0, y: 0, h: 9 },
+    { ...other, y: 9 },
+  ]);
+  expect(store.getState().panelGroups[destinationId]?.itemLayouts).toEqual([
+    { ...panel, x: 0, y: 0 },
+    { ...other, y: 4 },
+  ]);
 });
 
 it('rejects an unknown received item without modifying either group', () => {

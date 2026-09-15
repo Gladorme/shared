@@ -19,6 +19,7 @@ import type { StateCreator } from 'zustand';
 
 import { GRID_LAYOUT_COLS } from '../../constants';
 import type { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
+import { compactLayout } from '../../utils';
 import type { Middleware } from './common';
 import { generateId } from './common';
 
@@ -119,7 +120,8 @@ export function createPanelGroupSlice(
             nextLayouts.set(layout.i, layout);
           }
         }
-        group.itemLayouts = [...nextLayouts.values()];
+        // Retained items and received items restored to their base height may overlap: reflow them.
+        group.itemLayouts = compactLayout([...nextLayouts.values()]);
       });
     },
 

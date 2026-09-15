@@ -13,13 +13,11 @@
 
 import type { PanelGroupId } from '@perses-dev/plugin-system';
 import { useVariableValues } from '@perses-dev/plugin-system';
-import type { Layout, ResponsiveLayouts } from '@snapgridjs/react';
 import type { ReactElement } from 'react';
 import { useCallback, useState } from 'react';
 
-import { GRID_LAYOUT_SMALL_BREAKPOINT } from '../../constants';
 import { useDashboardStore, useEditMode, usePanelGroup, useViewPanelGroup } from '../../context';
-import type { PanelGroupDefinition } from '../../model';
+import type { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
 import type { PanelOptions } from '../Panel';
 import { FixedValueVariableProvider } from '../Variables';
 import type { RowProps } from './Row';
@@ -46,10 +44,9 @@ export function GridLayout(props: GridLayoutProps): ReactElement {
   const hasViewPanel = viewPanelItemId?.panelGroupId === panelGroupId; // current panelGroup contains the panel extended?
 
   const handleLayoutChange = useCallback(
-    (_currentLayout: Layout, allLayouts: ResponsiveLayouts): void => {
-      const smallLayout = allLayouts[GRID_LAYOUT_SMALL_BREAKPOINT];
-      if (smallLayout && isEditMode && !hasViewPanel) {
-        updatePanelGroupLayoutsFromGrid(panelGroupId, [...smallLayout]);
+    (layout: PanelGroupItemLayout[]): void => {
+      if (isEditMode && !hasViewPanel) {
+        updatePanelGroupLayoutsFromGrid(panelGroupId, layout);
       }
     },
     [hasViewPanel, isEditMode, panelGroupId, updatePanelGroupLayoutsFromGrid],

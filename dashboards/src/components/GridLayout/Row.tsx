@@ -22,7 +22,13 @@ import { useEffect, useMemo, useState } from 'react';
 import { DEFAULT_MARGIN, GRID_LAYOUT_COLS, ROW_HEIGHT } from '../../constants';
 import { useRepeatVariableMaxValues, useViewPanelGroup } from '../../context';
 import type { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
-import { buildRepeatMeta, restoreRepeatLayouts } from '../../utils';
+import {
+  buildRepeatMeta,
+  compactLayout,
+  decodeGridItemId,
+  encodeGridItemId,
+  restoreRepeatItemLayout,
+} from '../../utils';
 import type { PanelOptions } from '../Panel/Panel';
 import { GridContainer } from './GridContainer';
 import { GridItemRenderer } from './GridItemRenderer';
@@ -39,7 +45,7 @@ export interface RowProps {
   panelFullHeight?: number;
   panelOptions?: PanelOptions;
   isEditMode?: boolean;
-  onLayoutChange?: (currentLayout: PanelGroupItemLayout[], allLayouts: Record<string, PanelGroupItemLayout[]>) => void;
+  onLayoutChange?: (layout: PanelGroupItemLayout[]) => void;
   onWidthChange?: (
     containerWidth: number,
     margin: [number, number],
@@ -89,13 +95,6 @@ export function Row({
   // If there is a panel in view mode, we should hide the grid if the panel is not in the current group.
   const isGridDisplayed = !viewPanelItemId || hasViewPanel;
 
-  const cols = width < theme.breakpoints.values.sm ? GRID_LAYOUT_COLS.xxs : GRID_LAYOUT_COLS.sm;
-  useEffect(() => {
-    if (isGridDisplayed) {
-      onWidthChange?.(width, GRID_MARGIN, cols, GRID_PADDING);
-    }
-  }, [width, cols, isGridDisplayed, onWidthChange]);
-
   // Item layout is override if there is a panel in view mode
   const itemLayouts: PanelGroupItemLayout[] = useMemo(() => {
     if (itemLayoutViewed) {
@@ -115,21 +114,26 @@ export function Row({
         },
       ];
     }
-    return expandedItemLayouts;
+    // Snapgrid renders a controlled layout as-is: resolve overlaps caused by expanded repeat panels.
+    return compactLayout(expandedItemLayouts);
   }, [expandedItemLayouts, itemLayoutViewed, panelFullHeight]);
 
-  // Repeated rows share persisted items, but dnd-kit needs a unique ID for every rendered tile.
   const layouts = useMemo(
-    () => ({
-      sm: itemLayouts.map((item) => ({
-        ...item,
-        i: `${encodeURIComponent(item.i)}|${encodeURIComponent(JSON.stringify(repeatVariable ?? []))}`,
-      })),
-    }),
+    () => ({ sm: itemLayouts.map((item) => ({ ...item, i: encodeGridItemId(item.i, repeatVariable) })) }),
     [itemLayouts, repeatVariable],
   );
   const breakpoints = useMemo(() => ({ sm: theme.breakpoints.values.sm, xxs: 0 }), [theme.breakpoints.values.sm]);
-  const { layout: responsiveLayout } = useResponsiveLayout({ width, layouts, breakpoints, cols: GRID_LAYOUT_COLS });
+  const { layout: responsiveLayout, cols } = useResponsiveLayout({
+    width,
+    layouts,
+    breakpoints,
+    cols: GRID_LAYOUT_COLS,
+  });
+  useEffect(() => {
+    if (isGridDisplayed) {
+      onWidthChange?.(width, GRID_MARGIN, cols, GRID_PADDING);
+    }
+  }, [width, cols, isGridDisplayed, onWidthChange]);
   const gridConfig = useMemo(
     () => ({ cols, rowHeight: ROW_HEIGHT, margin: GRID_MARGIN, containerPadding: GRID_PADDING }),
     [cols],
@@ -139,21 +143,24 @@ export function Row({
     if (!onLayoutChange) return undefined;
     return (currentLayout: Layout): void => {
       const canonicalLayout = currentLayout.map((item) => {
-        const id = decodeURIComponent(item.i.split('|')[0] ?? item.i);
+        const id = decodeGridItemId(item.i);
         const original = itemLayouts.find((layout) => layout.i === id);
         const displayed = responsiveLayout.find((layout) => layout.i === item.i);
         // Keep desktop coordinates for dimensions that were only adapted to a narrow screen.
+        // Limitation: a tile moved on a narrow screen gets a `y` expressed in narrow rows; the store
+        // compaction reflows it afterwards, so editing on small screens is best-effort only.
         const retain = cols !== GRID_LAYOUT_COLS.sm && original && displayed;
-        return {
+        const layout: PanelGroupItemLayout = {
           ...item,
           i: id,
           x: retain && item.x === displayed.x ? original.x : (item.x * GRID_LAYOUT_COLS.sm) / cols,
           y: retain && item.y === displayed.y ? original.y : item.y,
           w: retain && item.w === displayed.w ? original.w : (item.w * GRID_LAYOUT_COLS.sm) / cols,
         };
+        const meta = repeatMeta.get(id);
+        return meta ? restoreRepeatItemLayout(layout, meta) : layout;
       });
-      const restored = restoreRepeatLayouts(canonicalLayout, { sm: canonicalLayout }, repeatMeta);
-      onLayoutChange(restored.currentLayout, restored.allLayouts);
+      onLayoutChange(canonicalLayout);
     };
   }, [onLayoutChange, repeatMeta, cols, itemLayouts, responsiveLayout]);
 
@@ -212,7 +219,7 @@ export function Row({
             style={gridStyle}
           >
             {itemLayouts.map(({ i, w }) => (
-              <div key={`${encodeURIComponent(i)}|${encodeURIComponent(JSON.stringify(repeatVariable ?? []))}`}>
+              <div key={encodeGridItemId(i, repeatVariable)}>
                 <GridItemRenderer
                   panelGroupId={panelGroupId}
                   panelGroupItemLayoutId={i}
