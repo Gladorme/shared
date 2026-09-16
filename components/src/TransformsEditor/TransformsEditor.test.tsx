@@ -49,4 +49,37 @@ describe('TransformsEditor', () => {
     vi.advanceTimersByTime(500);
     expect(onChange).toHaveBeenCalledWith([{ kind: 'MergeIndexedColumns', spec: { column: 'MySuperName' } }]);
   });
+
+  it('edits PivotByLabel column label field', () => {
+    const onChange = vi.fn();
+    const initial: Transform[] = [
+      {
+        kind: 'PivotByLabel',
+        spec: {
+          columnLabel: 'farm_short',
+          rowField: 'timestamp',
+          valueField: 'value',
+          rowColumnName: 'Time',
+        },
+      },
+    ];
+    renderTableColumnsEditor(initial, onChange);
+
+    fireEvent.click(screen.getByTestId('transform-toggle#0'));
+
+    const columnLabel = screen.getByLabelText(/Column label/i);
+    fireEvent.change(columnLabel, { target: { value: 'stack' } });
+    vi.advanceTimersByTime(500);
+    expect(onChange).toHaveBeenCalledWith([
+      {
+        kind: 'PivotByLabel',
+        spec: {
+          columnLabel: 'stack',
+          rowField: 'timestamp',
+          valueField: 'value',
+          rowColumnName: 'Time',
+        },
+      },
+    ]);
+  });
 });
