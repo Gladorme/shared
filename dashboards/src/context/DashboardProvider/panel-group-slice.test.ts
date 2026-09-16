@@ -57,18 +57,18 @@ function createPanelGroupStore(definitions: LayoutDefinition[]): StoreApi<PanelG
 
 it.each(['source first', 'destination first'])('moves panel references and repeat settings (%s)', (order) => {
   const { store, sourceId, destinationId } = setup();
-  const { updatePanelGroupLayoutsFromGrid, panelGroups } = store.getState();
+  const { updatePanelGroupLayouts, panelGroups } = store.getState();
   const [panel, remaining] = panelGroups[sourceId]?.itemLayouts ?? [];
   if (!panel || !remaining) throw new Error('Missing test panels');
   const sourceLayout = [{ ...remaining, y: 0 }];
   // A drag reports the displayed height of a repeated panel, not its saved single-panel height.
   const destinationLayout = [{ ...panel, x: 12, y: 0, h: 9 }];
   if (order === 'source first') {
-    updatePanelGroupLayoutsFromGrid(sourceId, sourceLayout);
-    updatePanelGroupLayoutsFromGrid(destinationId, destinationLayout);
+    updatePanelGroupLayouts(sourceId, sourceLayout);
+    updatePanelGroupLayouts(destinationId, destinationLayout);
   } else {
-    updatePanelGroupLayoutsFromGrid(destinationId, destinationLayout);
-    updatePanelGroupLayoutsFromGrid(sourceId, sourceLayout);
+    updatePanelGroupLayouts(destinationId, destinationLayout);
+    updatePanelGroupLayouts(sourceId, sourceLayout);
   }
   const next = store.getState().panelGroups;
   expect(next[sourceId]?.itemLayouts).toEqual(sourceLayout);
@@ -76,8 +76,8 @@ it.each(['source first', 'destination first'])('moves panel references and repea
   expect(next[destinationId]?.itemLayouts).toEqual([{ ...panel, x: 12, y: 0 }]);
   expect(next[destinationId]?.itemPanelKeys).toEqual({ [panel.i]: 'cpu' });
   // Moving the last panel back leaves an empty, valid group.
-  updatePanelGroupLayoutsFromGrid(destinationId, []);
-  updatePanelGroupLayoutsFromGrid(sourceId, [...sourceLayout, { ...panel, y: 3 }]);
+  updatePanelGroupLayouts(destinationId, []);
+  updatePanelGroupLayouts(sourceId, [...sourceLayout, { ...panel, y: 3 }]);
   expect(store.getState().panelGroups[destinationId]?.itemLayouts).toEqual([]);
   expect(store.getState().panelGroups[destinationId]?.itemPanelKeys).toEqual({});
 });
@@ -87,7 +87,7 @@ it('persists resizing without losing repeat settings or panel references', () =>
   const group = store.getState().panelGroups[sourceId];
   if (!group) throw new Error('Missing test group');
   const next = group.itemLayouts.map(({ repeatVariable: _repeatVariable, ...layout }) => ({ ...layout, h: 6 }));
-  store.getState().updatePanelGroupLayoutsFromGrid(sourceId, next);
+  store.getState().updatePanelGroupLayouts(sourceId, next);
   expect(store.getState().panelGroups[sourceId]?.itemLayouts[0]).toMatchObject({
     h: 6,
     repeatVariable: { value: 'instance', maxPer: 2 },
@@ -107,13 +107,13 @@ it.each(['moving row first', 'receiving row first'])(
       { ...panel, x: 0, y: 0 },
       { ...remaining, y: 4 },
     ];
-    const { updatePanelGroupLayoutsFromGrid } = store.getState();
+    const { updatePanelGroupLayouts } = store.getState();
     if (order === 'moving row first') {
-      updatePanelGroupLayoutsFromGrid(sourceId, movingRowLayout);
-      updatePanelGroupLayoutsFromGrid(sourceId, receivingRowLayout);
+      updatePanelGroupLayouts(sourceId, movingRowLayout);
+      updatePanelGroupLayouts(sourceId, receivingRowLayout);
     } else {
-      updatePanelGroupLayoutsFromGrid(sourceId, receivingRowLayout);
-      updatePanelGroupLayoutsFromGrid(sourceId, movingRowLayout);
+      updatePanelGroupLayouts(sourceId, receivingRowLayout);
+      updatePanelGroupLayouts(sourceId, movingRowLayout);
     }
     const itemLayouts = store.getState().panelGroups[sourceId]?.itemLayouts ?? [];
     expect(itemLayouts).toHaveLength(2);
@@ -146,7 +146,7 @@ it('reflows items around a received repeated panel restored to its base height',
   const [other] = store.getState().panelGroups[destinationId]?.itemLayouts ?? [];
   if (!panel || !other) throw new Error('Missing test panels');
   // The destination grid laid out `other` below the expanded (h: 9) preview of the repeated panel.
-  store.getState().updatePanelGroupLayoutsFromGrid(destinationId, [
+  store.getState().updatePanelGroupLayouts(destinationId, [
     { ...panel, x: 0, y: 0, h: 9 },
     { ...other, y: 9 },
   ]);
@@ -160,7 +160,7 @@ it('rejects an unknown received item without modifying either group', () => {
   const { store, destinationId } = setup();
   const before = store.getState().panelGroups;
   expect(() =>
-    store.getState().updatePanelGroupLayoutsFromGrid(destinationId, [{ i: 'missing', x: 0, y: 0, w: 12, h: 4 }]),
+    store.getState().updatePanelGroupLayouts(destinationId, [{ i: 'missing', x: 0, y: 0, w: 12, h: 4 }]),
   ).toThrow('Cannot find panel');
   expect(store.getState().panelGroups).toBe(before);
 });

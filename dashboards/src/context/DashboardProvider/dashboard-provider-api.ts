@@ -129,23 +129,23 @@ const selectPanelGroupActions: ({
   openEditPanelGroup,
   deletePanelGroup,
   openAddPanel,
-  updatePanelGroupLayoutsFromGrid,
+  updatePanelGroupLayouts,
 }: DashboardStoreState) => {
-  updatePanelGroupLayoutsFromGrid: (panelGroupId: PanelGroupId, itemLayouts: PanelGroupItemLayout[]) => void;
+  updatePanelGroupLayouts: (panelGroupId: PanelGroupId, itemLayouts: PanelGroupItemLayout[]) => void;
   openEditPanelGroup: (panelGroupId: PanelGroupId) => void;
   openAddPanel: (panelGroupId?: PanelGroupId) => void;
   deletePanelGroup: (panelGroupId: PanelGroupId) => void;
-} = ({ openEditPanelGroup, deletePanelGroup, openAddPanel, updatePanelGroupLayoutsFromGrid }: DashboardStoreState) => ({
+} = ({ openEditPanelGroup, deletePanelGroup, openAddPanel, updatePanelGroupLayouts }: DashboardStoreState) => ({
   openEditPanelGroup,
   deletePanelGroup,
   openAddPanel,
-  updatePanelGroupLayoutsFromGrid,
+  updatePanelGroupLayouts,
 });
 /**
  * Returns actions that can be performed on the given panel group.
  */
 export function usePanelGroupActions(panelGroupId: PanelGroupId): {
-  updatePanelGroupLayoutsFromGrid: (itemLayouts: PanelGroupItemLayout[]) => void;
+  updatePanelGroupLayouts: (itemLayouts: PanelGroupItemLayout[]) => void;
   openEditPanelGroup: () => void;
   openAddPanel: () => void;
   moveDown: (() => void) | undefined;
@@ -153,7 +153,7 @@ export function usePanelGroupActions(panelGroupId: PanelGroupId): {
   moveUp: (() => void) | undefined;
 } {
   const { moveUp, moveDown } = useMovePanelGroup(panelGroupId);
-  const { openEditPanelGroup, deletePanelGroup, openAddPanel, updatePanelGroupLayoutsFromGrid } =
+  const { openEditPanelGroup, deletePanelGroup, openAddPanel, updatePanelGroupLayouts } =
     useDashboardStore(selectPanelGroupActions);
 
   return {
@@ -162,8 +162,8 @@ export function usePanelGroupActions(panelGroupId: PanelGroupId): {
     openAddPanel: () => openAddPanel(panelGroupId),
     moveUp,
     moveDown,
-    updatePanelGroupLayoutsFromGrid: (itemLayouts: PanelGroupItemLayout[]) =>
-      updatePanelGroupLayoutsFromGrid(panelGroupId, itemLayouts),
+    updatePanelGroupLayouts: (itemLayouts: PanelGroupItemLayout[]) =>
+      updatePanelGroupLayouts(panelGroupId, itemLayouts),
   };
 }
 

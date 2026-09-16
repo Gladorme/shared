@@ -46,7 +46,7 @@ export interface PanelGroupSlice {
    * Commit a grid gesture, transferring panel references and repeat settings for received items.
    * Source removals are completed by the receiving grid so either callback order preserves metadata.
    */
-  updatePanelGroupLayoutsFromGrid: (panelGroupId: PanelGroupId, itemLayouts: PanelGroupItemLayout[]) => void;
+  updatePanelGroupLayouts: (panelGroupId: PanelGroupId, itemLayouts: PanelGroupItemLayout[]) => void;
 }
 
 /**
@@ -78,7 +78,7 @@ export function createPanelGroupSlice(
       });
     },
 
-    updatePanelGroupLayoutsFromGrid(panelGroupId, itemLayouts): void {
+    updatePanelGroupLayouts(panelGroupId, itemLayouts): void {
       set((state) => {
         const group = state.panelGroups[panelGroupId];
         if (!group) {

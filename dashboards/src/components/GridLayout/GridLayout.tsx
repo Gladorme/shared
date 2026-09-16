@@ -35,7 +35,7 @@ export interface GridLayoutProps {
 export function GridLayout(props: GridLayoutProps): ReactElement {
   const { panelGroupId, panelOptions, panelFullHeight } = props;
   const groupDefinition: PanelGroupDefinition = usePanelGroup(panelGroupId);
-  const { updatePanelGroupLayoutsFromGrid } = usePanelGroupActions(panelGroupId);
+  const { updatePanelGroupLayouts } = usePanelGroupActions(panelGroupId);
   const viewPanelItemId = useViewPanelGroup();
   const { isEditMode } = useEditMode();
 
@@ -44,10 +44,10 @@ export function GridLayout(props: GridLayoutProps): ReactElement {
   const handleLayoutChange = useCallback(
     (layout: PanelGroupItemLayout[]): void => {
       if (isEditMode && !hasViewPanel) {
-        updatePanelGroupLayoutsFromGrid(layout);
+        updatePanelGroupLayouts(layout);
       }
     },
-    [hasViewPanel, isEditMode, updatePanelGroupLayoutsFromGrid],
+    [hasViewPanel, isEditMode, updatePanelGroupLayouts],
   );
 
   return (
