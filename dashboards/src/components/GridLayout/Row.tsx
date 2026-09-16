@@ -37,6 +37,8 @@ import { GridTitle } from './GridTitle';
 const GRID_MARGIN: [number, number] = [DEFAULT_MARGIN, DEFAULT_MARGIN];
 const GRID_PADDING: [number, number] = [0, 10];
 const DRAG_CONFIG = { handle: '.drag-handle' };
+// Editing uses persisted coordinates at every width so a resize survives the next render.
+const EDIT_GRID_COLS = { sm: GRID_LAYOUT_COLS.sm, xxs: GRID_LAYOUT_COLS.sm };
 
 export interface RowProps {
   panelGroupId: PanelGroupId;
@@ -127,7 +129,7 @@ export function Row({
     width,
     layouts,
     breakpoints,
-    cols: GRID_LAYOUT_COLS,
+    cols: isEditMode ? EDIT_GRID_COLS : GRID_LAYOUT_COLS,
   });
   useEffect(() => {
     if (isGridDisplayed) {
@@ -144,25 +146,16 @@ export function Row({
     return (currentLayout: Layout): void => {
       const canonicalLayout = currentLayout.map((item) => {
         const id = decodeGridItemId(item.i);
-        const original = itemLayouts.find((layout) => layout.i === id);
-        const displayed = responsiveLayout.find((layout) => layout.i === item.i);
-        // Keep desktop coordinates for dimensions that were only adapted to a narrow screen.
-        // Limitation: a tile moved on a narrow screen gets a `y` expressed in narrow rows; the store
-        // compaction reflows it afterwards, so editing on small screens is best-effort only.
-        const retain = cols !== GRID_LAYOUT_COLS.sm && original && displayed;
         const layout: PanelGroupItemLayout = {
           ...item,
           i: id,
-          x: retain && item.x === displayed.x ? original.x : (item.x * GRID_LAYOUT_COLS.sm) / cols,
-          y: retain && item.y === displayed.y ? original.y : item.y,
-          w: retain && item.w === displayed.w ? original.w : (item.w * GRID_LAYOUT_COLS.sm) / cols,
         };
         const meta = repeatMeta.get(id);
         return meta ? restoreRepeatItemLayout(layout, meta) : layout;
       });
       onLayoutChange(canonicalLayout);
     };
-  }, [onLayoutChange, repeatMeta, cols, itemLayouts, responsiveLayout]);
+  }, [onLayoutChange, repeatMeta]);
 
   // Keep later groups stationary while Snapgrid previews removing a tile from this group.
   const gridStyle = useMemo(
