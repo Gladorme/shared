@@ -105,6 +105,10 @@ export function buildRepeatMeta(
   maxValues?: number,
 ): { expandedItemLayouts: PanelGroupItemLayout[]; repeatMeta: Map<string, RepeatItemMeta> } {
   const repeatMeta = new Map<string, RepeatItemMeta>();
+  // Return the input as-is so downstream memos stay stable for the common non-repeating group.
+  if (!itemLayouts.some((itemLayout) => itemLayout.repeatVariable)) {
+    return { expandedItemLayouts: itemLayouts, repeatMeta };
+  }
   const expandedItemLayouts = itemLayouts.map((itemLayout) => {
     const itemRepeatVariable = itemLayout.repeatVariable;
     if (!itemRepeatVariable) {

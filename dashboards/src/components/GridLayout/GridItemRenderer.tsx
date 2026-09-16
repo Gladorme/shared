@@ -14,6 +14,7 @@
 import { ErrorAlert, ErrorBoundary } from '@perses-dev/components';
 import type { PanelGroupId } from '@perses-dev/plugin-system';
 import type { ReactElement } from 'react';
+import { memo, useMemo } from 'react';
 
 import { DEFAULT_MARGIN } from '../../constants';
 import { useViewPanelGroup } from '../../context';
@@ -34,7 +35,7 @@ interface GridItemRendererProps {
   isEditMode: boolean;
 }
 
-export function GridItemRenderer({
+export const GridItemRenderer = memo(function GridItemRenderer({
   panelGroupId,
   panelGroupItemLayoutId,
   width,
@@ -52,11 +53,14 @@ export function GridItemRenderer({
     ? [viewPanelItemId.repeatVariable.panel[1]]
     : panelVariableValues;
 
-  const panelGroupItemId: PanelGroupItemId = {
-    panelGroupId,
-    panelGroupItemLayoutId,
-    repeatVariable: { group: groupRepeatVariable },
-  };
+  const panelGroupItemId: PanelGroupItemId = useMemo(
+    () => ({
+      panelGroupId,
+      panelGroupItemLayoutId,
+      repeatVariable: { group: groupRepeatVariable },
+    }),
+    [panelGroupId, panelGroupItemLayoutId, groupRepeatVariable],
+  );
 
   return (
     <ErrorBoundary FallbackComponent={ErrorAlert}>
@@ -81,4 +85,4 @@ export function GridItemRenderer({
       )}
     </ErrorBoundary>
   );
-}
+});

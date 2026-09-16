@@ -16,10 +16,14 @@ import type { PanelGroupId } from '@perses-dev/plugin-system';
 import type { ReactNode } from 'react';
 import { useMemo } from 'react';
 
+import type { PanelGroupItemId } from '../../model';
 import { calcPerPanelWidth } from '../../utils/repeatLayoutUtils';
 import type { PanelOptions } from '../Panel/Panel';
 import { FixedValueVariableProvider } from '../Variables';
 import { GridItemContent } from './GridItemContent';
+
+const REPEAT_CONTAINER_SX = { overflow: 'hidden' } as const;
+const REPEAT_ROW_SX = { flex: 1, overflow: 'hidden' } as const;
 
 interface RepeatPanelItemProps {
   panelGroupId: PanelGroupId;
@@ -72,16 +76,33 @@ export function RepeatGridItemContent({
   const { name: repeatVariableName, values: variableValues, maxPer: perRow } = panelRepeatVariable;
 
   const perPanelWidth = useMemo(() => calcPerPanelWidth(width, itemGap, perRow), [itemGap, perRow, width]);
+  // Stable ids per value so each GridItemContent's memoized handlers survive re-renders.
+  const panelGroupItemIds = useMemo(
+    () =>
+      new Map(
+        variableValues.map((value): [string, PanelGroupItemId] => [
+          value,
+          {
+            panelGroupId,
+            panelGroupItemLayoutId,
+            repeatVariable: { panel: [repeatVariableName, value], group: groupRepeatVariable },
+          },
+        ]),
+      ),
+    [variableValues, panelGroupId, panelGroupItemLayoutId, repeatVariableName, groupRepeatVariable],
+  );
 
   return (
     <RepeatGrid
       repeatItems={variableValues}
       maxPer={perRow}
       gap={itemGap}
-      containerSx={{ overflow: 'hidden' }}
-      rowSx={{ flex: 1, overflow: 'hidden' }}
+      containerSx={REPEAT_CONTAINER_SX}
+      rowSx={REPEAT_ROW_SX}
       renderItem={(value, { rowIndex, colIndex }) => {
         const isFirst = colIndex + rowIndex === 0;
+        const panelGroupItemId = panelGroupItemIds.get(value);
+        if (!panelGroupItemId) return null;
         return (
           <FixedValueVariableProvider
             key={`${repeatVariableName}-${value}`}
@@ -90,14 +111,7 @@ export function RepeatGridItemContent({
           >
             <GridItemContent
               panelOptions={panelOptions}
-              panelGroupItemId={{
-                panelGroupId,
-                panelGroupItemLayoutId,
-                repeatVariable: {
-                  panel: [repeatVariableName, value],
-                  group: groupRepeatVariable,
-                },
-              }}
+              panelGroupItemId={panelGroupItemId}
               width={perPanelWidth}
               readonly={!isFirst}
               informationTooltip={getRepeatPanelTooltip(isFirst, isEditMode, isCapped, repeatVariableName, value)}

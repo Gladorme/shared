@@ -14,7 +14,7 @@
 import { useVariableValues, VariableContext } from '@perses-dev/plugin-system';
 import { render, screen } from '@testing-library/react';
 import type { ReactElement } from 'react';
-import { useMemo } from 'react';
+import { createContext, useContext, useMemo } from 'react';
 
 import { DEFAULT_MARGIN } from '../../constants';
 import { useViewPanelGroup } from '../../context';
@@ -24,6 +24,8 @@ import type { GridItemContentProps } from './GridItemContent';
 import { GridItemRenderer } from './GridItemRenderer';
 
 vi.mock('../../context', () => ({ useViewPanelGroup: vi.fn() }));
+// GridItemRenderer is memoized, so the viewed panel must flow through React (as the store does) rather than a mock return value.
+const ViewPanelContext = createContext<PanelGroupItemId | undefined>(undefined);
 
 // Keep the repeat layout and variable providers real, without loading panel plugins.
 vi.mock('./GridItemContent', () => ({
@@ -42,28 +44,33 @@ const repeatItemMeta: RepeatItemMeta = {
 };
 const variableContext = { state: { instance: { value: repeatItemMeta.values, loading: false } } };
 
-function renderRepeatedPanel(groupRepeatVariable?: [string, string]): ReactElement {
+function renderRepeatedPanel(groupRepeatVariable?: [string, string], viewedPanel?: PanelGroupItemId): ReactElement {
   return (
-    <VariableContext.Provider value={variableContext}>
-      <GridItemRenderer
-        panelGroupId={0}
-        panelGroupItemLayoutId="panel"
-        width={1200}
-        repeatItemMeta={repeatItemMeta}
-        groupRepeatVariable={groupRepeatVariable}
-        isEditMode={false}
-      />
-    </VariableContext.Provider>
+    <ViewPanelContext.Provider value={viewedPanel}>
+      <VariableContext.Provider value={variableContext}>
+        <GridItemRenderer
+          panelGroupId={0}
+          panelGroupItemLayoutId="panel"
+          width={1200}
+          repeatItemMeta={repeatItemMeta}
+          groupRepeatVariable={groupRepeatVariable}
+          isEditMode={false}
+        />
+      </VariableContext.Provider>
+    </ViewPanelContext.Provider>
   );
 }
 
 describe('GridItemRenderer', () => {
+  beforeEach(() => {
+    vi.mocked(useViewPanelGroup).mockImplementation(() => useContext(ViewPanelContext));
+  });
+
   it.each([{ groupRepeatVariable: undefined }, { groupRepeatVariable: ['region', 'west'] }] satisfies Array<{
     groupRepeatVariable?: [string, string];
   }>)(
     'uses the full width for a fullscreen repeated panel and restores columns on exit (group: $groupRepeatVariable)',
     ({ groupRepeatVariable }) => {
-      vi.mocked(useViewPanelGroup).mockReturnValue(undefined);
       const { rerender } = render(renderRepeatedPanel(groupRepeatVariable));
       const repeatedWidth = Math.floor((1200 - 2 * DEFAULT_MARGIN) / 3);
       expect(screen.getAllByRole('region')).toHaveLength(3);
@@ -74,15 +81,13 @@ describe('GridItemRenderer', () => {
         panelGroupItemLayoutId: 'panel',
         repeatVariable: { panel: ['instance', 'second'], group: groupRepeatVariable },
       };
-      vi.mocked(useViewPanelGroup).mockReturnValue(viewedPanel);
-      rerender(renderRepeatedPanel(groupRepeatVariable));
+      rerender(renderRepeatedPanel(groupRepeatVariable, viewedPanel));
 
       expect(screen.getAllByRole('region')).toHaveLength(1);
       const panel = screen.getByRole('region', { name: 'second' });
       expect(panel).toHaveStyle({ width: '1200px' });
       expect(panel.parentElement).toHaveStyle({ width: 'calc((100% - 0px) / 1)' });
 
-      vi.mocked(useViewPanelGroup).mockReturnValue(undefined);
       rerender(renderRepeatedPanel(groupRepeatVariable));
       expect(screen.getAllByRole('region')).toHaveLength(3);
       expect(screen.getByRole('region', { name: 'second' })).toHaveStyle({ width: `${repeatedWidth}px` });

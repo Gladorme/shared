@@ -13,7 +13,7 @@
 
 import type { QueryType, TimeSeriesQueryDefinition } from '@perses-dev/spec';
 import type { ReactElement } from 'react';
-import { createContext, useCallback, useContext, useMemo } from 'react';
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 
 import type { AlertsQueryDefinition } from '../alerts-queries';
 import { useAlertsQueries } from '../alerts-queries';
@@ -73,96 +73,91 @@ export function DataQueriesProvider(props: DataQueriesProviderProps): ReactEleme
   const usageMetrics = useUsageMetrics();
 
   // Filter definitions for time series query and other future query plugins
-  const timeSeriesQueries = definitions.filter(
-    (definition) => definition.kind === 'TimeSeriesQuery',
-  ) as TimeSeriesQueryDefinition[];
+  const { timeSeriesQueries, traceQueries, profileQueries, logQueries, alertsQueries, silencesQueries, jsonQueries } =
+    useMemo(
+      () => ({
+        timeSeriesQueries: definitions.filter((d) => d.kind === 'TimeSeriesQuery') as TimeSeriesQueryDefinition[],
+        traceQueries: definitions.filter((d) => d.kind === 'TraceQuery') as TraceQueryDefinition[],
+        profileQueries: definitions.filter((d) => d.kind === 'ProfileQuery') as ProfileQueryDefinition[],
+        logQueries: definitions.filter((d) => d.kind === 'LogQuery') as LogQueryDefinition[],
+        alertsQueries: definitions.filter((d) => d.kind === 'AlertsQuery') as AlertsQueryDefinition[],
+        silencesQueries: definitions.filter((d) => d.kind === 'SilencesQuery') as SilencesQueryDefinition[],
+        jsonQueries: definitions.filter((d) => d.kind === 'JsonQuery') as JsonQueryDefinition[],
+      }),
+      [definitions],
+    );
+
   const timeSeriesResults = useTimeSeriesQueries(timeSeriesQueries, options, queryOptions);
-
-  const traceQueries = definitions.filter((definition) => definition.kind === 'TraceQuery') as TraceQueryDefinition[];
   const traceResults = useTraceQueries(traceQueries);
-
-  const profileQueries = definitions.filter(
-    (definition) => definition.kind === 'ProfileQuery',
-  ) as ProfileQueryDefinition[];
   const profileResults = useProfileQueries(profileQueries);
-
-  const logQueries = definitions.filter((definition) => definition.kind === 'LogQuery') as LogQueryDefinition[];
   const logResults = useLogQueries(logQueries);
-
-  const alertsQueries = definitions.filter(
-    (definition) => definition.kind === 'AlertsQuery',
-  ) as AlertsQueryDefinition[];
   const alertsResults = useAlertsQueries(alertsQueries);
-
-  const silencesQueries = definitions.filter(
-    (definition) => definition.kind === 'SilencesQuery',
-  ) as SilencesQueryDefinition[];
   const silencesResults = useSilencesQueries(silencesQueries);
-
-  const jsonQueries = definitions.filter((definition) => definition.kind === 'JsonQuery') as JsonQueryDefinition[];
   const jsonResults = useJsonQueries(jsonQueries);
 
-  const refetchAll = useCallback(() => {
-    timeSeriesResults.forEach((result) => result.refetch());
-    traceResults.forEach((result) => result.refetch());
-    profileResults.forEach((result) => result.refetch());
-    logResults.forEach((result) => result.refetch());
-    alertsResults.forEach((result) => result.refetch());
-    silencesResults.forEach((result) => result.refetch());
-    jsonResults.forEach((result) => result.refetch());
-  }, [timeSeriesResults, traceResults, profileResults, logResults, alertsResults, silencesResults, jsonResults]);
-
-  const ctx = useMemo(() => {
-    const mergedQueryResults = [
-      ...transformQueryResults(timeSeriesResults, timeSeriesQueries),
-      ...transformQueryResults(traceResults, traceQueries),
-      ...transformQueryResults(profileResults, profileQueries),
-      ...transformQueryResults(logResults, logQueries),
-      ...transformQueryResults(alertsResults, alertsQueries),
-      ...transformQueryResults(silencesResults, silencesQueries),
-      ...transformQueryResults(jsonResults, jsonQueries),
-    ];
-
-    if (queryOptions?.enabled) {
-      for (const result of mergedQueryResults) {
-        if (!result.isLoading && !result.isFetching && !result.error) {
-          usageMetrics.markQuery(result.definition, 'success');
-        } else if (result.error) {
-          usageMetrics.markQuery(result.definition, 'error');
-        } else {
-          usageMetrics.markQuery(result.definition, 'pending');
-        }
-      }
-    }
-
-    return {
-      queryDefinitions: definitions,
-      queryResults: mergedQueryResults,
-      isFetching: mergedQueryResults.some((result) => result.isFetching),
-      isLoading: mergedQueryResults.some((result) => result.isLoading),
-      refetchAll,
-      errors: mergedQueryResults.map((result) => result.error),
-    };
-  }, [
-    alertsQueries,
-    alertsResults,
-    logQueries,
-    logResults,
-    profileQueries,
-    profileResults,
-    silencesQueries,
-    silencesResults,
-    jsonQueries,
-    jsonResults,
-    timeSeriesQueries,
-    timeSeriesResults,
-    traceQueries,
-    traceResults,
-    definitions,
-    queryOptions?.enabled,
-    refetchAll,
-    usageMetrics,
+  // useQueries returns fresh arrays/objects on every render; keep the previous array while nothing changed so
+  // the context value (and every panel consuming it) only updates on real result changes.
+  const queryResults = useStableQueryResults([
+    ...transformQueryResults(timeSeriesResults, timeSeriesQueries),
+    ...transformQueryResults(traceResults, traceQueries),
+    ...transformQueryResults(profileResults, profileQueries),
+    ...transformQueryResults(logResults, logQueries),
+    ...transformQueryResults(alertsResults, alertsQueries),
+    ...transformQueryResults(silencesResults, silencesQueries),
+    ...transformQueryResults(jsonResults, jsonQueries),
   ]);
 
+  const queriesEnabled = queryOptions?.enabled;
+  useEffect(() => {
+    if (!queriesEnabled) return;
+    for (const result of queryResults) {
+      if (!result.isLoading && !result.isFetching && !result.error) {
+        usageMetrics.markQuery(result.definition, 'success');
+      } else if (result.error) {
+        usageMetrics.markQuery(result.definition, 'error');
+      } else {
+        usageMetrics.markQuery(result.definition, 'pending');
+      }
+    }
+  }, [queryResults, queriesEnabled, usageMetrics]);
+
+  const refetchAll = useCallback(() => {
+    queryResults.forEach((result) => result.refetch?.());
+  }, [queryResults]);
+
+  const ctx = useMemo(
+    () => ({
+      queryDefinitions: definitions,
+      queryResults,
+      isFetching: queryResults.some((result) => result.isFetching),
+      isLoading: queryResults.some((result) => result.isLoading),
+      refetchAll,
+      errors: queryResults.map((result) => result.error),
+    }),
+    [definitions, queryResults, refetchAll],
+  );
+
   return <DataQueriesContext.Provider value={ctx}>{children}</DataQueriesContext.Provider>;
+}
+
+function isSameQueryData(a: QueryData | undefined, b: QueryData): boolean {
+  return (
+    a !== undefined &&
+    a.definition === b.definition &&
+    a.data === b.data &&
+    a.error === b.error &&
+    a.isFetching === b.isFetching &&
+    a.isLoading === b.isLoading &&
+    a.refetch === b.refetch
+  );
+}
+
+function useStableQueryResults(next: QueryData[]): QueryData[] {
+  const [stable, setStable] = useState(next);
+  if (stable === next) return stable;
+  const unchanged = stable.length === next.length && next.every((result, i) => isSameQueryData(stable[i], result));
+  if (unchanged) return stable;
+  // Adopt the new results during render; React re-runs this component immediately with the updated state.
+  setStable(next);
+  return next;
 }

@@ -33,11 +33,14 @@ const GRID_ITEM_ID_SEPARATOR = '|';
  */
 export function compactLayout(layout: PanelGroupItemLayout[]): PanelGroupItemLayout[] {
   const compacted = verticalCompactor.compact(layout, GRID_LAYOUT_COLS.sm);
-  return layout.map((item, index) => {
+  let changed = false;
+  const result = layout.map((item, index) => {
     const next = compacted[index];
     if (!next || (next.x === item.x && next.y === item.y)) return item;
+    changed = true;
     return { ...item, x: next.x, y: next.y };
   });
+  return changed ? result : layout;
 }
 
 /**

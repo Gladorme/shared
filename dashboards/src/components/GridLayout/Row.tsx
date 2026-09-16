@@ -17,7 +17,7 @@ import { useVariableValues } from '@perses-dev/plugin-system';
 import type { Layout } from '@snapgridjs/react';
 import { GridLayout as SnapgridLayout, useContainerWidth, useResponsiveLayout } from '@snapgridjs/react';
 import type { ReactElement } from 'react';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { DEFAULT_MARGIN, GRID_LAYOUT_COLS, ROW_HEIGHT } from '../../constants';
 import { useRepeatVariableMaxValues, useViewPanelGroup } from '../../context';
@@ -77,6 +77,11 @@ export function Row({
       ),
     [groupDefinition.itemLayouts, repeatVariable, variableValues, repeatVariableMaxValues],
   );
+  // Read through a ref so the Snapgrid callback (and its controller config) is not rebuilt on every metadata change.
+  const repeatMetaRef = useRef(repeatMeta);
+  useEffect(() => {
+    repeatMetaRef.current = repeatMeta;
+  }, [repeatMeta]);
 
   const hasViewPanel =
     viewPanelItemId?.panelGroupId === panelGroupId &&
@@ -138,12 +143,12 @@ export function Row({
           ...item,
           i: id,
         };
-        const meta = repeatMeta.get(id);
+        const meta = repeatMetaRef.current.get(id);
         return meta ? restoreRepeatItemLayout(layout, meta) : layout;
       });
       onLayoutChange(canonicalLayout);
     };
-  }, [onLayoutChange, repeatMeta]);
+  }, [onLayoutChange]);
 
   // Keep later groups stationary while Snapgrid previews removing a tile from this group.
   const gridStyle = useMemo(

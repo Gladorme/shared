@@ -13,8 +13,9 @@
 
 import { Box, useForkRef } from '@mui/material';
 import { DataQueriesProvider, usePlugin, useSuggestedStepMs } from '@perses-dev/plugin-system';
+import type { QueryDefinition } from '@perses-dev/spec';
 import type { ReactElement } from 'react';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 
 import { useEditMode, usePanel, usePanelActions, useViewPanelGroup } from '../../context';
@@ -32,6 +33,9 @@ export interface GridItemContentProps {
   readonly?: boolean;
   informationTooltip?: string;
 }
+
+const NO_QUERIES: QueryDefinition[] = [];
+const CONTAINER_SX = { width: '100%', height: '100%', outline: 'none' } as const;
 
 /**
  * Resolves the reference to panel content in a GridItemDefinition and renders the panel.
@@ -71,6 +75,7 @@ export function GridItemContent(props: GridItemContentProps): ReactElement {
   const mergedRef = useForkRef(renderRef, queryRef);
 
   const [openQueryViewer, setOpenQueryViewer] = useState(false);
+  const closeQueryViewer = useCallback(() => setOpenQueryViewer(false), []);
 
   const viewQueriesHandler = useMemo(() => {
     return canModify || !queries?.length
@@ -82,54 +87,49 @@ export function GridItemContent(props: GridItemContentProps): ReactElement {
         };
   }, [canModify, queries]);
 
-  const readHandlers = {
-    isPanelViewed: isPanelGroupItemIdEqual(viewPanelGroupItemId, panelGroupItemId),
-    onViewPanelClick: function (): void {
-      if (viewPanelGroupItemId === undefined) {
-        viewPanel(panelGroupItemId);
-      } else {
-        viewPanel(undefined);
-      }
-    },
-  };
+  const readHandlers = useMemo(
+    () => ({
+      isPanelViewed: isPanelGroupItemIdEqual(viewPanelGroupItemId, panelGroupItemId),
+      onViewPanelClick: (): void => {
+        if (viewPanelGroupItemId === undefined) {
+          viewPanel(panelGroupItemId);
+        } else {
+          viewPanel(undefined);
+        }
+      },
+    }),
+    [viewPanelGroupItemId, panelGroupItemId, viewPanel],
+  );
 
   // Provide actions to the panel when in edit mode
-  let editHandlers: PanelProps['editHandlers'] = undefined;
-  if (canModify) {
-    editHandlers = {
-      onEditPanelClick: openEditPanel,
-      onDuplicatePanelClick: duplicatePanel,
-      onDeletePanelClick: openDeletePanelDialog,
-    };
-  }
+  const editHandlers: PanelProps['editHandlers'] = useMemo(
+    () =>
+      canModify
+        ? {
+            onEditPanelClick: openEditPanel,
+            onDuplicatePanelClick: duplicatePanel,
+            onDeletePanelClick: openDeletePanelDialog,
+          }
+        : undefined,
+    [canModify, openEditPanel, duplicatePanel, openDeletePanelDialog],
+  );
 
   // map TimeSeriesQueryDefinition to Definition<UnknownSpec>
   const suggestedStepMs = useSuggestedStepMs(width);
 
   const { data: plugin } = usePlugin('Panel', panelDefinition.spec.plugin.kind);
 
-  const pluginQueryOptions =
-    typeof plugin?.queryOptions === 'function'
-      ? plugin?.queryOptions(panelDefinition.spec.plugin.spec)
-      : plugin?.queryOptions;
+  const pluginSpec = panelDefinition.spec.plugin.spec;
+  const queriesOptions = useMemo(() => {
+    const pluginQueryOptions =
+      typeof plugin?.queryOptions === 'function' ? plugin.queryOptions(pluginSpec) : plugin?.queryOptions;
+    return { suggestedStepMs, ...pluginQueryOptions };
+  }, [plugin, pluginSpec, suggestedStepMs]);
+  const queryOptions = useMemo(() => ({ enabled: shouldQuery }), [shouldQuery]);
 
   return (
-    <Box
-      ref={mergedRef}
-      tabIndex={-1}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
-      sx={{
-        width: '100%',
-        height: '100%',
-        outline: 'none',
-      }}
-    >
-      <DataQueriesProvider
-        definitions={queries ?? []}
-        options={{ suggestedStepMs, ...pluginQueryOptions }}
-        queryOptions={{ enabled: shouldQuery }}
-      >
+    <Box ref={mergedRef} tabIndex={-1} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} sx={CONTAINER_SX}>
+      <DataQueriesProvider definitions={queries ?? NO_QUERIES} options={queriesOptions} queryOptions={queryOptions}>
         {shouldRender && (
           <Panel
             definition={panelDefinition}
@@ -142,11 +142,7 @@ export function GridItemContent(props: GridItemContentProps): ReactElement {
           />
         )}
       </DataQueriesProvider>
-      <QueryViewerDialog
-        open={openQueryViewer}
-        queryDefinitions={queries ?? []}
-        onClose={() => setOpenQueryViewer(false)}
-      />
+      <QueryViewerDialog open={openQueryViewer} queryDefinitions={queries ?? NO_QUERIES} onClose={closeQueryViewer} />
     </Box>
   );
 }

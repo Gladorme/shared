@@ -23,6 +23,7 @@ import CollapsedIcon from 'mdi-material-ui/ChevronRight';
 import DeleteIcon from 'mdi-material-ui/DeleteOutline';
 import PencilIcon from 'mdi-material-ui/PencilOutline';
 import type { ReactElement } from 'react';
+import { memo } from 'react';
 
 import { ARIA_LABEL_TEXT, TOOLTIP_TEXT } from '../../constants';
 import { usePanelGroupActions, useEditMode, useDeletePanelGroupDialog } from '../../context';
@@ -40,7 +41,7 @@ export interface GridTitleProps {
  * Renders the title for a Grid section, optionally also supporting expanding
  * and collapsing
  */
-export function GridTitle(props: GridTitleProps): ReactElement {
+export const GridTitle = memo(function GridTitle(props: GridTitleProps): ReactElement {
   const { panelGroupId, title: rawTitle, collapse } = props;
 
   const title = useReplaceVariablesInString(rawTitle) as string;
@@ -142,4 +143,4 @@ export function GridTitle(props: GridTitleProps): ReactElement {
       )}
     </Box>
   );
-}
+});

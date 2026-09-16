@@ -14,7 +14,7 @@
 import type { PanelGroupId } from '@perses-dev/plugin-system';
 import { useVariableValues } from '@perses-dev/plugin-system';
 import type { ReactElement } from 'react';
-import { useCallback } from 'react';
+import { memo, useCallback, useMemo } from 'react';
 
 import { useEditMode, usePanelGroup, usePanelGroupActions, useViewPanelGroup } from '../../context';
 import type { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
@@ -32,7 +32,7 @@ export interface GridLayoutProps {
 /**
  * Layout component that arranges children in a Grid based on the definition.
  */
-export function GridLayout(props: GridLayoutProps): ReactElement {
+export const GridLayout = memo(function GridLayout(props: GridLayoutProps): ReactElement {
   const { panelGroupId, panelOptions, panelFullHeight } = props;
   const groupDefinition: PanelGroupDefinition = usePanelGroup(panelGroupId);
   const { updatePanelGroupLayouts } = usePanelGroupActions(panelGroupId);
@@ -74,7 +74,7 @@ export function GridLayout(props: GridLayoutProps): ReactElement {
       )}
     </>
   );
-}
+});
 
 export interface RepeatGridLayoutProps extends RowProps {
   repeatVariableName: string;
@@ -94,9 +94,15 @@ export function RepeatGridLayout({
 }: RepeatGridLayoutProps): ReactElement | null {
   const variables = useVariableValues();
   const variable = variables[repeatVariableName];
+  const values = Array.isArray(variable?.value) ? variable.value : undefined;
+  // Stable tuples so each Row's memoized repeat metadata survives re-renders.
+  const repeatVariables = useMemo(
+    () => (values ?? []).map((value): [string, string] => [repeatVariableName, value]),
+    [repeatVariableName, values],
+  );
 
   // If the variable is not defined, or if it is defined but has no values, render a standard row without repeating
-  if (variable === undefined || !Array.isArray(variable.value) || variable.value.length === 0) {
+  if (repeatVariables.length === 0) {
     return (
       <Row
         panelGroupId={panelGroupId}
@@ -111,11 +117,11 @@ export function RepeatGridLayout({
 
   return (
     <>
-      {variable.value.map((value) => (
+      {repeatVariables.map((repeatVariable) => (
         <FixedValueVariableProvider
-          key={`${repeatVariableName}-${value}`}
+          key={`${repeatVariableName}-${repeatVariable[1]}`}
           variableName={repeatVariableName}
-          value={value}
+          value={repeatVariable[1]}
         >
           <Row
             panelGroupId={panelGroupId}
@@ -124,7 +130,7 @@ export function RepeatGridLayout({
             panelOptions={panelOptions}
             isEditMode={isEditMode}
             onLayoutChange={onLayoutChange}
-            repeatVariable={[repeatVariableName, value]}
+            repeatVariable={repeatVariable}
           />
         </FixedValueVariableProvider>
       ))}

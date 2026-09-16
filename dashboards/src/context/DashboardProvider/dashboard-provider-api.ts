@@ -313,12 +313,15 @@ export function usePanelActions(panelGroupItemId: PanelGroupItemId): {
   viewPanel: (panelGroupItemId?: PanelGroupItemId) => void;
 } {
   const { openEditPanel, openDeletePanelDialog, duplicatePanel, setViewPanel } = useDashboardStore(selectPanelActions);
-  return {
-    openEditPanel: () => openEditPanel(panelGroupItemId),
-    openDeletePanelDialog: () => openDeletePanelDialog(panelGroupItemId),
-    duplicatePanel: () => duplicatePanel(panelGroupItemId),
-    viewPanel: (panelGroupItemId?: PanelGroupItemId) => setViewPanel(panelGroupItemId),
-  };
+  return useMemo(
+    () => ({
+      openEditPanel: (): void => openEditPanel(panelGroupItemId),
+      openDeletePanelDialog: (): void => openDeletePanelDialog(panelGroupItemId),
+      duplicatePanel: (): void => duplicatePanel(panelGroupItemId),
+      viewPanel: (panelGroupItemId?: PanelGroupItemId): void => setViewPanel(panelGroupItemId),
+    }),
+    [panelGroupItemId, openEditPanel, openDeletePanelDialog, duplicatePanel, setViewPanel],
+  );
 }
 
 const selectPanelEditor: (state: DashboardStoreState) => PanelEditorState | undefined = (state: DashboardStoreState) =>
