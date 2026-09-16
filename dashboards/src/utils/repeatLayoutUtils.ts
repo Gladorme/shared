@@ -15,7 +15,7 @@ import type { VariableStateMap } from '@perses-dev/plugin-system';
 import { DEFAULT_MAX_PER_ROW, DEFAULT_REPEAT_ALIGNMENT } from '@perses-dev/plugin-system';
 
 import { DEFAULT_MARGIN, ROW_HEIGHT } from '../constants';
-import type { BaseLayout, PanelGroupItemLayout, RepeatVariable } from '../model';
+import type { PanelGroupItemLayout, RepeatVariable } from '../model';
 
 /**
  * Resolves the list of string values for a repeat variable given the current variable state map.
@@ -92,26 +92,6 @@ export function restoreRepeatItemLayout(layout: PanelGroupItemLayout, meta: Repe
     h: calculateSingleItemHeight(layout.h, meta.numberOfRows),
     repeatVariable: meta.itemRepeatVariable,
   };
-}
-
-/**
- * Applies restoreRepeatItemLayout to all repeat items in currentLayout and allLayouts using
- * the provided meta map. Non-repeat items are returned unchanged.
- */
-export function restoreRepeatLayouts(
-  currentLayout: readonly BaseLayout[],
-  allLayouts: Record<string, readonly BaseLayout[] | undefined>,
-  repeatMeta: Map<string, RepeatItemMeta>,
-): { currentLayout: PanelGroupItemLayout[]; allLayouts: Record<string, PanelGroupItemLayout[]> } {
-  const restore = (layout: BaseLayout): PanelGroupItemLayout => {
-    const meta = repeatMeta.get(layout.i);
-    return meta ? restoreRepeatItemLayout(layout, meta) : layout;
-  };
-  const restoredAllLayouts: Record<string, PanelGroupItemLayout[]> = {};
-  for (const [breakpoint, layouts] of Object.entries(allLayouts)) {
-    if (layouts) restoredAllLayouts[breakpoint] = layouts.map(restore);
-  }
-  return { currentLayout: currentLayout.map(restore), allLayouts: restoredAllLayouts };
 }
 
 /**

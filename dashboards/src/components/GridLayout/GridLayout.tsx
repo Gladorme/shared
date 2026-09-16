@@ -14,7 +14,7 @@
 import type { PanelGroupId } from '@perses-dev/plugin-system';
 import { useVariableValues } from '@perses-dev/plugin-system';
 import type { ReactElement } from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback } from 'react';
 
 import { useEditMode, usePanelGroup, usePanelGroupActions, useViewPanelGroup } from '../../context';
 import type { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
@@ -39,8 +39,6 @@ export function GridLayout(props: GridLayoutProps): ReactElement {
   const viewPanelItemId = useViewPanelGroup();
   const { isEditMode } = useEditMode();
 
-  const [gridColWidth, setGridColWidth] = useState(0);
-
   const hasViewPanel = viewPanelItemId?.panelGroupId === panelGroupId; // current panelGroup contains the panel extended?
 
   const handleLayoutChange = useCallback(
@@ -52,44 +50,26 @@ export function GridLayout(props: GridLayoutProps): ReactElement {
     [hasViewPanel, isEditMode, updatePanelGroupLayoutsFromGrid],
   );
 
-  /**
-   * Calculate the column width so we can determine the width of each panel for suggested step ms
-   */
-  const handleWidthChange = useCallback(
-    (containerWidth: number, margin: [number, number], cols: number, containerPadding: [number, number]): void => {
-      const marginX = margin[0];
-      const marginWidth = marginX * (cols - 1);
-      const containerPaddingWidth = containerPadding[0] * 2;
-      // exclude margin and padding from total width
-      setGridColWidth((containerWidth - marginWidth - containerPaddingWidth) / cols);
-    },
-    [],
-  );
-
   return (
     <>
       {!groupDefinition.repeatVariable ? (
         <Row
           panelGroupId={panelGroupId}
           groupDefinition={groupDefinition}
-          gridColWidth={gridColWidth}
           panelFullHeight={panelFullHeight}
           panelOptions={panelOptions}
           isEditMode={isEditMode}
           onLayoutChange={handleLayoutChange}
-          onWidthChange={handleWidthChange}
         />
       ) : (
         <RepeatGridLayout
           repeatVariableName={groupDefinition.repeatVariable}
           panelGroupId={panelGroupId}
           groupDefinition={groupDefinition}
-          gridColWidth={gridColWidth}
           panelFullHeight={panelFullHeight}
           panelOptions={panelOptions}
           isEditMode={isEditMode}
           onLayoutChange={handleLayoutChange}
-          onWidthChange={handleWidthChange}
         />
       )}
     </>
@@ -107,12 +87,10 @@ export function RepeatGridLayout({
   repeatVariableName,
   panelGroupId,
   groupDefinition,
-  gridColWidth,
   panelFullHeight,
   panelOptions,
   isEditMode = false,
   onLayoutChange,
-  onWidthChange,
 }: RepeatGridLayoutProps): ReactElement | null {
   const variables = useVariableValues();
   const variable = variables[repeatVariableName];
@@ -123,12 +101,10 @@ export function RepeatGridLayout({
       <Row
         panelGroupId={panelGroupId}
         groupDefinition={groupDefinition}
-        gridColWidth={gridColWidth}
         panelFullHeight={panelFullHeight}
         panelOptions={panelOptions}
         isEditMode={isEditMode}
         onLayoutChange={onLayoutChange}
-        onWidthChange={onWidthChange}
       />
     );
   }
@@ -144,12 +120,10 @@ export function RepeatGridLayout({
           <Row
             panelGroupId={panelGroupId}
             groupDefinition={groupDefinition}
-            gridColWidth={gridColWidth}
             panelFullHeight={panelFullHeight}
             panelOptions={panelOptions}
             isEditMode={isEditMode}
             onLayoutChange={onLayoutChange}
-            onWidthChange={onWidthChange}
             repeatVariable={[repeatVariableName, value]}
           />
         </FixedValueVariableProvider>

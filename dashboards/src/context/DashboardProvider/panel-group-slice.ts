@@ -43,11 +43,6 @@ export interface PanelGroupSlice {
   swapPanelGroups: (xIndex: number, yIndex: number) => void;
 
   /**
-   * Update the item layouts for a panel group when, for example, a panel is moved or resized.
-   */
-  updatePanelGroupLayouts: (panelGroupId: PanelGroupId, itemLayouts: PanelGroupDefinition['itemLayouts']) => void;
-
-  /**
    * Commit a grid gesture, transferring panel references and repeat settings for received items.
    * Source removals are completed by the receiving grid so either callback order preserves metadata.
    */
@@ -122,16 +117,6 @@ export function createPanelGroupSlice(
         }
         // Retained items and received items restored to their base height may overlap: reflow them.
         group.itemLayouts = compactLayout([...nextLayouts.values()]);
-      });
-    },
-
-    updatePanelGroupLayouts(panelGroupId, itemLayouts): void {
-      set((state) => {
-        const group = state.panelGroups[panelGroupId];
-        if (group === undefined) {
-          throw new Error(`Cannot find panel group ${panelGroupId}`);
-        }
-        group.itemLayouts = itemLayouts;
       });
     },
   });

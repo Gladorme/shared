@@ -22,7 +22,6 @@ import {
   getPerRowCount,
   getRepeatVariableValues,
   restoreRepeatItemLayout,
-  restoreRepeatLayouts,
 } from './repeatLayoutUtils';
 
 const makeVariableState = (options: string[], selected?: string[]): VariableStateMap[string] => ({
@@ -214,42 +213,6 @@ describe('restoreRepeatItemLayout', () => {
     const meta = { itemRepeatVariable: repeatVariable, values: ['a', 'b', 'c'], totalValues: 3, numberOfRows };
     const restored = restoreRepeatItemLayout({ ...baseLayout, h: expandedHeight }, meta);
     expect(restored.h).toBe(singleItemHeight);
-  });
-});
-
-describe('restoreRepeatLayouts', () => {
-  const repeatVariable: RepeatVariable = { value: 'env', alignment: 'horizontal', maxPer: 2 };
-  const meta = new Map([
-    [
-      'repeat-panel',
-      { itemRepeatVariable: repeatVariable, values: ['prod', 'staging', 'dev'], totalValues: 3, numberOfRows: 2 },
-    ],
-  ]);
-
-  const expandedLayout = { i: 'repeat-panel', x: 0, y: 0, w: 12, h: 13 };
-  const plainLayout = { i: 'plain-panel', x: 12, y: 0, w: 12, h: 4 };
-
-  test('restores h for repeat items in currentLayout', () => {
-    const { currentLayout } = restoreRepeatLayouts([expandedLayout, plainLayout], {}, meta);
-    expect(currentLayout.find((l) => l.i === 'repeat-panel')?.h).toBe(6);
-    expect(currentLayout.find((l) => l.i === 'plain-panel')?.h).toBe(4);
-  });
-
-  test('restores h for repeat items in allLayouts', () => {
-    const { allLayouts } = restoreRepeatLayouts([], { sm: [expandedLayout, plainLayout] }, meta);
-    expect(allLayouts['sm']?.find((l) => l.i === 'repeat-panel')?.h).toBe(6);
-    expect(allLayouts['sm']?.find((l) => l.i === 'plain-panel')?.h).toBe(4);
-  });
-
-  test('restores all breakpoints in allLayouts', () => {
-    const { allLayouts } = restoreRepeatLayouts([], { sm: [expandedLayout], xxs: [expandedLayout] }, meta);
-    expect(allLayouts['sm']?.[0]?.h).toBe(6);
-    expect(allLayouts['xxs']?.[0]?.h).toBe(6);
-  });
-
-  test('leaves allLayouts empty when no breakpoints provided', () => {
-    const { allLayouts } = restoreRepeatLayouts([expandedLayout], {}, meta);
-    expect(Object.keys(allLayouts)).toHaveLength(0);
   });
 });
 

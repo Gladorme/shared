@@ -17,7 +17,7 @@ import { useVariableValues } from '@perses-dev/plugin-system';
 import type { Layout } from '@snapgridjs/react';
 import { GridLayout as SnapgridLayout, useContainerWidth, useResponsiveLayout } from '@snapgridjs/react';
 import type { ReactElement } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { DEFAULT_MARGIN, GRID_LAYOUT_COLS, ROW_HEIGHT } from '../../constants';
 import { useRepeatVariableMaxValues, useViewPanelGroup } from '../../context';
@@ -43,29 +43,20 @@ const EDIT_GRID_COLS = { sm: GRID_LAYOUT_COLS.sm, xxs: GRID_LAYOUT_COLS.sm };
 export interface RowProps {
   panelGroupId: PanelGroupId;
   groupDefinition: PanelGroupDefinition;
-  gridColWidth: number;
   panelFullHeight?: number;
   panelOptions?: PanelOptions;
   isEditMode?: boolean;
   onLayoutChange?: (layout: PanelGroupItemLayout[]) => void;
-  onWidthChange?: (
-    containerWidth: number,
-    margin: [number, number],
-    cols: number,
-    containerPadding: [number, number],
-  ) => void;
   repeatVariable?: [string, string];
 }
 
 export function Row({
   panelGroupId,
   groupDefinition,
-  gridColWidth,
   panelFullHeight,
   panelOptions,
   isEditMode = false,
   onLayoutChange,
-  onWidthChange,
   repeatVariable,
 }: RowProps): ReactElement {
   const { width, containerRef } = useContainerWidth();
@@ -131,12 +122,8 @@ export function Row({
     breakpoints,
     cols: isEditMode ? EDIT_GRID_COLS : GRID_LAYOUT_COLS,
   });
-  // Snapgrid has no `onWidthChange` prop (unlike react-grid-layout), so the parent is notified here instead.
-  useEffect(() => {
-    if (isGridDisplayed) {
-      onWidthChange?.(width, GRID_MARGIN, cols, GRID_PADDING);
-    }
-  }, [width, cols, isGridDisplayed, onWidthChange]);
+  // Column width in px (margins and padding excluded); panels derive their suggested step from it.
+  const gridColWidth = (width - GRID_MARGIN[0] * (cols - 1) - GRID_PADDING[0] * 2) / cols;
   const gridConfig = useMemo(
     () => ({ cols, rowHeight: ROW_HEIGHT, margin: GRID_MARGIN, containerPadding: GRID_PADDING }),
     [cols],

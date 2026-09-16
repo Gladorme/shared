@@ -70,7 +70,7 @@ describe('Row responsive editing', () => {
       itemLayouts: groupDefinition.itemLayouts.map((item) => ({ ...item, repeatVariable })),
     };
     const onLayoutChange = vi.fn<(layout: PanelGroupItemLayout[]) => void>();
-    const props = { panelGroupId: 0, groupDefinition: group, gridColWidth: 10, isEditMode: true, onLayoutChange };
+    const props = { panelGroupId: 0, groupDefinition: group, isEditMode: true, onLayoutChange };
     const { rerender } = render(<Row {...props} />);
 
     expect(gridProps().isResizable).toBe(true);
@@ -108,7 +108,7 @@ describe('Row responsive editing', () => {
       itemPanelKeys: { panel: 'panel', second: 'second' },
     };
     const onLayoutChange = vi.fn();
-    const props = { panelGroupId: 0, groupDefinition: group, gridColWidth: 10, onLayoutChange };
+    const props = { panelGroupId: 0, groupDefinition: group, onLayoutChange };
     const { rerender } = render(<Row {...props} />);
     expect(gridProps().gridConfig?.cols).toBe(2);
     expect(gridProps().isResizable).toBe(false);
