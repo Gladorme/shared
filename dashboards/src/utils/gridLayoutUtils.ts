@@ -19,10 +19,17 @@ import type { PanelGroupItemLayout, PanelGroupItemLayoutId } from '../model';
 const GRID_ITEM_ID_SEPARATOR = '|';
 
 /**
- * Vertically compacts a layout expressed in the persisted (24 column) grid space.
- * Snapgrid renders a controlled layout as-is, so overlaps (e.g. repeat panels expanded
- * to several rows, or a duplicated panel inserted below its reference) must be resolved here.
- * Only `x`/`y` are updated so custom fields such as `repeatVariable` are preserved.
+ * Moves overlapping items down so that no two items share the same cells, then pulls every item
+ * up as far as possible to remove vertical gaps (same behavior as react-grid-layout's `compactType="vertical"`).
+ *
+ * react-grid-layout did this automatically on every render. Snapgrid renders the layout exactly as given,
+ * so we have to do it ourselves whenever the stored layout may contain overlaps, for example:
+ * - a repeated panel is expanded into one item per variable value, all sharing the original `x`/`y`;
+ * - a duplicated panel is inserted right below its reference, on top of whatever was there;
+ * - a panel dropped from another group lands on cells already occupied in the receiving group.
+ *
+ * Positions are computed in the persisted 24 column grid, and only `x`/`y` are rewritten so that
+ * extra fields such as `repeatVariable` are kept on the returned items.
  */
 export function compactLayout(layout: PanelGroupItemLayout[]): PanelGroupItemLayout[] {
   const compacted = verticalCompactor.compact(layout, GRID_LAYOUT_COLS.sm);

@@ -102,7 +102,7 @@ export function Row({
     if (itemLayoutViewed) {
       const viewedItem = expandedItemLayouts.find((item) => item.i === itemLayoutViewed);
       if (!viewedItem) return [];
-      const rowTitleHeight = 40 + 8;
+      const rowTitleHeight = 40 + 8; // 40 is the height of the row title and 8 is the margin height
       return [
         {
           ...viewedItem,
@@ -131,6 +131,7 @@ export function Row({
     breakpoints,
     cols: isEditMode ? EDIT_GRID_COLS : GRID_LAYOUT_COLS,
   });
+  // Snapgrid has no `onWidthChange` prop (unlike react-grid-layout), so the parent is notified here instead.
   useEffect(() => {
     if (isGridDisplayed) {
       onWidthChange?.(width, GRID_MARGIN, cols, GRID_PADDING);

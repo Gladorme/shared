@@ -16,7 +16,7 @@ import { useVariableValues } from '@perses-dev/plugin-system';
 import type { ReactElement } from 'react';
 import { useCallback, useState } from 'react';
 
-import { useDashboardStore, useEditMode, usePanelGroup, useViewPanelGroup } from '../../context';
+import { useEditMode, usePanelGroup, usePanelGroupActions, useViewPanelGroup } from '../../context';
 import type { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
 import type { PanelOptions } from '../Panel';
 import { FixedValueVariableProvider } from '../Variables';
@@ -35,7 +35,7 @@ export interface GridLayoutProps {
 export function GridLayout(props: GridLayoutProps): ReactElement {
   const { panelGroupId, panelOptions, panelFullHeight } = props;
   const groupDefinition: PanelGroupDefinition = usePanelGroup(panelGroupId);
-  const updatePanelGroupLayoutsFromGrid = useDashboardStore((state) => state.updatePanelGroupLayoutsFromGrid);
+  const { updatePanelGroupLayoutsFromGrid } = usePanelGroupActions(panelGroupId);
   const viewPanelItemId = useViewPanelGroup();
   const { isEditMode } = useEditMode();
 
@@ -46,10 +46,10 @@ export function GridLayout(props: GridLayoutProps): ReactElement {
   const handleLayoutChange = useCallback(
     (layout: PanelGroupItemLayout[]): void => {
       if (isEditMode && !hasViewPanel) {
-        updatePanelGroupLayoutsFromGrid(panelGroupId, layout);
+        updatePanelGroupLayoutsFromGrid(layout);
       }
     },
-    [hasViewPanel, isEditMode, panelGroupId, updatePanelGroupLayoutsFromGrid],
+    [hasViewPanel, isEditMode, updatePanelGroupLayoutsFromGrid],
   );
 
   /**
