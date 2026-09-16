@@ -14,7 +14,7 @@
 import type { Theme } from '@mui/material';
 import { IconButton, Link as LinkComponent, Menu, MenuItem, Chip, capitalize, Stack } from '@mui/material';
 import { InfoTooltip } from '@perses-dev/components';
-import { useReplaceVariablesInString } from '@perses-dev/plugin-system';
+import { useReplaceVariablesInString, useReplaceVariablesInUrl } from '@perses-dev/plugin-system';
 import type { Link } from '@perses-dev/spec';
 import LaunchIcon from 'mdi-material-ui/Launch';
 import type { MouseEvent, ReactElement } from 'react';
@@ -164,9 +164,12 @@ function LinkMenuItem({ link }: { link: Link }): ReactElement {
 }
 
 function useLink(link: Link): Link {
-  const url = useReplaceVariablesInString(link.url) ?? link.url;
+  // Name/tooltip: plain string interpolation (unencoded $var).
   const name = useReplaceVariablesInString(link.name);
   const tooltip = useReplaceVariablesInString(link.tooltip);
+  // URL: URL-aware interpolation (also expands %24var inside query params).
+  const interpolatedUrl = useReplaceVariablesInUrl(link.renderVariables === false ? undefined : link.url);
+  const url = link.renderVariables === false ? link.url : (interpolatedUrl ?? link.url);
 
   if (link.renderVariables === false) {
     return link;

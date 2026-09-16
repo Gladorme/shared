@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import type { VariableOption, VariableState, VariableStateMap } from '@perses-dev/components';
-import { parseVariables, replaceVariables } from '@perses-dev/components';
+import { parseVariables, replaceVariables, replaceVariablesInUrl } from '@perses-dev/components';
 import { immerable } from 'immer';
 import { createContext, useContext, useMemo } from 'react';
 
@@ -173,4 +173,19 @@ export function useReplaceVariablesInString(str: string | undefined): string | u
   const variableValues = useAllVariableValues(variablesInString);
   if (!str) return undefined;
   return replaceVariables(str, variableValues);
+}
+
+/**
+ * Convenience hook for replacing variables in a URL, including those nested
+ * inside percent-encoded query parameters (e.g. Explore `data=%24var`).
+ * Prefer this over {@link useReplaceVariablesInString} for link hrefs.
+ */
+export function useReplaceVariablesInUrl(url: string | undefined): string | undefined {
+  const variableValues = useAllVariableValues();
+  return useMemo(() => {
+    if (url === undefined || url === '') {
+      return url;
+    }
+    return replaceVariablesInUrl(url, variableValues);
+  }, [url, variableValues]);
 }

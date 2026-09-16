@@ -243,3 +243,71 @@ export function replaceVariablesForDisplay(text: string, variableState: Variable
   }
   return replaceVariables(text, displayState);
 }
+
+/**
+ * Replace dashboard variables in a URL, including those nested inside
+ * percent-encoded query parameters (e.g. Explore `data=%24var`).
+ *
+ * 1. `replaceVariables` on the raw string (unencoded `$var` still works).
+ * 2. Parse query params (URLSearchParams decodes once), expand each value,
+ *    rebuild with `append` so repeated keys are preserved.
+ * 3. Keep the original path/prefix before `?` so relative targets are unchanged
+ *    (`?data=…`, `explore?…`, not forced `/…`).
+ */
+export function replaceVariablesInUrl(url: string, variableState: VariableStateMap): string {
+  let result = replaceVariables(url, variableState);
+
+  try {
+    const isAbsolute = /^https?:\/\//i.test(result);
+    const isProtocolRelative = result.startsWith('//');
+    // Skip non-http schemes (mailto:, etc.) — only expand via step 1.
+    const hasNonHttpScheme = /^[a-z][a-z0-9+.-]*:/i.test(result);
+    if (!isAbsolute && !isProtocolRelative && hasNonHttpScheme) {
+      return result;
+    }
+
+    const parseInput = isProtocolRelative ? `http:${result}` : result;
+    const parsedUrl = new URL(parseInput, isAbsolute || isProtocolRelative ? undefined : 'http://perses.local');
+
+    // Rebuild query in original pair order so searchParams key order is stable.
+    const originalEntries = Array.from(parsedUrl.searchParams.entries());
+    let changed = false;
+    const replacedEntries = originalEntries.map(([key, value]) => {
+      const replacedValue = replaceVariables(value, variableState);
+      if (replacedValue !== value) {
+        changed = true;
+      }
+      return [key, replacedValue] as const;
+    });
+
+    if (!changed) {
+      return result;
+    }
+
+    const keysToClear = [...new Set(originalEntries.map(([key]) => key))];
+    for (const key of keysToClear) {
+      parsedUrl.searchParams.delete(key);
+    }
+    for (const [key, value] of replacedEntries) {
+      parsedUrl.searchParams.append(key, value);
+    }
+
+    if (isAbsolute) {
+      return parsedUrl.href;
+    }
+    if (isProtocolRelative) {
+      return `//${parsedUrl.host}${parsedUrl.pathname}${parsedUrl.search}${parsedUrl.hash}`;
+    }
+
+    // Relative: preserve original substring before ?/# (do not force leading /).
+    const q = result.indexOf('?');
+    const h = result.indexOf('#');
+    let baseEnd = result.length;
+    if (q >= 0) baseEnd = q;
+    else if (h >= 0) baseEnd = h;
+    const base = result.slice(0, baseEnd);
+    return `${base}${parsedUrl.search}${parsedUrl.hash}`;
+  } catch {
+    return result;
+  }
+}
