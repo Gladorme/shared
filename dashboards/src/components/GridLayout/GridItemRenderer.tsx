@@ -67,7 +67,7 @@ export function GridItemRenderer({
           panelRepeatVariable={{
             name: panelRepeatVariable.value,
             values: effectiveValues,
-            maxPer: getPerRowCount(panelRepeatVariable),
+            maxPer: viewPanelItemId?.repeatVariable?.panel ? 1 : getPerRowCount(panelRepeatVariable),
           }}
           groupRepeatVariable={groupRepeatVariable}
           width={width}

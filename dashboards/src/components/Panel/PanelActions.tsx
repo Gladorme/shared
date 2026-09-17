@@ -260,8 +260,8 @@ export const PanelActions: React.FC<PanelActionsProps> = ({
       return (
         <Box sx={{ background: (theme) => theme.palette.background.default }}>
           <InfoTooltip description={TOOLTIP_TEXT.movePanel}>
-            <HeaderIconButton aria-label={ARIA_LABEL_TEXT.movePanel(title)} size="small">
-              <DragIcon className="drag-handle" sx={{ cursor: 'grab' }} fontSize="inherit" />
+            <HeaderIconButton className="drag-handle" aria-label={ARIA_LABEL_TEXT.movePanel(title)} size="small">
+              <DragIcon sx={{ cursor: 'grab' }} fontSize="inherit" />
             </HeaderIconButton>
           </InfoTooltip>
         </Box>

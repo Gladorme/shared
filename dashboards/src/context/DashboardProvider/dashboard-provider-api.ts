@@ -131,7 +131,7 @@ const selectPanelGroupActions: ({
   openAddPanel,
   updatePanelGroupLayouts,
 }: DashboardStoreState) => {
-  updatePanelGroupLayouts: (panelGroupId: PanelGroupId, itemLayouts: PanelGroupDefinition['itemLayouts']) => void;
+  updatePanelGroupLayouts: (panelGroupId: PanelGroupId, itemLayouts: PanelGroupItemLayout[]) => void;
   openEditPanelGroup: (panelGroupId: PanelGroupId) => void;
   openAddPanel: (panelGroupId?: PanelGroupId) => void;
   deletePanelGroup: (panelGroupId: PanelGroupId) => void;
