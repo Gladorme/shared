@@ -28,7 +28,9 @@ import { DownloadButton } from '../DownloadButton';
 import { EditButton } from '../EditButton';
 import { EditJsonButton } from '../EditJsonButton';
 import { LinksDisplay } from '../LinksDisplay';
+import { LockDashboardButton } from '../LockDashboardButton';
 import { SaveDashboardButton } from '../SaveDashboardButton';
+import { UpdatePluginsButton } from '../UpdatePluginsButton';
 import { EditVariablesButton } from '../Variables';
 
 export interface DashboardToolbarProps {
@@ -40,6 +42,14 @@ export interface DashboardToolbarProps {
   isAnnotationEnabled: boolean;
   isDatasourceEnabled: boolean;
   isLinksEnabled?: boolean;
+  /**
+   * When true, add a button that locks/unlocks the dashboard: pins every plugin it uses to an exact version or unpin all versions.
+   */
+  isLockModeAvailable?: boolean;
+  /**
+   * When true, add a button will open a drawer that shows the plugins that can be updated and allows the user to update them.
+   */
+  isUpdateButtonAvailable?: boolean;
   timezone: string;
   onEditButtonClick: () => void;
   onCancelButtonClick: () => void;
@@ -56,6 +66,8 @@ export const DashboardToolbar = (props: DashboardToolbarProps): ReactElement => 
     isAnnotationEnabled,
     isDatasourceEnabled,
     isLinksEnabled = true,
+    isLockModeAvailable = false,
+    isUpdateButtonAvailable = false,
     timezone: toolbarTimezone,
     onEditButtonClick,
     onCancelButtonClick,
@@ -106,6 +118,8 @@ export const DashboardToolbar = (props: DashboardToolbarProps): ReactElement => 
                 {isLinksEnabled && <EditDashboardLinksButton />}
                 <AddPanelButton />
                 <AddGroupButton />
+                {isUpdateButtonAvailable && <UpdatePluginsButton />}
+                {isLockModeAvailable && <LockDashboardButton />}
               </Stack>
               <SaveDashboardButton onSave={onSave} isDisabled={isReadonly} />
               <Button variant="outlined" onClick={onCancelButtonClick}>
@@ -113,13 +127,11 @@ export const DashboardToolbar = (props: DashboardToolbarProps): ReactElement => 
               </Button>
             </Stack>
           ) : (
-            <>
-              {isBiggerThanSm && (
-                <Stack direction="row" gap={1} ml="auto">
-                  <EditButton onClick={onEditButtonClick} />
-                </Stack>
-              )}
-            </>
+            isBiggerThanSm && (
+              <Stack direction="row" gap={1} ml="auto">
+                <EditButton onClick={onEditButtonClick} />
+              </Stack>
+            )
           )}
         </Box>
         <Box

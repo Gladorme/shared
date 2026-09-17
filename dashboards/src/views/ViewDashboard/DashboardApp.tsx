@@ -46,6 +46,10 @@ export interface DashboardAppProps {
   isDatasourceEnabled: boolean;
   disableShortcuts?: boolean;
   isCreating?: boolean;
+  // If true, add a button that locks/unlocks the dashboard: pins every plugin it uses to an exact version or unpin all versions.
+  isLockModeAvailable?: boolean;
+  // If true, add a button will open a drawer that shows the plugins that can be updated and allows the user to update them.
+  isUpdateButtonAvailable?: boolean;
   isInitialVariableSticky?: boolean;
   // If true, browser confirmation dialog will be shown when navigating away with unsaved changes (closing tab, ...).
   isLeavingConfirmDialogEnabled?: boolean;
@@ -75,6 +79,8 @@ const DashboardAppContent = (props: DashboardAppProps): ReactElement => {
     isCreating,
     isInitialVariableSticky,
     isLeavingConfirmDialogEnabled,
+    isLockModeAvailable,
+    isUpdateButtonAvailable,
     dashboardTitleComponent,
     userPreferenceTimezone,
     onSave,
@@ -159,6 +165,8 @@ const DashboardAppContent = (props: DashboardAppProps): ReactElement => {
         isVariableEnabled={isVariableEnabled}
         isAnnotationEnabled={isAnnotationEnabled}
         isDatasourceEnabled={isDatasourceEnabled}
+        isLockModeAvailable={isLockModeAvailable}
+        isUpdateButtonAvailable={isUpdateButtonAvailable}
         onEditButtonClick={onEditButtonClick}
         onCancelButtonClick={onCancelButtonClick}
       />
