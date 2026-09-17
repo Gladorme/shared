@@ -421,6 +421,7 @@ export const OverflowMenu: React.FC<
           },
         ]}
         sx={{
+          zIndex: 6, // Must be higher than PanelHeader zIndex (5)
           backgroundColor: (theme) => theme.palette.background.paper,
           borderRadius: 1,
           boxShadow: (theme) => theme.shadows[4],
