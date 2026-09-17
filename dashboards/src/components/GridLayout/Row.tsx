@@ -15,9 +15,14 @@ import { Collapse, useTheme } from '@mui/material';
 import type { PanelGroupId } from '@perses-dev/plugin-system';
 import { useVariableValues } from '@perses-dev/plugin-system';
 import type { Layout } from '@snapgridjs/react';
-import { GridLayout as SnapgridLayout, useContainerWidth, useResponsiveLayout } from '@snapgridjs/react';
+import {
+  GridLayout as SnapgridLayout,
+  useContainerWidth,
+  useGridResizeHandle,
+  useResponsiveLayout,
+} from '@snapgridjs/react';
 import type { ReactElement } from 'react';
-import { useMemo, useState } from 'react';
+import { useId, useMemo, useState } from 'react';
 
 import { DEFAULT_MARGIN, GRID_LAYOUT_COLS, ROW_HEIGHT } from '../../constants';
 import { useRepeatVariableMaxValues, useViewPanelGroup } from '../../context';
@@ -37,6 +42,8 @@ import { GridTitle } from './GridTitle';
 const GRID_MARGIN: [number, number] = [DEFAULT_MARGIN, DEFAULT_MARGIN];
 const GRID_PADDING: [number, number] = [0, 10];
 const DRAG_CONFIG = { handle: '.drag-handle' };
+// Render our own handle so consumers can locate it with getByTestId('panel-resize-handle').
+const RESIZE_CONFIG = { handles: [] };
 // Editing uses persisted coordinates at every width so a resize survives the next render.
 const EDIT_GRID_COLS = { sm: GRID_LAYOUT_COLS.sm, xxs: GRID_LAYOUT_COLS.sm };
 
@@ -59,6 +66,7 @@ export function Row({
   onLayoutChange,
   repeatVariable,
 }: RowProps): ReactElement {
+  const gridId = useId();
   const { width, containerRef } = useContainerWidth();
   const theme = useTheme();
   const viewPanelItemId = useViewPanelGroup();
@@ -189,10 +197,12 @@ export function Row({
       <Collapse in={isOpen || hasViewPanel} unmountOnExit appear={false} data-testid="panel-group-content">
         <div ref={containerRef}>
           <SnapgridLayout
+            id={gridId}
             width={width}
             className="layout"
             gridConfig={gridConfig}
             dragConfig={DRAG_CONFIG}
+            resizeConfig={RESIZE_CONFIG}
             isDraggable={isEditMode && !hasViewPanel}
             isResizable={isEditMode && !hasViewPanel}
             layout={responsiveLayout}
@@ -210,12 +220,32 @@ export function Row({
                   panelOptions={panelOptions}
                   isEditMode={isEditMode}
                 />
+                {isEditMode && !hasViewPanel && (
+                  <ResizeHandle id={encodeGridItemId(i, repeatVariable)} group={gridId} />
+                )}
               </div>
             ))}
           </SnapgridLayout>
         </div>
       </Collapse>
     </GridContainer>
+  );
+}
+
+interface ResizeHandleProps {
+  id: string;
+  group: string;
+}
+
+function ResizeHandle({ id, group }: ResizeHandleProps): ReactElement {
+  const { ref, handleProps } = useGridResizeHandle({ id, group, handle: 'se' });
+  return (
+    <span
+      ref={ref}
+      {...handleProps}
+      className="snapgrid-resize-handle snapgrid-resize-handle--se"
+      data-testid="panel-resize-handle"
+    />
   );
 }
 

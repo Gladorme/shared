@@ -38,6 +38,10 @@ const SnapgridContainer = styled('section')(({ theme }) => ({
     opacity: 0.2,
   },
   '& .snapgrid-resize-handle--se': {
+    position: 'absolute',
+    cursor: 'nwse-resize',
+    touchAction: 'none',
+    zIndex: 4,
     right: '0 !important',
     bottom: '0 !important',
     width: '20px !important',

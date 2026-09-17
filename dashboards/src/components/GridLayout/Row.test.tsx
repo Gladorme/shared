@@ -15,7 +15,7 @@ import type * as PluginSystemModule from '@perses-dev/plugin-system';
 import type * as SnapgridModule from '@snapgridjs/react';
 import { GridLayout as SnapgridLayout, useContainerWidth } from '@snapgridjs/react';
 import type { GridLayoutProps } from '@snapgridjs/react';
-import { act, render } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 
 import { useViewPanelGroup } from '../../context';
 import type { PanelGroupDefinition, PanelGroupItemLayout } from '../../model';
@@ -49,6 +49,11 @@ const groupDefinition: PanelGroupDefinition = {
   itemPanelKeys: { panel: 'panel' },
 };
 const containerRef = vi.fn();
+const resizeHandleGroup: PanelGroupDefinition = {
+  ...groupDefinition,
+  itemLayouts: [...groupDefinition.itemLayouts, { i: 'second', x: 12, y: 0, w: 12, h: 3 }],
+  itemPanelKeys: { panel: 'panel', second: 'second' },
+};
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -124,5 +129,35 @@ describe('Row responsive editing', () => {
       expect.objectContaining({ x: 12, y: 0, w: 12 }),
     ]);
     expect(onLayoutChange).not.toHaveBeenCalled();
+  });
+});
+
+describe('Row resize handles', () => {
+  beforeEach(async () => {
+    const { GridLayout } = await vi.importActual<typeof SnapgridModule>('@snapgridjs/react');
+    vi.mocked(SnapgridLayout).mockImplementation(GridLayout);
+  });
+
+  afterEach(() => {
+    vi.mocked(SnapgridLayout).mockReset();
+  });
+
+  it('renders one locatable handle per panel only while editing', () => {
+    const { container, rerender } = render(<Row panelGroupId={0} groupDefinition={resizeHandleGroup} />);
+    expect(screen.queryByTestId('panel-resize-handle')).not.toBeInTheDocument();
+
+    rerender(<Row panelGroupId={0} groupDefinition={resizeHandleGroup} isEditMode />);
+    const handles = screen.getAllByTestId('panel-resize-handle');
+    expect(handles).toHaveLength(2);
+    // Include Snapgrid's built-in handles in the count to catch duplicate resize controls.
+    expect(container.querySelectorAll('.snapgrid-resize-handle')).toHaveLength(2);
+    handles.forEach((handle) => {
+      expect(handle).toHaveAttribute('data-snapgrid-resize-handle', 'true');
+      expect(handle).toHaveClass('snapgrid-resize-handle--se');
+    });
+
+    vi.mocked(useViewPanelGroup).mockReturnValue({ panelGroupId: 0, panelGroupItemLayoutId: 'panel' });
+    rerender(<Row panelGroupId={0} groupDefinition={resizeHandleGroup} isEditMode />);
+    expect(screen.queryByTestId('panel-resize-handle')).not.toBeInTheDocument();
   });
 });
