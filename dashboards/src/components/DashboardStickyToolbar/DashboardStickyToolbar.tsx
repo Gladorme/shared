@@ -13,6 +13,7 @@
 
 import type { SxProps, Theme } from '@mui/material';
 import { AppBar, Box, IconButton, Stack, useMediaQuery, useScrollTrigger, useTheme } from '@mui/material';
+import { useTimeZone } from '@perses-dev/components';
 import { TimeRangeControls, useTimeZoneParams } from '@perses-dev/plugin-system';
 import PinOffOutline from 'mdi-material-ui/PinOffOutline';
 import PinOutline from 'mdi-material-ui/PinOutline';
@@ -34,7 +35,8 @@ export function DashboardStickyToolbar(props: DashboardStickyToolbarProps): Reac
 
   const isBiggerThanMd = useMediaQuery(useTheme().breakpoints.up('md'));
 
-  const { timeZone, setTimeZone } = useTimeZoneParams('local');
+  const { timeZone: contextTimeZone } = useTimeZone();
+  const { timeZone, setTimeZone } = useTimeZoneParams(contextTimeZone);
 
   return (
     // marginBottom={-1} counteracts the marginBottom={1} on every variable input.

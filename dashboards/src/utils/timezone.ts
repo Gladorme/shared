@@ -11,8 +11,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-export * from './panelUtils';
-export * from './pluginVersioning';
-export * from './repeatLayoutUtils';
-export * from './gridLayoutUtils';
-export * from './timezone';
+/**
+ * Default timezone when URL `?tz=` is absent.
+ * Full runtime order (see useTimeZoneParams):
+ * 1. URL query `tz`
+ * 2. dashboard.spec.timezone
+ * 3. user preference timezone
+ * 4. browser `local`
+ */
+export function resolveDashboardTimeZone(
+  dashboardTimezone?: string | null,
+  userPreferenceTimezone?: string | null,
+): string {
+  return dashboardTimezone?.trim() || userPreferenceTimezone?.trim() || 'local';
+}

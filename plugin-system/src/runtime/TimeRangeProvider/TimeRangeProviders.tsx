@@ -22,17 +22,20 @@ import { TimeRangeProvider } from './TimeRangeProvider';
 export interface TimeRangeProvidersProps {
   initialTimeRange: TimeRangeValue;
   initialRefreshInterval?: DurationString;
+  /** Seed for useTimeZoneParams when URL ?tz= is absent (default: local). */
+  initialTimeZone?: string;
   children?: React.ReactNode;
 }
 
 export function TimeRangeProviderWithQueryParams({
   initialTimeRange,
   initialRefreshInterval,
+  initialTimeZone = 'local',
   children,
 }: TimeRangeProvidersProps): ReactElement {
   const { timeRange, setTimeRange } = useTimeRangeParams(initialTimeRange);
   const { refreshInterval, setRefreshInterval } = useSetRefreshIntervalParams(initialRefreshInterval);
-  const { timeZone } = useTimeZoneParams('local');
+  const { timeZone } = useTimeZoneParams(initialTimeZone);
 
   return (
     <TimeRangeProvider

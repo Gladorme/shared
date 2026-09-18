@@ -36,6 +36,7 @@ import {
 import type { OnSaveDashboard } from '../../context';
 import { useDashboard, useDiscardChangesConfirmationDialog, useEditMode } from '../../context';
 import { PanelFocusProvider } from '../../keyboard-shortcuts';
+import { resolveDashboardTimeZone } from '../../utils/timezone';
 
 export interface DashboardAppProps {
   dashboardResource: DashboardResource;
@@ -142,8 +143,8 @@ const DashboardAppContent = (props: DashboardAppProps): ReactElement => {
   });
 
   const toolBarTimezone = useMemo((): string => {
-    return dashboardResource.spec.timezone || userPreferenceTimezone || 'local';
-  }, [dashboardResource.spec, userPreferenceTimezone]);
+    return resolveDashboardTimeZone(dashboardResource.spec.timezone, userPreferenceTimezone);
+  }, [dashboardResource.spec.timezone, userPreferenceTimezone]);
 
   return (
     <Box
