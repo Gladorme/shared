@@ -205,6 +205,8 @@ export function Table<TableData>({
     return initTableColumns;
   }, [columns, defaultColumnConfig, hasItemActions, checkboxSelection, actionsColumn, checkboxColumn]);
 
+  // TanStack Table v8 exposes a mutable instance; keep this boundary out of automatic memoization.
+  // oxlint-disable-next-line react/incompatible-library
   const table = useReactTable({
     data,
     columns: tableColumns,

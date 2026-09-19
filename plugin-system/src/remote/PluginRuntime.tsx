@@ -228,6 +228,8 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'mdi-material-ui': {
           version: '7.9.4',
+          // Federation must register the package root to satisfy existing plugin shared-module requests.
+          // oxlint-disable-next-line no-restricted-imports
           get: createSharedModuleLoader(() => import('mdi-material-ui')),
           shareConfig: {
             singleton: true,
