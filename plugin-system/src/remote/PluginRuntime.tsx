@@ -16,7 +16,7 @@ import * as EmotionStyled from '@emotion/styled';
 import type { ModuleFederation } from '@module-federation/enhanced/runtime';
 import { createInstance } from '@module-federation/enhanced/runtime';
 import * as ReactQuery from '@tanstack/react-query';
-import React from 'react';
+import React, { useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import * as ReactHookForm from 'react-hook-form';
 import * as ReactRouterDOM from 'react-router-dom';
@@ -297,11 +297,14 @@ export function usePluginRuntime({ plugin }: { plugin: PersesPlugin }): {
   pluginRuntime: ModuleFederation;
   loadPlugin: () => Promise<RemotePluginModule | null>;
 } {
+  const { moduleName, name: pluginName, registry, version, baseURL } = plugin;
+  const load = useCallback(
+    () => loadPlugin({ moduleName, pluginName, registry, version, baseURL }),
+    [moduleName, pluginName, registry, version, baseURL],
+  );
+
   return {
     pluginRuntime: getPluginRuntime(),
-    loadPlugin: (): Promise<RemotePluginModule | null> => {
-      const { moduleName, name: pluginName, registry, version, baseURL } = plugin;
-      return loadPlugin({ moduleName, pluginName, registry, version, baseURL });
-    },
+    loadPlugin: load,
   };
 }

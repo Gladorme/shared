@@ -100,6 +100,8 @@ export const UsageMetricsProvider = (props: UsageMetricsProps): ReactElement => 
 };
 
 function UsageMetricsSession({ apiPrefix, project, dashboard, children }: UsageMetricsProps): ReactElement {
+  'use no memo'; // The public metrics context exposes live getters over an imperative accumulator.
+
   const { fetch } = useFetch();
   const [startRenderTime] = useState(() => Date.now());
   const metricsRef = useRef({
@@ -132,12 +134,16 @@ function UsageMetricsSession({ apiPrefix, project, dashboard, children }: UsageM
       project,
       dashboard,
       startRenderTime,
+      // Compiler getters are unsupported; preserve the live context API in this opted-out component.
+      // oxlint-disable-next-line react/todo
       get renderDurationMs(): number {
         return metricsRef.current.renderDurationMs;
       },
+      // oxlint-disable-next-line react/todo
       get renderErrorCount(): number {
         return metricsRef.current.renderErrorCount;
       },
+      // oxlint-disable-next-line react/todo
       get pendingQueries(): Map<string, QueryState> {
         return metricsRef.current.pendingQueries;
       },

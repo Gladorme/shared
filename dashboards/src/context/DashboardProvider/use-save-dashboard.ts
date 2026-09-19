@@ -66,14 +66,14 @@ export function useSaveDashboard(onSave?: OnSaveDashboard): SaveDashboardResult 
         return;
       }
 
-      try {
-        setSaving(true);
-        await onSave(dashboard);
-        closeSaveChangesConfirmationDialog();
-        setEditMode(false);
-      } finally {
-        setSaving(false);
-      }
+      setSaving(true);
+      await Promise.resolve()
+        .then(() => onSave(dashboard))
+        .then(() => {
+          closeSaveChangesConfirmationDialog();
+          setEditMode(false);
+        })
+        .finally(() => setSaving(false));
     };
 
     const { isSavedVariableModified } = getSavedVariablesStatus();
