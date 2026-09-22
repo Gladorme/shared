@@ -48,6 +48,16 @@ describe('remotePluginLoader', () => {
     mockConsoleError.mockRestore();
   });
 
+  describe('baseURL', () => {
+    it('should default to /plugins', () => {
+      expect(remotePluginLoader().baseURL).toBe('/plugins');
+    });
+
+    it('should be prefixed with the configured baseURL', () => {
+      expect(remotePluginLoader({ baseURL: '/perses' }).baseURL).toBe('/perses/plugins');
+    });
+  });
+
   describe('getInstalledPlugins', () => {
     it('should fetch plugins from correct endpoint without options', async () => {
       const mockResponse = { json: vi.fn().mockResolvedValue([MOCK_VALID_PLUGIN_MODULE_RESOURCE]) };

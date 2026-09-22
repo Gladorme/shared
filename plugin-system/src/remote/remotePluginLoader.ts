@@ -93,6 +93,7 @@ export function remotePluginLoader(options?: RemotePluginLoaderOptions): PluginL
   const fetchFn = options?.fetchFn ?? defaultFetch;
 
   return {
+    baseURL: pluginsAssetsPath,
     getInstalledPlugins: async (): Promise<PluginModuleResource[]> => {
       const pluginsResponse = await fetchFn(pluginsApiPath);
 

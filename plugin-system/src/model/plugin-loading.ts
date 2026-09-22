@@ -21,6 +21,7 @@ import { getPluginModuleCompoundKey } from './plugins';
 export interface PluginLoader {
   getInstalledPlugins: () => Promise<PluginModuleResource[]>;
   importPluginModule: (resource: PluginModuleResource) => Promise<unknown>;
+  baseURL?: string;
 }
 
 /**

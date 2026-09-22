@@ -25,6 +25,8 @@ import type { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
 
 let instance: ModuleFederation | null = null;
 
+const DEFAULT_PLUGINS_ASSETS_BASE_URL = '/plugins';
+
 function createSharedModuleLoader<TModule>(loadModule: () => Promise<TModule>): () => Promise<() => TModule> {
   return async () => {
     const module = await loadModule();
@@ -263,7 +265,7 @@ const registerRemote = (name: string, registry?: string, version?: string, baseU
   const existingRemote = pluginRuntime.options.remotes.find((remote) => remote.name === registryName);
   if (!existingRemote) {
     const nameVersionRegistry = [name, version, registry].filter(Boolean).join('~');
-    const prefix = baseURL || '/plugins';
+    const prefix = baseURL ?? DEFAULT_PLUGINS_ASSETS_BASE_URL;
     const remoteEntryURL = `${prefix}/${nameVersionRegistry}/mf-manifest.json`;
 
     pluginRuntime.registerRemotes([

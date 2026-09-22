@@ -13,7 +13,7 @@
 
 import { Box, Button, Card, Stack, Tab, Tabs, useMediaQuery } from '@mui/material';
 import { useLocalStorage } from '@perses-dev/components';
-import { PluginLoaderComponent, useListPluginMetadata } from '@perses-dev/plugin-system';
+import { PluginLoaderComponent, useListPluginMetadata, usePluginRegistry } from '@perses-dev/plugin-system';
 import ChevronLeft from 'mdi-material-ui/ChevronLeft';
 import ChevronRight from 'mdi-material-ui/ChevronRight';
 import type { ReactElement, ReactNode } from 'react';
@@ -33,6 +33,7 @@ export function ExploreManager(props: ExploreManagerProps): ReactElement {
   const { explorer, setExplorer } = useExplorerManagerContext();
 
   const plugins = useListPluginMetadata(['Explore']);
+  const { pluginsBaseURL } = usePluginRegistry();
 
   const isSmallScreen = useMediaQuery('(max-width: 768px)');
   const [isCollapsed, setIsCollapsed] = useLocalStorage<boolean>(EXPLORE_TABS_COLLAPSED_KEY, false);
@@ -120,6 +121,7 @@ export function ExploreManager(props: ExploreManagerProps): ReactElement {
                 moduleName: currentPlugin.module.name,
                 version: currentPlugin.module.version,
                 registry: currentPlugin.module.registry,
+                baseURL: pluginsBaseURL,
               }}
             />
           )}

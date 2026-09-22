@@ -28,6 +28,7 @@ export interface PluginRegistryContextType {
   getPlugin<T extends PluginType>(compoundKey: PluginCompoundKey<T>): Promise<PluginImplementation<T>>;
   listPluginMetadata(pluginTypes?: PluginType[]): Promise<PluginMetadataWithModule[]>;
   defaultPluginKinds?: DefaultPluginKinds;
+  pluginsBaseURL?: string;
 }
 
 export const PluginRegistryContext = createContext<PluginRegistryContextType | undefined>(undefined);
