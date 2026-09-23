@@ -53,6 +53,7 @@ const getCheckboxColor: TableProps<LegendItem>['getCheckboxColor'] = (data) => {
 
 // This is a rough estimate of value that needs to be subtracted from the total width to avoid horizontal scrolling on initial render
 const TABLE_PADDING = 45;
+const EMPTY_COLUMNS: Array<TableColumnConfig<LegendItem>> = [];
 
 export function TableLegend({
   items,
@@ -62,7 +63,7 @@ export function TableLegend({
   onItemMouseOut,
   height,
   width,
-  columns: additionalColumns = [],
+  columns: additionalColumns = EMPTY_COLUMNS,
   sorting,
   onSortingChange,
 }: TableLegendProps): ReactElement {
