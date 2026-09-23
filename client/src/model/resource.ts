@@ -34,7 +34,7 @@ export interface ProjectMetadata extends Metadata {
 export interface Resource {
   kind: Kind;
   metadata: Metadata | ProjectMetadata;
-  spec?: any;
+  spec?: unknown;
 }
 
 export interface ProjectResource {

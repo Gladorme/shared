@@ -266,7 +266,7 @@ describe('persesColumnToTanstackColumn', () => {
         headerDescription: 'The total number of values.',
         width: 120,
         dataLink: undefined,
-        cell: (data) => <strong>{data.getValue()}</strong>,
+        cell: (data) => <strong>{data.getValue<number>()}</strong>,
         cellDescription: (data) => `Desc for ${data.getValue()}`,
       },
     ];

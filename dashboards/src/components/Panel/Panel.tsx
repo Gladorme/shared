@@ -114,10 +114,9 @@ export const Panel = memo(function Panel(props: PanelProps) {
   const panelPropsForActions = useMemo(() => {
     return {
       spec: definition.spec.plugin.spec,
-      queryResults: queryResults.map((query) => ({
-        definition: query.definition,
-        data: query.data,
-      })),
+      queryResults: queryResults.flatMap((query) =>
+        query.data ? [{ definition: query.definition, data: query.data }] : [],
+      ),
       contentDimensions,
       definition,
     };
@@ -161,7 +160,7 @@ export const Panel = memo(function Panel(props: PanelProps) {
           .map((action, index): ReactNode | null => {
             const ActionComponent = action.component;
             try {
-              return <ActionComponent key={`plugin-action-${index}`} {...(panelPropsForActions as any)} />;
+              return <ActionComponent key={`plugin-action-${index}`} {...panelPropsForActions} />;
             } catch (error) {
               console.warn(`Failed to render plugin action ${index}:`, error);
               return null;
