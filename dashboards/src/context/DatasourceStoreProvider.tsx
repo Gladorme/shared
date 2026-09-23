@@ -233,6 +233,7 @@ export function DatasourceStoreProvider(props: DatasourceStoreProviderProps): Re
   const ctxValue: DatasourceStore = useMemo(
     () =>
       ({
+        project,
         getDatasource,
         getDatasourceClient,
         getDatasourceSpecSync,
@@ -243,6 +244,7 @@ export function DatasourceStoreProvider(props: DatasourceStoreProviderProps): Re
         listDatasourceSelectItems,
       }) as DatasourceStore,
     [
+      project,
       getDatasource,
       getDatasourceClient,
       getDatasourceSpecSync,
