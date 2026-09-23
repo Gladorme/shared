@@ -13,19 +13,12 @@
 
 import type { CardProps } from '@mui/material';
 import { Card, CardContent } from '@mui/material';
-import {
-  ErrorAlert,
-  ErrorBoundary,
-  ItemActionsProvider,
-  SelectionProvider,
-  combineSx,
-  useId,
-} from '@perses-dev/components';
+import { ErrorAlert, ErrorBoundary, ItemActionsProvider, SelectionProvider, combineSx } from '@perses-dev/components';
 import type { ActionOptions } from '@perses-dev/plugin-system';
 import { useDataQueriesContext, usePluginRegistry } from '@perses-dev/plugin-system';
 import type { PanelDefinition } from '@perses-dev/spec';
 import type { ReactNode } from 'react';
-import { memo, useEffect, useMemo, useState } from 'react';
+import { memo, useEffect, useId, useMemo, useState } from 'react';
 import useResizeObserver from 'use-resize-observer';
 
 import type { PanelGroupItemId } from '../../model';
@@ -96,7 +89,7 @@ export const Panel = memo(function Panel(props: PanelProps) {
   } = props;
 
   // Make sure we have an ID we can use for aria attributes
-  const generatedPanelId = useId('Panel');
+  const generatedPanelId = `Panel-${useId()}`;
   const headerId = `${generatedPanelId}-header`;
 
   const [contentElement, setContentElement] = useState<HTMLElement | null>(null);
