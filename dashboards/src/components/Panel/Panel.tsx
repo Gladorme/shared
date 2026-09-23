@@ -161,7 +161,6 @@ export const Panel = memo(function Panel(props: PanelProps) {
           .map((action, index): ReactNode | null => {
             const ActionComponent = action.component;
             try {
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               return <ActionComponent key={`plugin-action-${index}`} {...(panelPropsForActions as any)} />;
             } catch (error) {
               console.warn(`Failed to render plugin action ${index}:`, error);

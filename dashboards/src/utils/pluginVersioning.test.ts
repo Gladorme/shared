@@ -37,7 +37,6 @@ function buildMetadata(
     metadata: options?.pluginVersion ? { version: options.pluginVersion } : undefined,
     spec: { name, display: { name } },
     module: { name: `${name}-module`, version: moduleVersion, registry: options?.registry },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } as any;
 }
 
@@ -72,12 +71,10 @@ function buildDashboard(): DashboardResource {
             allowAllValue: false,
             plugin: { kind: 'PrometheusLabelValuesVariable', spec: {} },
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
         {
           kind: 'TextVariable',
           spec: { name: 'bar', value: 'baz' },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       ],
       layouts: [],
@@ -94,21 +91,18 @@ function buildDashboard(): DashboardResource {
               },
             ],
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       },
       datasources: {
         ds1: {
           default: true,
           plugin: { kind: 'PrometheusDatasource', spec: {} },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       },
       annotations: [
         {
           display: { name: 'anno' },
           plugin: { kind: 'TempoAnnotation', spec: {} },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       ],
     },
@@ -181,18 +175,12 @@ describe('applyPluginVersions / removePluginVersions / isDashboardLocked', () =>
     const locked = applyPluginVersions(dashboard, versions);
 
     // original is untouched (deep clone)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((dashboard.spec.panels.panel1 as any).spec.plugin.metadata).toBeUndefined();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((locked.spec.panels.panel1 as any).spec.plugin.metadata.version).toBe('1.0.0');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((locked.spec.panels.panel1 as any).spec.queries[0].spec.plugin.metadata.version).toBe('1.1.0');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((locked.spec.variables[0] as any).spec.plugin.metadata.version).toBe('1.2.0');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((locked.spec.datasources!.ds1 as any).plugin.metadata.version).toBe('1.3.0');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((locked.spec.annotations![0] as any).plugin.metadata.version).toBe('1.4.0');
     expect(isDashboardLocked(locked)).toBe(true);
   });
@@ -202,15 +190,12 @@ describe('applyPluginVersions / removePluginVersions / isDashboardLocked', () =>
     const unlocked = removePluginVersions(locked);
 
     expect(isDashboardLocked(unlocked)).toBe(false);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((unlocked.spec.panels.panel1 as any).spec.plugin.metadata).toBeUndefined();
   });
 
   test('plugins without an available version are left unpinned', () => {
     const partial = applyPluginVersions(buildDashboard(), buildVersions([['Panel', 'TimeSeriesChart', '1.0.0']]));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((partial.spec.panels.panel1 as any).spec.plugin.metadata.version).toBe('1.0.0');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((partial.spec.datasources!.ds1 as any).plugin.metadata).toBeUndefined();
   });
 
@@ -287,7 +272,6 @@ describe('findOutdatedPlugins / updatePluginVersions', () => {
 
   test('a pin on a plugin registry that has nothing newer is left alone', () => {
     const dashboard = applyPluginVersions(buildDashboard(), buildVersions([['Panel', 'TimeSeriesChart', '1.0.0']]));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (dashboard.spec.panels.panel1 as any).spec.plugin.metadata.registry = 'other';
     // `latest` only knows about the registry-less identity, so nothing can be proposed for registry 'other'.
     expect(findOutdatedPlugins(dashboard, latest)).toEqual([]);
@@ -300,16 +284,12 @@ describe('findOutdatedPlugins / updatePluginVersions', () => {
 
     const updated = updatePluginVersions(dashboard, [panelPlugin]);
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((updated.spec.panels.panel1 as any).spec.plugin.metadata.version).toBe('2.0.0');
     // Not selected -> untouched
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((updated.spec.panels.panel1 as any).spec.queries[0].spec.plugin.metadata.version).toBe('1.0.0');
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((updated.spec.datasources!.ds1 as any).plugin.metadata.version).toBe('1.0.0');
 
     // The source dashboard is not mutated
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     expect((dashboard.spec.panels.panel1 as any).spec.plugin.metadata.version).toBe('1.0.0');
   });
 

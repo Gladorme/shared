@@ -24,8 +24,7 @@ describe('getTableCellLayout', () => {
       { name: 'first column', opts: { isFirstColumn: true } },
       { name: 'center column', opts: {} },
       { name: 'last column', opts: { isLastColumn: true } },
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ])(`in $name`, ({ name, opts }) => {
+    ])(`in $name`, ({ opts }) => {
       expect(getTableCellLayout(mockMuiTheme, density, opts)).toMatchSnapshot();
     });
   });

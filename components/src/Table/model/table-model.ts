@@ -351,7 +351,6 @@ export interface TableCellConfig {
 // I couldn't get it to work properly that way and punted on figuring it out
 // after trying several things.
 declare module '@tanstack/table-core' {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
     align?: TableColumnConfig<TData>['align'];
     headerDescription?: TableColumnConfig<TData>['headerDescription'];
@@ -380,7 +379,6 @@ export interface TableColumnConfig<TableData>
   // https://github.com/TanStack/table/issues/4241
   // TODO: revisit issue thread and see if there are any workarounds we can
   // use.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   extends Pick<AccessorKeyColumnDef<TableData, any>, 'accessorKey' | 'cell' | 'sortingFn' | 'id' | 'enableResizing'> {
   /**
    * Text to display in the header for the column.
@@ -401,7 +399,6 @@ export interface TableColumnConfig<TableData>
    * can be treated as a string.
    */
   // `any` needed for same reason as no-explicit-any higher up in this type.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   cellDescription?: ((props: CellContext<TableData, any>) => string) | boolean | undefined;
 
   /**
