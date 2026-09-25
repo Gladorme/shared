@@ -33,3 +33,22 @@ it('debounces changes and cancels pending callbacks when unmounted', () => {
     vi.useRealTimers();
   }
 });
+
+it('delivers pending input to the latest callback without restarting the debounce', () => {
+  vi.useFakeTimers();
+  const originalOnChange = vi.fn();
+  const latestOnChange = vi.fn();
+  try {
+    const { rerender } = render(<TextField label="Query" value="" onChange={originalOnChange} debounceMs={250} />);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'rate(up[5m])' } });
+    act(() => vi.advanceTimersByTime(200));
+    rerender(<TextField label="Query" value="" onChange={latestOnChange} debounceMs={250} />);
+
+    expect(screen.getByRole('textbox')).toHaveValue('rate(up[5m])');
+    act(() => vi.advanceTimersByTime(50));
+    expect(originalOnChange).not.toHaveBeenCalled();
+    expect(latestOnChange).toHaveBeenCalledExactlyOnceWith('rate(up[5m])');
+  } finally {
+    vi.useRealTimers();
+  }
+});
