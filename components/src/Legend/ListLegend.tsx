@@ -11,6 +11,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import type { SxProps, Theme } from '@mui/material';
 import type { ReactElement } from 'react';
 import { Virtuoso } from 'react-virtuoso';
 
@@ -18,6 +19,13 @@ import type { LegendItem, SelectedLegendItemState } from './legend-model';
 import { isLegendItemVisuallySelected } from './legend-model';
 import type { ListLegendItemProps } from './ListLegendItem';
 import { ListLegendItem } from './ListLegendItem';
+
+// Shared by every item so the memoized items are not re-rendered because of a new sx object.
+const ITEM_SX: SxProps<Theme> = {
+  width: '100%',
+  wordBreak: 'break-word',
+  overflow: 'hidden',
+};
 
 export interface ListLegendProps {
   items: LegendItem[];
@@ -63,11 +71,7 @@ export function ListLegend({
             onClick={onLegendItemClick}
             onMouseOver={onItemMouseOver}
             onMouseOut={onItemMouseOut}
-            sx={{
-              width: '100%',
-              wordBreak: 'break-word',
-              overflow: 'hidden',
-            }}
+            sx={ITEM_SX}
           />
         );
       }}

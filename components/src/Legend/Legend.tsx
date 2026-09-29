@@ -14,6 +14,7 @@
 import { Box } from '@mui/material';
 import { produce } from 'immer';
 import type { ReactElement, ReactNode } from 'react';
+import { useCallback } from 'react';
 
 import { getLegendMode } from '../model';
 import { CompactLegend } from './CompactLegend';
@@ -76,41 +77,45 @@ export function Legend({
   onItemMouseOut,
   tableProps,
 }: LegendProps): ReactElement {
-  const onLegendItemClick = (e: React.MouseEvent<HTMLElement, MouseEvent>, seriesId: string): void => {
-    const isModifiedClick = e.metaKey || e.shiftKey;
+  // Stable while the selection does not change, so memoized legend items do not all re-render with the parent panel.
+  const onLegendItemClick = useCallback(
+    (e: React.MouseEvent<HTMLElement, MouseEvent>, seriesId: string): void => {
+      const isModifiedClick = e.metaKey || e.shiftKey;
 
-    const newSelected = produce(selectedItems, (draft) => {
-      if (draft === 'ALL') {
-        return {
-          [seriesId]: true,
-        };
-      }
-
-      const isSelected = !!draft[seriesId];
-
-      // Clicks with modifier key can select multiple items.
-      if (isModifiedClick) {
-        if (isSelected) {
-          // Modified click on already selected item. Remove that item.
-          delete draft[seriesId];
-        } else {
-          // Modified click on not-selected item. Add it.
-          draft[seriesId] = true;
+      const newSelected = produce(selectedItems, (draft) => {
+        if (draft === 'ALL') {
+          return {
+            [seriesId]: true,
+          };
         }
-        return draft;
-      }
 
-      if (isSelected) {
-        // Clicked item was already selected. Unselect it and return to
-        // ALL state.
-        return 'ALL' as const;
-      }
+        const isSelected = !!draft[seriesId];
 
-      // Select clicked item.
-      return { [seriesId]: true };
-    });
-    onSelectedItemsChange(newSelected);
-  };
+        // Clicks with modifier key can select multiple items.
+        if (isModifiedClick) {
+          if (isSelected) {
+            // Modified click on already selected item. Remove that item.
+            delete draft[seriesId];
+          } else {
+            // Modified click on not-selected item. Add it.
+            draft[seriesId] = true;
+          }
+          return draft;
+        }
+
+        if (isSelected) {
+          // Clicked item was already selected. Unselect it and return to
+          // ALL state.
+          return 'ALL' as const;
+        }
+
+        // Select clicked item.
+        return { [seriesId]: true };
+      });
+      onSelectedItemsChange(newSelected);
+    },
+    [selectedItems, onSelectedItemsChange],
+  );
 
   const mode = getLegendMode(options.mode);
 

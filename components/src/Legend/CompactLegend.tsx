@@ -12,12 +12,20 @@
 // limitations under the License.
 
 import { Box } from '@mui/material';
+import type { SxProps, Theme } from '@mui/material';
 import type { ReactElement } from 'react';
 
 import type { LegendItem, SelectedLegendItemState } from './legend-model';
 import { isLegendItemVisuallySelected } from './legend-model';
 import type { ListLegendItemProps } from './ListLegendItem';
 import { ListLegendItem } from './ListLegendItem';
+
+// Shared by every item so the memoized items are not re-rendered because of a new sx object.
+const ITEM_SX: SxProps<Theme> = {
+  width: 'auto',
+  float: 'left',
+  paddingRight: 1.5,
+};
 
 export interface CompactLegendProps {
   height: number;
@@ -53,11 +61,7 @@ export function CompactLegend({
           onMouseOver={onItemMouseOver}
           onMouseOut={onItemMouseOut}
           onClick={onLegendItemClick}
-          sx={{
-            width: 'auto',
-            float: 'left',
-            paddingRight: 1.5,
-          }}
+          sx={ITEM_SX}
         />
       ))}
     </Box>
