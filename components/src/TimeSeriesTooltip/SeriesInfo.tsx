@@ -12,7 +12,8 @@
 // limitations under the License.
 
 import { Box } from '@mui/material';
-import type { ReactElement } from 'react';
+import type { SxProps, Theme } from '@mui/material';
+import { memo } from 'react';
 
 import { SeriesLabelsStack } from './SeriesLabelsStack';
 import { SeriesMarker } from './SeriesMarker';
@@ -28,7 +29,12 @@ export interface SeriesInfoProps {
   wrapLabels?: boolean;
 }
 
-export function SeriesInfo(props: SeriesInfoProps): ReactElement {
+const ROW_SX: SxProps<Theme> = { display: 'table-row', paddingTop: 0.5 };
+const LABEL_CELL_SX: SxProps<Theme> = { display: 'table-cell', maxWidth: '520px' };
+const MARKER_SX: SxProps<Theme> = { marginTop: 0.5 };
+
+// Memoized since the tooltip re-renders on every mouse move while most rows keep the same values.
+export const SeriesInfo = memo(function SeriesInfo(props: SeriesInfoProps) {
   const { seriesName, formattedY, markerColor, totalSeries, emphasizeText = false, wrapLabels = true } = props;
 
   // metric __name__ comes before opening curly brace, ignore if not populated
@@ -58,19 +64,9 @@ export function SeriesInfo(props: SeriesInfoProps): ReactElement {
   const formattedSeriesInfo = seriesName.replace(/[,]/g, ', ');
 
   return (
-    <Box
-      sx={{
-        display: 'table-row',
-        paddingTop: 0.5,
-      }}
-    >
-      <Box
-        sx={{
-          display: 'table-cell',
-          maxWidth: '520px',
-        }}
-      >
-        <SeriesMarker markerColor={markerColor} sx={{ marginTop: 0.5 }} />
+    <Box sx={ROW_SX}>
+      <Box sx={LABEL_CELL_SX}>
+        <SeriesMarker markerColor={markerColor} sx={MARKER_SX} />
         <Box
           component="span"
           sx={(theme) => ({
@@ -102,4 +98,4 @@ export function SeriesInfo(props: SeriesInfoProps): ReactElement {
       </Box>
     </Box>
   );
-}
+});

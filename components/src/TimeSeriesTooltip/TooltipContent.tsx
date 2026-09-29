@@ -44,7 +44,9 @@ export function TooltipContent(props: TooltipContentProps): ReactElement | null 
     >
       {sortedFocusedSeries.map(({ datumIdx, seriesIdx, seriesName, y, formattedY, markerColor, isClosestToCursor }) => {
         if (datumIdx === null || seriesIdx === null) return null;
-        const key = seriesIdx.toString() + datumIdx.toString();
+        // Each series appears once per tooltip. Keying by series (not datum) keeps rows mounted while the
+        // cursor moves across timestamps, so memoized rows only re-render when their values change.
+        const key = seriesIdx.toString();
 
         return (
           <SeriesInfo

@@ -18,10 +18,36 @@ import { EMPHASIZED_SERIES_DESCRIPTION, NEARBY_SERIES_DESCRIPTION } from './tool
 import type { TooltipContentProps } from './TooltipContent';
 import { TooltipContent } from './TooltipContent';
 
+function buildSingleSeries(datumIdx: number, formattedY: string): TooltipContentProps['series'] {
+  return [
+    {
+      seriesIdx: 0,
+      datumIdx,
+      seriesName: 'series-a',
+      date: 1671803580000 + datumIdx,
+      x: 1671803580000 + datumIdx,
+      y: datumIdx,
+      formattedY,
+      markerColor: '#000',
+      isClosestToCursor: false,
+    },
+  ];
+}
+
 describe('TooltipContent', () => {
   const renderComponent = (props: TooltipContentProps): void => {
     render(<TooltipContent {...props} />);
   };
+
+  it('keeps series rows mounted when the hovered timestamp changes', () => {
+    const { rerender } = render(<TooltipContent series={buildSingleSeries(1, 'first')} />);
+    const row = screen.getByText('series-a');
+
+    rerender(<TooltipContent series={buildSingleSeries(2, 'second')} />);
+
+    expect(screen.getByText('second')).toBeInTheDocument();
+    expect(screen.getByText('series-a')).toBe(row);
+  });
 
   it('should display a single series name', () => {
     const tooltipContent: TooltipContentProps = {
