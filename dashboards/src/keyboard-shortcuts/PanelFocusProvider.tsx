@@ -14,18 +14,22 @@
 import type { ReactElement, ReactNode } from 'react';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-interface PanelFocusContextValue {
-  focusedPanelKey: string | null;
+interface PanelFocusActions {
   setFocusedPanel: (panelKey: string) => void;
   clearFocusedPanel: () => void;
 }
 
-const PanelFocusContext = createContext<PanelFocusContextValue | undefined>(undefined);
+// The focused panel and the actions are exposed through separate contexts: every panel uses the actions,
+// so they must not re-render each time the focused panel changes.
+const PanelFocusStateContext = createContext<string | null | undefined>(undefined);
+const PanelFocusActionsContext = createContext<PanelFocusActions | undefined>(undefined);
 
-function usePanelFocusContext(): PanelFocusContextValue {
-  const ctx = useContext(PanelFocusContext);
+const MISSING_PROVIDER_ERROR = 'Panel focus hooks must be used within a PanelFocusProvider';
+
+function usePanelFocusActions(): PanelFocusActions {
+  const ctx = useContext(PanelFocusActionsContext);
   if (ctx === undefined) {
-    throw new Error('Panel focus hooks must be used within a PanelFocusProvider');
+    throw new Error(MISSING_PROVIDER_ERROR);
   }
   return ctx;
 }
@@ -46,20 +50,27 @@ export function PanelFocusProvider({ children }: { children: ReactNode }): React
     setFocusedPanelKeyState(null);
   }, []);
 
-  const value = useMemo(
-    (): PanelFocusContextValue => ({
-      focusedPanelKey,
+  const actions = useMemo(
+    (): PanelFocusActions => ({
       setFocusedPanel,
       clearFocusedPanel,
     }),
-    [focusedPanelKey, setFocusedPanel, clearFocusedPanel],
+    [setFocusedPanel, clearFocusedPanel],
   );
 
-  return <PanelFocusContext.Provider value={value}>{children}</PanelFocusContext.Provider>;
+  return (
+    <PanelFocusActionsContext.Provider value={actions}>
+      <PanelFocusStateContext.Provider value={focusedPanelKey}>{children}</PanelFocusStateContext.Provider>
+    </PanelFocusActionsContext.Provider>
+  );
 }
 
 export function useFocusedPanel(): string | null {
-  return usePanelFocusContext().focusedPanelKey;
+  const focusedPanelKey = useContext(PanelFocusStateContext);
+  if (focusedPanelKey === undefined) {
+    throw new Error(MISSING_PROVIDER_ERROR);
+  }
+  return focusedPanelKey;
 }
 
 const PANEL_FOCUS_DEBOUNCE_MS = 50;
@@ -69,7 +80,7 @@ export function usePanelFocusHandlers(panelKey: string): {
   onMouseEnter: (e: React.MouseEvent<HTMLElement>) => void;
   onMouseLeave: () => void;
 } {
-  const { setFocusedPanel, clearFocusedPanel } = usePanelFocusContext();
+  const { setFocusedPanel, clearFocusedPanel } = usePanelFocusActions();
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const onMouseEnter = useCallback(

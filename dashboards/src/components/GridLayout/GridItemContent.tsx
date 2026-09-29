@@ -82,26 +82,33 @@ export function GridItemContent(props: GridItemContentProps): ReactElement {
         };
   }, [canModify, queries]);
 
-  const readHandlers = {
-    isPanelViewed: isPanelGroupItemIdEqual(viewPanelGroupItemId, panelGroupItemId),
-    onViewPanelClick: function (): void {
-      if (viewPanelGroupItemId === undefined) {
-        viewPanel(panelGroupItemId);
-      } else {
-        viewPanel(undefined);
-      }
-    },
-  };
+  const isPanelViewed = isPanelGroupItemIdEqual(viewPanelGroupItemId, panelGroupItemId);
+  const readHandlers = useMemo(
+    () => ({
+      isPanelViewed,
+      onViewPanelClick: function (): void {
+        if (viewPanelGroupItemId === undefined) {
+          viewPanel(panelGroupItemId);
+        } else {
+          viewPanel(undefined);
+        }
+      },
+    }),
+    [isPanelViewed, viewPanelGroupItemId, viewPanel, panelGroupItemId],
+  );
 
   // Provide actions to the panel when in edit mode
-  let editHandlers: PanelProps['editHandlers'] = undefined;
-  if (canModify) {
-    editHandlers = {
-      onEditPanelClick: openEditPanel,
-      onDuplicatePanelClick: duplicatePanel,
-      onDeletePanelClick: openDeletePanelDialog,
-    };
-  }
+  const editHandlers: PanelProps['editHandlers'] = useMemo(
+    () =>
+      canModify
+        ? {
+            onEditPanelClick: openEditPanel,
+            onDuplicatePanelClick: duplicatePanel,
+            onDeletePanelClick: openDeletePanelDialog,
+          }
+        : undefined,
+    [canModify, openEditPanel, duplicatePanel, openDeletePanelDialog],
+  );
 
   // map TimeSeriesQueryDefinition to Definition<UnknownSpec>
   const suggestedStepMs = useSuggestedStepMs(width);

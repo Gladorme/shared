@@ -153,6 +153,31 @@ describe('PanelFocusProvider', () => {
       // Panel should never have been focused
       expect(screen.getByTestId('focused-panel').textContent).toBe('none');
     });
+
+    it('should not re-render panels using the handlers when the focused panel changes', () => {
+      let handlerRenders = 0;
+      function PanelWithHandlers(): ReactElement {
+        handlerRenders++;
+        const { onMouseEnter } = usePanelFocusHandlers('panel-2');
+        return <div data-testid="other-panel" tabIndex={-1} onMouseEnter={onMouseEnter} />;
+      }
+
+      render(
+        <PanelFocusProvider>
+          <PanelFocusTest panelKey="panel-1" />
+          <PanelWithHandlers />
+        </PanelFocusProvider>,
+      );
+      const initialRenders = handlerRenders;
+
+      act(() => {
+        fireEvent.mouseEnter(screen.getByTestId('panel-target'));
+        vi.advanceTimersByTime(50);
+      });
+
+      expect(screen.getByTestId('focused-panel').textContent).toBe('panel-1');
+      expect(handlerRenders).toBe(initialRenders);
+    });
   });
 
   describe('error handling', () => {
@@ -162,6 +187,10 @@ describe('PanelFocusProvider', () => {
 
       expect(() => {
         renderHook(() => useFocusedPanel());
+      }).toThrow('Panel focus hooks must be used within a PanelFocusProvider');
+
+      expect(() => {
+        renderHook(() => usePanelFocusHandlers('panel-1'));
       }).toThrow('Panel focus hooks must be used within a PanelFocusProvider');
 
       spy.mockRestore();

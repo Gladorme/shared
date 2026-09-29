@@ -313,12 +313,16 @@ export function usePanelActions(panelGroupItemId: PanelGroupItemId): {
   viewPanel: (panelGroupItemId?: PanelGroupItemId) => void;
 } {
   const { openEditPanel, openDeletePanelDialog, duplicatePanel, setViewPanel } = useDashboardStore(selectPanelActions);
-  return {
-    openEditPanel: () => openEditPanel(panelGroupItemId),
-    openDeletePanelDialog: () => openDeletePanelDialog(panelGroupItemId),
-    duplicatePanel: () => duplicatePanel(panelGroupItemId),
-    viewPanel: (panelGroupItemId?: PanelGroupItemId) => setViewPanel(panelGroupItemId),
-  };
+  // Memoized so components passing these handlers to memoized children (e.g. Panel) do not re-render them.
+  return useMemo(
+    () => ({
+      openEditPanel: (): void => openEditPanel(panelGroupItemId),
+      openDeletePanelDialog: (): void => openDeletePanelDialog(panelGroupItemId),
+      duplicatePanel: (): void => duplicatePanel(panelGroupItemId),
+      viewPanel: (panelGroupItemId?: PanelGroupItemId): void => setViewPanel(panelGroupItemId),
+    }),
+    [openEditPanel, openDeletePanelDialog, duplicatePanel, setViewPanel, panelGroupItemId],
+  );
 }
 
 const selectPanelEditor: (state: DashboardStoreState) => PanelEditorState | undefined = (state: DashboardStoreState) =>
