@@ -22,6 +22,8 @@ import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/shallow';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 
+import { useAnnotationSpecsWithData } from './annotation-data';
+
 export type AnnotationState = {
   data: AnnotationData[] | null;
   isPending: boolean;
@@ -108,10 +110,7 @@ export type AnnotationSpecWithData = {
 export function useAnnotationsWithData(): AnnotationSpecWithData[] {
   const definitions = useAnnotationSpecs();
   const queries = useAnnotations(definitions);
-  return definitions.flatMap((definition, index) => {
-    const data = queries[index]?.data;
-    return data ? [{ definition, data }] : [];
-  });
+  return useAnnotationSpecsWithData(definitions, queries);
 }
 
 interface AnnotationStoreArgs {

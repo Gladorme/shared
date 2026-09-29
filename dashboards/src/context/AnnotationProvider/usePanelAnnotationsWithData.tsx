@@ -15,6 +15,7 @@ import { useAnnotations } from '@perses-dev/plugin-system';
 import type { AnnotationSpec } from '@perses-dev/spec';
 import { useMemo } from 'react';
 
+import { useAnnotationSpecsWithData } from './annotation-data';
 import type { AnnotationSpecWithData } from './AnnotationProvider';
 import { useAnnotationsWithData } from './AnnotationProvider';
 
@@ -25,21 +26,17 @@ import { useAnnotationsWithData } from './AnnotationProvider';
  *
  * Data is fetched on demand through the shared query cache, including annotation previews.
  * Each result pairs the complete annotation spec (`definition`) with its available `data`.
+ * The returned array keeps its identity until the specs or their data change.
  */
 export function usePanelAnnotationsWithData(panelAnnotations?: AnnotationSpec[]): AnnotationSpecWithData[] {
   const dashboardAnnotations = useAnnotationsWithData();
 
   const localDefinitions = useMemo(() => panelAnnotations ?? [], [panelAnnotations]);
   const localResults = useAnnotations(localDefinitions);
+  const localAnnotations = useAnnotationSpecsWithData(localDefinitions, localResults);
 
-  return useMemo(() => {
-    const result: AnnotationSpecWithData[] = [...dashboardAnnotations];
-    localDefinitions.forEach((definition, index) => {
-      const data = localResults[index]?.data;
-      if (data) {
-        result.push({ definition, data });
-      }
-    });
-    return result;
-  }, [dashboardAnnotations, localDefinitions, localResults]);
+  return useMemo(
+    () => (localAnnotations.length === 0 ? dashboardAnnotations : [...dashboardAnnotations, ...localAnnotations]),
+    [dashboardAnnotations, localAnnotations],
+  );
 }
