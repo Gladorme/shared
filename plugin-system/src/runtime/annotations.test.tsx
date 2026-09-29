@@ -20,7 +20,7 @@ import type { ReactElement, ReactNode } from 'react';
 import { PluginRegistry } from '../components/PluginRegistry';
 import type { AnnotationPlugin } from '../model';
 import { mockPluginRegistry } from '../test-utils';
-import { ANNOTATION_KEY, useAnnotationData, useAnnotations } from './annotations';
+import { useAnnotationData, useAnnotations } from './annotations';
 import type { VariableStateMap } from './variables';
 
 const runtime = vi.hoisted(() => ({
@@ -172,14 +172,28 @@ describe('annotation query cache', () => {
     const refreshed = [{ start: 2, title: 'New deployment' }];
     getAnnotationData.mockResolvedValue(refreshed);
     await act(async () => {
-      await queryClient.invalidateQueries({ queryKey: ['query'] });
+      // Invalidated by TimeRangeProvider on dashboard refresh.
+      await queryClient.invalidateQueries({ queryKey: ['annotation'] });
     });
     await waitFor(() => {
       expect(result.current.panel?.data).toEqual(refreshed);
       expect(result.current.preview.data).toEqual(refreshed);
     });
     expect(getAnnotationData).toHaveBeenCalledTimes(2);
-    expect(queryClient.getQueryCache().findAll({ queryKey: ['query', ANNOTATION_KEY] })).toHaveLength(1);
+    expect(queryClient.getQueryCache().findAll({ queryKey: ['annotation'] })).toHaveLength(1);
+  });
+
+  it('refetches only the matching annotation when invalidated with its spec (preview re-run)', async () => {
+    const otherDefinition: AnnotationSpec = { ...definition, display: { name: 'Incidents' } };
+    const { result } = renderHook(() => useAnnotations([definition, otherDefinition]), { wrapper });
+    await waitFor(() => expect(result.current.every((query) => query.isSuccess)).toBe(true));
+    expect(getAnnotationData).toHaveBeenCalledTimes(2);
+
+    await act(async () => {
+      // Same key as the annotation editor preview "run query" (AnnotationEditorForm).
+      await queryClient.invalidateQueries({ queryKey: ['annotation', { ...definition }] });
+    });
+    expect(getAnnotationData).toHaveBeenCalledTimes(3);
   });
 
   it('exposes the same request error to panels and previews', async () => {

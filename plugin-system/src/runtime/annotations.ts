@@ -52,7 +52,8 @@ function getQueryOptions({
   const waitToLoad = Object.values(filteredVariableState).some((variable) => variable.loading);
 
   return {
-    queryKey: ['query', ANNOTATION_KEY, definition, absoluteTimeRange, variablesValueKey],
+    // ['annotation', spec] prefix: refreshed by TimeRangeProvider and invalidated by the annotation editor preview.
+    queryKey: ['annotation', definition, absoluteTimeRange, variablesValueKey],
     enabled: plugin !== undefined && !waitToLoad,
     refetchOnMount: false,
     refetchOnWindowFocus: false,

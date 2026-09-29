@@ -164,7 +164,8 @@ const annotations = usePanelAnnotationsWithData(definition?.spec.annotations);
 Here, `definition` is `PanelProps.definition`. Each returned item contains the complete annotation spec in `definition`
 (including display options and plugin configuration) and its fetched events in `data`. The hook combines dashboard
 annotations with panel-local annotations. Without an `AnnotationProvider`, it returns only panel-local annotations.
-Entries without data yet are omitted; successful empty results are retained.
+Entries without data yet are omitted; successful empty results are retained. The returned array keeps its identity until
+the specs or their data change, so it can be used as a `useMemo` dependency when building chart options.
 
 For specs alone, use `useAnnotationSpecs()` from `@perses-dev/dashboards` for dashboard annotations and
 `definition?.spec.annotations` for panel-local annotations. For loading, error, or refetch controls, pass specs to
@@ -174,7 +175,9 @@ outside dashboards when the query, plugin registry, time range, datasource, and 
 Annotation data lives in the TanStack Query cache. Panels and annotation previews under the same `QueryClientProvider`
 share in-flight requests and cached results for the same annotation spec, absolute time range, and dependent variable
 values. Mounting another consumer does not refetch cached data. Changing those inputs or refreshing dashboard queries
-fetches updated data. Queries wait for the annotation plugin and dependent variables to load.
+fetches updated data. Queries wait for the annotation plugin and dependent variables to load. Annotation queries use the
+`['annotation', spec, absoluteTimeRange, variablesValueKey]` key: invalidate `['annotation', spec]` to refetch a single
+annotation, or `['annotation']` for all of them (as the dashboard refresh does).
 
 `AnnotationProvider` stores specs without fetching data. The existing `useAnnotationsWithData`, `useAnnotationStates`, and
 `useAnnotationSpecAndState` hooks now read query results on demand. The hydration-only `setAnnotationState` action and

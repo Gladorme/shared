@@ -87,6 +87,29 @@ describe('usePanelAnnotationsWithData', () => {
     const result = renderPanelHook([panelDefinition]);
     await waitFor(() => expect(result.current).toEqual(['Deploys', 'Incidents']));
   });
+
+  it('keeps the same array across renders until the annotation data changes', () => {
+    // useQueries returns a new results array on every render, but data references are stable.
+    const dataByName = new Map<string, AnnotationData[]>([
+      ['Deploys', [{ start: 1, title: 'Deploys' }]],
+      ['Incidents', [{ start: 2, title: 'Incidents' }]],
+    ]);
+    resolveAnnotations.mockImplementation((definitions) =>
+      definitions.map((definition) => ({ data: dataByName.get(definition.display.name) })),
+    );
+    const panelDefinitions = [panelDefinition];
+    const { result, rerender } = renderHook(() => usePanelAnnotationsWithData(panelDefinitions), { wrapper });
+    const firstResult = result.current;
+
+    rerender();
+    expect(result.current).toBe(firstResult);
+
+    dataByName.set('Incidents', [{ start: 3, title: 'Incidents' }]);
+    rerender();
+    expect(result.current).not.toBe(firstResult);
+    expect(result.current.map((annotation) => annotation.data[0]?.start)).toEqual([1, 3]);
+  });
+
   it('does not fetch annotations when only specs are consumed', () => {
     const { result } = renderHook(() => useAnnotationSpecs(), { wrapper });
     expect(result.current).toEqual([dashboardDefinition]);
