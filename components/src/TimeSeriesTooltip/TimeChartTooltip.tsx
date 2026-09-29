@@ -21,7 +21,7 @@ import useResizeObserver from 'use-resize-observer';
 import type { FormatOptions, TimeChartSeriesMapping } from '../model';
 import { getNearbySeriesData } from './nearby-series';
 import type { CursorCoordinates } from './tooltip-model';
-import { useMousePosition } from './tooltip-model';
+import { useChartMousePosition } from './tooltip-model';
 import { TooltipContent } from './TooltipContent';
 import { TooltipHeader } from './TooltipHeader';
 import { assembleTransform, getTooltipStyles } from './utils';
@@ -62,10 +62,13 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
   const transform = useRef<string | undefined>();
   const tooltipElementRef = useRef<HTMLDivElement | null>(null);
 
-  const mousePos = useMousePosition();
+  const mousePos = useChartMousePosition(chartRef);
   const { height, width, ref: tooltipRef } = useResizeObserver();
 
   const isTooltipPinned = pinnedPos !== null && enablePinning;
+  // A pinned tooltip does not follow the mouse, otherwise only show it while the cursor is over this chart canvas.
+  const cursorPos =
+    pinnedPos ?? (mousePos !== null && (mousePos.target as HTMLElement | null)?.tagName === 'CANVAS' ? mousePos : null);
 
   // Stable callback — prevents the ResizeObserver from disconnecting/reconnecting on every render.
   const setTooltipRef = useCallback(
@@ -80,31 +83,24 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
 
   // Synchronously reposition after every render to prevent one-frame viewport overflow.
   useLayoutEffect(() => {
-    if (mousePos === null) return;
+    if (cursorPos === null) return;
     const node = tooltipElementRef.current;
     if (!node) return;
     const rect = node.getBoundingClientRect();
     if (rect.height === 0 || rect.width === 0) return;
-    const nextTransform = assembleTransform(mousePos, pinnedPos, rect.height, rect.width, containerElement);
+    const nextTransform = assembleTransform(cursorPos, pinnedPos, rect.height, rect.width, containerElement);
     if (nextTransform && nextTransform !== transform.current) {
       transform.current = nextTransform;
       node.style.transform = nextTransform;
     }
   });
 
-  if (mousePos === null || mousePos.target === null || data === null) return null;
-
-  if (pinnedPos === null && (mousePos.target as HTMLElement).tagName !== 'CANVAS') return null;
+  if (cursorPos === null || data === null) return null;
 
   const chart = chartRef.current;
 
-  // Cap height to container so the tooltip is not cut off.
-  const maxHeight = containerElement ? containerElement.getBoundingClientRect().height : undefined;
-
-  transform.current = assembleTransform(mousePos, pinnedPos, height ?? 0, width ?? 0, containerElement);
-
   const nearbySeries = getNearbySeriesData({
-    mousePos,
+    mousePos: cursorPos,
     data,
     seriesMapping,
     pinnedPos,
@@ -116,6 +112,11 @@ export const TimeChartTooltip = memo(function TimeChartTooltip({
   if (nearbySeries.length === 0) {
     return null;
   }
+
+  // Cap height to container so the tooltip is not cut off.
+  const maxHeight = containerElement ? containerElement.getBoundingClientRect().height : undefined;
+
+  transform.current = assembleTransform(cursorPos, pinnedPos, height ?? 0, width ?? 0, containerElement);
 
   const totalSeries = data.length;
 

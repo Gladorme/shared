@@ -22,6 +22,9 @@ export interface ZoomEventData {
   end: number;
 }
 
+// Last nearby series actions applied to each chart by batchDispatchNearbySeriesActions.
+const lastNearbySeriesActions = new WeakMap<EChartsInstance, { model: unknown; key: string }>();
+
 /**
  * Enable dataZoom without requring user to click toolbox icon.
  * https://stackoverflow.com/questions/57183297/is-there-a-way-to-use-zoom-of-type-select-without-showing-the-toolbar
@@ -57,14 +60,18 @@ export function restoreChart(chart: EChartsInstance): void {
  */
 export function clearHighlightedSeries(chart: EChartsInstance): void {
   if (chart.dispatchAction !== undefined) {
+    lastNearbySeriesActions.delete(chart);
+
     // Clear any selected data points
     chart.dispatchAction({
       type: 'unselect',
+      escapeConnect: true,
     });
 
     // Clear any highlighted series
     chart.dispatchAction({
       type: 'downplay',
+      escapeConnect: true,
     });
   }
 }
@@ -92,6 +99,9 @@ export function getPointInGrid(cursorCoordX: number, cursorCoordY: number, chart
  * TimeSeriesChart tooltip is built custom to support finding nearby series instead of single or all series.
  * This means ECharts actions need to be dispatched manually for series highlighting, datapoint select state, etc.
  * More info: https://echarts.apache.org/en/api.html#action
+ *
+ * Actions are only dispatched when the resulting state differs from the last one applied to the chart, since the
+ * tooltip calls this on every mouse move. None of the actions are propagated to charts connected through a sync group.
  */
 export function batchDispatchNearbySeriesActions(
   chart: EChartsInstance,
@@ -107,6 +117,21 @@ export function batchDispatchNearbySeriesActions(
     duplicateDatapoints.length > 0
       ? duplicateDatapoints[duplicateDatapoints.length - 1]
       : emphasizedDatapoints[emphasizedDatapoints.length - 1];
+
+  // Replacing the chart option (setOption with notMerge) creates a new model and resets every emphasis state.
+  const model: unknown = chart['_model'];
+  const actionsKey = [
+    lastEmphasizedDatapoint ? `${lastEmphasizedDatapoint.seriesIndex}:${lastEmphasizedDatapoint.dataIndex}` : '',
+    emphasizedSeriesIndexes.join(','),
+    nearbySeriesIndexes.join(','),
+    nonEmphasizedSeriesIndexes.join(','),
+  ].join('|');
+  const lastActions = lastNearbySeriesActions.get(chart);
+  if (lastActions !== undefined && lastActions.model === model && lastActions.key === actionsKey) {
+    return;
+  }
+  lastNearbySeriesActions.set(chart, { model, key: actionsKey });
+
   if (lastEmphasizedDatapoint !== undefined) {
     // Corresponds to select options inside getTimeSeries util.
     // https://echarts.apache.org/en/option.html#series-line.select.itemStyle
@@ -124,6 +149,7 @@ export function batchDispatchNearbySeriesActions(
   // https://echarts.apache.org/en/api.html#action.downplay
   chart.dispatchAction({
     type: 'downplay',
+    escapeConnect: true,
   });
 
   // Clears emphasis state of all lines that are not emphasized.
@@ -132,6 +158,7 @@ export function batchDispatchNearbySeriesActions(
     chart.dispatchAction({
       type: 'downplay',
       seriesIndex: nonEmphasizedSeriesIndexes,
+      escapeConnect: true,
     });
   }
 
@@ -156,6 +183,7 @@ export function batchDispatchNearbySeriesActions(
     // Clears selected datapoints since no bold series in tooltip, restore does not impact highlighting
     chart.dispatchAction({
       type: 'toggleSelect', // https://echarts.apache.org/en/api.html#action.toggleSelect
+      escapeConnect: true,
     });
   }
 }

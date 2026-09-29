@@ -279,3 +279,95 @@ describe('checkforNearbyTimeSeries — stacked lines', () => {
     expect(downplayed.has(2)).toBe(true);
   });
 });
+
+function buildIdentityChartMock(): EChartsInstance {
+  return {
+    dispatchAction: (): void => {},
+    convertToPixel: (_finder: unknown, value: number[]): number[] => [value[0] ?? 0, value[1] ?? 0],
+    getDom: (): null => null,
+  } as unknown as EChartsInstance;
+}
+
+describe('checkforNearbyTimeSeries — datum lookup', () => {
+  const STEP = 15_000;
+  const START = 1_700_000_000_000;
+
+  const seriesMapping = [
+    { type: 'line', name: 'full', color: '#111', id: 'full' },
+    { type: 'line', name: 'sparse', color: '#222', id: 'sparse' },
+  ] as unknown as TimeChartSeriesMapping;
+
+  it('snaps to the closest timestamp and resolves the datum of each series', () => {
+    const data: TimeSeries[] = [
+      {
+        name: 'full',
+        values: [
+          [START, 1],
+          [START + STEP, 2],
+          [START + 2 * STEP, 3],
+          [START + 3 * STEP, 4],
+        ],
+      },
+      // Different length than the first series: the datum index cannot be reused as is.
+      {
+        name: 'sparse',
+        values: [
+          [START + 2 * STEP, 3.5],
+          [START + 3 * STEP, 4.5],
+        ],
+      },
+    ];
+
+    // Cursor slightly after the third timestamp.
+    const result = checkforNearbyTimeSeries(
+      data,
+      seriesMapping,
+      [START + 2 * STEP + 1_000, 3.2],
+      1,
+      buildIdentityChartMock(),
+    );
+
+    expect(result.map(({ seriesName, datumIdx, x, y }) => ({ seriesName, datumIdx, x, y }))).toEqual([
+      { seriesName: 'full', datumIdx: 2, x: START + 2 * STEP, y: 3 },
+      { seriesName: 'sparse', datumIdx: 0, x: START + 2 * STEP, y: 3.5 },
+    ]);
+  });
+
+  it('resolves ties to the earliest timestamp and clamps the cursor to the data range', () => {
+    const data: TimeSeries[] = [
+      {
+        name: 'full',
+        values: [
+          [START, 1],
+          [START + STEP, 2],
+        ],
+      },
+    ];
+    const chart = buildIdentityChartMock();
+
+    const tie = checkforNearbyTimeSeries(data, seriesMapping, [START + STEP / 2, 1], 5, chart);
+    expect(tie[0]?.x).toBe(START);
+
+    const beforeStart = checkforNearbyTimeSeries(data, seriesMapping, [START - STEP, 1], 5, chart);
+    expect(beforeStart[0]?.x).toBe(START);
+
+    const afterEnd = checkforNearbyTimeSeries(data, seriesMapping, [START + 10 * STEP, 2], 5, chart);
+    expect(afterEnd[0]?.x).toBe(START + STEP);
+  });
+
+  it('skips series without a value at the closest timestamp', () => {
+    const data: TimeSeries[] = [
+      {
+        name: 'full',
+        values: [
+          [START, 1],
+          [START + STEP, 1],
+        ],
+      },
+      { name: 'sparse', values: [[START + STEP, 1]] },
+    ];
+
+    const result = checkforNearbyTimeSeries(data, seriesMapping, [START, 1], 5, buildIdentityChartMock());
+    expect(result.map((series) => series.seriesName)).toEqual(['full']);
+  });
+});

@@ -17,7 +17,7 @@ import type { ECharts as EChartsInstance } from 'echarts/core';
 
 import type { EChartsDataFormat, TimeChartSeriesMapping, DatapointInfo, FormatOptions } from '../model';
 import { OPTIMIZED_MODE_SERIES_LIMIT, formatValue } from '../model';
-import { batchDispatchNearbySeriesActions, getPointInGrid, getClosestTimestamp } from '../utils';
+import { batchDispatchNearbySeriesActions, getPointInGrid } from '../utils';
 import type { CursorCoordinates, CursorData } from './tooltip-model';
 import { EMPTY_TOOLTIP_DATA } from './tooltip-model';
 import type { Candidate, GetYBufferParams, IsWithinPercentageRangeParams, NearbySeriesArray } from './types';
@@ -36,10 +36,52 @@ export const INCREASE_NEARBY_SERIES_MULTIPLIER = 5.5; // adjusts how many series
 export const DYNAMIC_NEARBY_SERIES_MULTIPLIER = 30; // used for adjustment after series number divisor
 export const SHOW_FEWER_SERIES_LIMIT = 5;
 
+/**
+ * Index of the first value whose timestamp is >= `timestamp`, assuming values are sorted by timestamp.
+ */
+function lowerBoundIndex(values: TimeSeriesValueTuple[], timestamp: number): number {
+  let low = 0;
+  let high = values.length;
+  while (low < high) {
+    const mid = (low + high) >>> 1;
+    if ((values[mid]?.[0] ?? Infinity) < timestamp) {
+      low = mid + 1;
+    } else {
+      high = mid;
+    }
+  }
+  return low;
+}
+
+/**
+ * Index of the value with the timestamp closest to `cursorX`, or -1 when there are no values.
+ * Ties resolve to the earliest timestamp, like getClosestTimestamp.
+ */
+function findClosestValueIndex(values: TimeSeriesValueTuple[] | undefined, cursorX: number): number {
+  if (values === undefined || values.length === 0) return -1;
+  const nextIdx = lowerBoundIndex(values, cursorX);
+  if (nextIdx === 0) return 0;
+  if (nextIdx >= values.length) return values.length - 1;
+  const previousDistance = Math.abs(cursorX - (values[nextIdx - 1]?.[0] ?? -Infinity));
+  const nextDistance = Math.abs((values[nextIdx]?.[0] ?? Infinity) - cursorX);
+  return nextDistance < previousDistance ? nextIdx : nextIdx - 1;
+}
+
+/**
+ * Index of the value with exactly `timestamp`, or -1. All series usually share the same timestamps
+ * (see getCommonTimeScale), so the index found in the first series is checked first.
+ */
+function findTimestampIndex(values: TimeSeriesValueTuple[], timestamp: number, hintIdx: number): number {
+  if (values[hintIdx]?.[0] === timestamp) return hintIdx;
+  const idx = lowerBoundIndex(values, timestamp);
+  return values[idx]?.[0] === timestamp ? idx : -1;
+}
+
 function gatherCandidates(
   data: TimeSeries[],
   seriesMapping: TimeChartSeriesMapping,
   closestTimestamp: number,
+  closestTimestampIdx: number,
   cursorX: number,
   cursorY: number,
   cursorXPixel: number | null,
@@ -53,29 +95,19 @@ function gatherCandidates(
 
   const stackTotals = new Map<string, number>();
 
-  let sortedTimestamps: number[] = [];
-  const firstValues = data[0]?.values;
-  if (firstValues && firstValues.length > 0) {
-    const seen = new Set<number>();
-    for (const [ts] of firstValues) {
-      if (!seen.has(ts)) {
-        seen.add(ts);
-        sortedTimestamps.push(ts);
-      }
-    }
-    sortedTimestamps = sortedTimestamps.toSorted((a, b) => a - b);
-  }
-
   // Bar-only indexes: ECharts groups bars independently of lines, so bar-relative index and count must exclude line series.
-  const barSeriesIndexes: number[] = [];
+  const barRelativeIndexes = new Map<number, number>();
   for (let i = 0; i < totalSeries; i++) {
-    if ((seriesMapping[i]?.type ?? 'line') === 'bar') barSeriesIndexes.push(i);
+    if ((seriesMapping[i]?.type ?? 'line') === 'bar') barRelativeIndexes.set(i, barRelativeIndexes.size);
   }
 
   // Computed once outside the loop — both depend only on the timestamp, not the series index.
   let barBandwidth: number | null = null;
   let barCenterPixelX: number | null = null;
-  if (barSeriesIndexes.length > 0 && cursorXPixel !== null) {
+  if (barRelativeIndexes.size > 0 && cursorXPixel !== null) {
+    const uniqueTimestamps = new Set<number>();
+    for (const [ts] of data[0]?.values ?? []) uniqueTimestamps.add(ts);
+    const sortedTimestamps = [...uniqueTimestamps].toSorted((a, b) => a - b);
     barBandwidth = calculateBarBandwidth(closestTimestamp, sortedTimestamps, chart);
     barCenterPixelX = getPixelXFromGrid(closestTimestamp, chart);
   }
@@ -95,21 +127,10 @@ function gatherCandidates(
     const seriesId = currentSeries.id ? currentSeries.id.toString() : '';
     const markerColor = (currentSeries.color ?? '#000').toString();
 
-    let datumIdx = -1;
-    let xValue = 0;
-    let yValue: number | null | undefined;
-    for (let i = 0; i < currentDatasetValues.length; i++) {
-      const tuple = currentDatasetValues[i];
-      if (!tuple) continue;
-      if (tuple[0] === closestTimestamp) {
-        datumIdx = i;
-        xValue = tuple[0];
-        yValue = tuple[1];
-        break;
-      }
-    }
+    const datumIdx = findTimestampIndex(currentDatasetValues, closestTimestamp, closestTimestampIdx);
     if (datumIdx === -1) continue;
 
+    const yValue = currentDatasetValues[datumIdx]?.[1];
     if (yValue === null || yValue === undefined) continue;
 
     let isCandidate = false;
@@ -144,14 +165,14 @@ function gatherCandidates(
     } else if (seriesType === 'bar') {
       if (cursorXPixel === null || barBandwidth === null || barCenterPixelX === null) continue;
 
-      const barRelativeIdx = barSeriesIndexes.indexOf(seriesIdx);
-      if (barRelativeIdx === -1) continue;
+      const barRelativeIdx = barRelativeIndexes.get(seriesIdx);
+      if (barRelativeIdx === undefined) continue;
 
       const segmentBounds = calculateBarSegmentBounds(
         barRelativeIdx,
         barBandwidth,
         barCenterPixelX,
-        barSeriesIndexes.length,
+        barRelativeIndexes.size,
       );
 
       const isWithinXBounds = cursorXPixel >= segmentBounds.left && cursorXPixel <= segmentBounds.right;
@@ -191,7 +212,7 @@ function gatherCandidates(
         seriesName: currentSeriesName,
         date: closestTimestamp,
         markerColor,
-        x: xValue,
+        x: closestTimestamp,
         y: yValue,
         visualY,
         distance,
@@ -313,7 +334,8 @@ export function checkforNearbyTimeSeries(
 
   // All series share the same x-axis timestamps (enforced by getCommonTimeScale).
   const firstTimeSeriesValues = data[0]?.values;
-  const closestTimestamp = getClosestTimestamp(firstTimeSeriesValues, cursorX);
+  const closestTimestampIdx = findClosestValueIndex(firstTimeSeriesValues, cursorX);
+  const closestTimestamp = firstTimeSeriesValues?.[closestTimestampIdx]?.[0] ?? null;
   if (closestTimestamp === null) return EMPTY_TOOLTIP_DATA;
 
   let yBufferPixels: number | null = null;
@@ -331,6 +353,7 @@ export function checkforNearbyTimeSeries(
     data,
     seriesMapping,
     closestTimestamp,
+    closestTimestampIdx,
     cursorX,
     cursorY,
     resolvedCursorXPixel,

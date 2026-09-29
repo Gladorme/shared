@@ -11,7 +11,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { useEffect, useState } from 'react';
+import type { ECharts as EChartsInstance } from 'echarts/core';
+import type { RefObject } from 'react';
+import { useCallback, useSyncExternalStore } from 'react';
 
 import type { NearbySeriesArray } from './types';
 
@@ -96,40 +98,79 @@ type ZREventProperties = {
 
 export type ZRRawMouseEvent = MouseEvent & ZREventProperties;
 
+// A single window listener is shared by every tooltip. Each consumer selects the part of the position it
+// cares about, so a mouse move only re-renders the components whose selected position actually changed.
+let lastMouseCoords: CursorData['coords'] = null;
+const mousePositionListeners = new Set<() => void>();
+
+function handleWindowMouseMove(e: ZRRawMouseEvent): void {
+  lastMouseCoords = {
+    page: {
+      x: e.pageX,
+      y: e.pageY,
+    },
+    client: {
+      x: e.clientX,
+      y: e.clientY,
+    },
+    plotCanvas: {
+      // Default to zrender mousemove coords since they handle browser inconsistencies for us
+      // ex: Firefox and Chrome have slightly different implementations of offsetX and offsetY
+      // more info: https://github.com/ecomfe/zrender/blob/5.5.0/src/core/event.ts#L46-L120
+      // Fallback to offsetX and offsetY to ensure tooltip works correctly in Edge
+      x: e.zrX ?? e.offsetX,
+      y: e.zrY ?? e.offsetY,
+    },
+    // necessary to check whether cursor target matches correct chart canvas
+    target: e.target,
+  };
+  for (const listener of mousePositionListeners) {
+    listener();
+  }
+}
+
+function subscribeToMousePosition(listener: () => void): () => void {
+  if (mousePositionListeners.size === 0) {
+    window.addEventListener('mousemove', handleWindowMouseMove);
+  }
+  mousePositionListeners.add(listener);
+  return (): void => {
+    mousePositionListeners.delete(listener);
+    if (mousePositionListeners.size === 0) {
+      window.removeEventListener('mousemove', handleWindowMouseMove);
+      lastMouseCoords = null;
+    }
+  };
+}
+
+function getMousePositionSnapshot(): CursorData['coords'] {
+  return lastMouseCoords;
+}
+
+function getServerMousePositionSnapshot(): CursorData['coords'] {
+  return null;
+}
+
+/**
+ * Returns the latest mouse position anywhere in the window. Re-renders on every mouse move.
+ */
 export const useMousePosition = (): CursorData['coords'] => {
-  const [coords, setCoords] = useState<CursorData['coords']>(null);
+  return useSyncExternalStore(subscribeToMousePosition, getMousePositionSnapshot, getServerMousePositionSnapshot);
+};
 
-  useEffect(() => {
-    const setFromEvent = (e: ZRRawMouseEvent): void => {
-      return setCoords({
-        page: {
-          x: e.pageX,
-          y: e.pageY,
-        },
-        client: {
-          x: e.clientX,
-          y: e.clientY,
-        },
-        plotCanvas: {
-          // Default to zrender mousemove coords since they handle browser inconsistencies for us
-          // ex: Firefox and Chrome have slightly different implementations of offsetX and offsetY
-          // more info: https://github.com/ecomfe/zrender/blob/5.5.0/src/core/event.ts#L46-L120
-          // Fallback to offsetX and offsetY to ensure tooltip works correctly in Edge
-          x: e.zrX ?? e.offsetX,
-          y: e.zrY ?? e.offsetY,
-        },
-        // necessary to check whether cursor target matches correct chart canvas (since each chart has its own mousemove listener)
-        target: e.target,
-      });
-    };
-    window.addEventListener('mousemove', setFromEvent);
+/**
+ * Returns the latest mouse position when the cursor is over the given chart, `null` otherwise.
+ * Charts that are not hovered do not re-render when the mouse moves elsewhere on the page.
+ */
+export const useChartMousePosition = (chartRef: RefObject<EChartsInstance | undefined>): CursorData['coords'] => {
+  const getSnapshot = useCallback((): CursorData['coords'] => {
+    const coords = lastMouseCoords;
+    if (coords === null || !(coords.target instanceof Node)) return null;
+    const chartDom = chartRef.current?.getDom?.();
+    return chartDom?.contains(coords.target) ? coords : null;
+  }, [chartRef]);
 
-    return (): void => {
-      window.removeEventListener('mousemove', setFromEvent);
-    };
-  }, []);
-
-  return coords;
+  return useSyncExternalStore(subscribeToMousePosition, getSnapshot, getServerMousePositionSnapshot);
 };
 
 export type TooltipConfig = {

@@ -17,6 +17,7 @@ import type { ECharts as EChartsInstance } from 'echarts/core';
 import type { DatapointInfo } from '../model';
 import {
   batchDispatchNearbySeriesActions,
+  clearHighlightedSeries,
   getClosestTimestamp,
   getClosestTimestampInFullDataset,
 } from './chart-actions';
@@ -210,5 +211,70 @@ describe('batchDispatchNearbySeriesActions', () => {
     expect((highlight!.payload as { seriesIndex: number[]; notBlur: boolean }).seriesIndex).toEqual([1, 2, 3]);
     expect((highlight!.payload as { seriesIndex: number[]; notBlur: boolean }).notBlur).toBe(true);
     expect(calls.some((c) => c.type === 'toggleSelect')).toBe(true);
+  });
+
+  it('never propagates actions to charts connected through a sync group', () => {
+    const { chart, calls } = makeChartMock();
+    const winnerDatapoint: DatapointInfo = { seriesIndex: 3, dataIndex: 5, seriesName: 's3', yValue: 42 };
+
+    batchDispatchNearbySeriesActions(chart, [1, 2, 3], [3], [1, 2], [winnerDatapoint], []);
+    batchDispatchNearbySeriesActions(chart, [1, 2], [], [1, 2], [], []);
+
+    expect(calls.length).toBeGreaterThan(0);
+    expect(calls.every((c) => (c.payload as { escapeConnect?: boolean }).escapeConnect === true)).toBe(true);
+  });
+
+  it('skips dispatching when the nearby series state did not change', () => {
+    const { chart, calls } = makeChartMock();
+    const winnerDatapoint: DatapointInfo = { seriesIndex: 3, dataIndex: 5, seriesName: 's3', yValue: 42 };
+
+    batchDispatchNearbySeriesActions(chart, [1, 2, 3], [3], [1, 2], [winnerDatapoint], []);
+    const firstCallCount = calls.length;
+    batchDispatchNearbySeriesActions(chart, [1, 2, 3], [3], [1, 2], [winnerDatapoint], []);
+    expect(calls.length).toBe(firstCallCount);
+
+    const nextDatapoint: DatapointInfo = { ...winnerDatapoint, dataIndex: 6 };
+    batchDispatchNearbySeriesActions(chart, [1, 2, 3], [3], [1, 2], [nextDatapoint], []);
+    expect(calls.length).toBe(firstCallCount * 2);
+  });
+
+  it('dispatches again after highlighted series were cleared', () => {
+    const { chart, calls } = makeChartMock();
+    const winnerDatapoint: DatapointInfo = { seriesIndex: 3, dataIndex: 5, seriesName: 's3', yValue: 42 };
+
+    batchDispatchNearbySeriesActions(chart, [3], [3], [], [winnerDatapoint], []);
+    clearHighlightedSeries(chart);
+    calls.length = 0;
+    batchDispatchNearbySeriesActions(chart, [3], [3], [], [winnerDatapoint], []);
+
+    expect(calls.some((c) => c.type === 'highlight')).toBe(true);
+  });
+
+  it('dispatches again after the chart option was replaced', () => {
+    const { chart, calls } = makeChartMock();
+    let model = {};
+    Object.defineProperty(chart, '_model', { get: (): object => model });
+    const winnerDatapoint: DatapointInfo = { seriesIndex: 3, dataIndex: 5, seriesName: 's3', yValue: 42 };
+
+    batchDispatchNearbySeriesActions(chart, [3], [3], [], [winnerDatapoint], []);
+    model = {};
+    calls.length = 0;
+    batchDispatchNearbySeriesActions(chart, [3], [3], [], [winnerDatapoint], []);
+
+    expect(calls.some((c) => c.type === 'highlight')).toBe(true);
+  });
+});
+
+describe('clearHighlightedSeries', () => {
+  it('does not propagate to charts connected through a sync group', () => {
+    const calls: Array<{ type: string; escapeConnect?: boolean }> = [];
+    const chart = {
+      dispatchAction: (payload: { type: string; escapeConnect?: boolean }) => calls.push(payload),
+    } as unknown as EChartsInstance;
+
+    clearHighlightedSeries(chart);
+
+    expect(calls.map((c) => c.type)).toEqual(['unselect', 'downplay']);
+    expect(calls.every((c) => c.escapeConnect === true)).toBe(true);
   });
 });
