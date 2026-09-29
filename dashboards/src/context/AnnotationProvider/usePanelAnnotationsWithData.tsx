@@ -20,9 +20,11 @@ import { useAnnotationsWithData } from './AnnotationProvider';
 
 /**
  * Returns the annotations to display on a single panel:
- *  - the dashboard-level annotations from the store (every panel receives these)
- *  - the panel-local annotations, resolved on the fly through the same runtime hook that
- *    hydrates dashboard annotations
+ *  - dashboard-level annotations (every panel receives these)
+ *  - panel-local annotations from `PanelProps.definition?.spec.annotations`
+ *
+ * Data is fetched on demand through the shared query cache, including annotation previews.
+ * Each result pairs the complete annotation spec (`definition`) with its available `data`.
  */
 export function usePanelAnnotationsWithData(panelAnnotations?: AnnotationSpec[]): AnnotationSpecWithData[] {
   const dashboardAnnotations = useAnnotationsWithData();
