@@ -47,20 +47,32 @@ export function ChartsProvider(props: ChartsProviderProps): ReactElement {
     };
   }, [chartsTheme, enablePinning, enableSyncGrouping, lastTooltipPinnedCoords, setLastTooltipPinnedCoords]);
 
-  return <ChartsThemeContext.Provider value={ctx}>{children}</ChartsThemeContext.Provider>;
+  return (
+    <ChartsThemeContext.Provider value={ctx}>
+      <ChartsThemeValueContext.Provider value={chartsTheme}>{children}</ChartsThemeValueContext.Provider>
+    </ChartsThemeContext.Provider>
+  );
 }
 
 export const ChartsThemeContext = createContext<SharedChartsState | undefined>(undefined);
 
+// Theme only: most charts only need the theme and must not re-render when a tooltip is pinned in another chart.
+const ChartsThemeValueContext = createContext<PersesChartsTheme | undefined>(undefined);
+
+const MISSING_PROVIDER_ERROR = 'No ChartsThemeContext found. Did you forget a Provider?';
+
 export function useChartsContext(): SharedChartsState {
   const ctx = useContext(ChartsThemeContext);
   if (ctx === undefined) {
-    throw new Error('No ChartsThemeContext found. Did you forget a Provider?');
+    throw new Error(MISSING_PROVIDER_ERROR);
   }
   return ctx;
 }
 
 export function useChartsTheme(): PersesChartsTheme {
-  const ctx = useChartsContext();
-  return ctx.chartsTheme;
+  const chartsTheme = useContext(ChartsThemeValueContext);
+  if (chartsTheme === undefined) {
+    throw new Error(MISSING_PROVIDER_ERROR);
+  }
+  return chartsTheme;
 }
