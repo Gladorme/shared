@@ -91,6 +91,8 @@ export const useTimeSeriesQuery = (
   return useQuery({
     enabled: (queryOptions?.enabled ?? true) || queryEnabled,
     queryKey: queryKey,
+    // See useTimeSeriesQueries.
+    structuralSharing: false,
     queryFn: ({ signal }) => {
       // The 'enabled' option should prevent this from happening, but make TypeScript happy by checking
       if (plugin === undefined) {
@@ -131,6 +133,10 @@ export function useTimeSeriesQueries(
       const plugin = pluginLoaderResponse[idx]?.data;
       const { queryEnabled, queryKey } = getQueryOptions({ plugin, definition, context });
       return {
+        // Structural sharing deep-compares every refetched response with the previous one. Time series responses
+        // can hold hundreds of thousands of samples and change on every refresh (the time range moves), so the
+        // comparison blocks the main thread without keeping any reference. Callers can still opt in.
+        structuralSharing: false,
         ...queryOptions,
         enabled: (queryOptions?.enabled ?? true) && queryEnabled,
         refetchOnMount: false,
