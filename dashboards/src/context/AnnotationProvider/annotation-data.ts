@@ -11,30 +11,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-import { useMemoized } from '@perses-dev/components';
 import type { AnnotationData, AnnotationSpec } from '@perses-dev/spec';
 import type { UseQueryResult } from '@tanstack/react-query';
 
 import type { AnnotationSpecWithData } from './AnnotationProvider';
 
-/**
- * Pairs annotation specs with their available query data, omitting specs without data yet.
- *
- * `useQueries` returns a new results array on every render, so the pairs are memoized on the specs and the
- * data references instead. Panels use the returned array as a dependency when building their chart options.
- */
-export function useAnnotationSpecsWithData(
+/** Pairs annotation specs with their available query data, omitting specs without data yet. */
+export function getAnnotationSpecsWithData(
   definitions: AnnotationSpec[],
   queries: Array<UseQueryResult<AnnotationData[]>>,
 ): AnnotationSpecWithData[] {
-  const dataList = definitions.map((_, index) => queries[index]?.data);
-  return useMemoized(
-    () =>
-      definitions.flatMap((definition, index) => {
-        const data = dataList[index];
-        return data ? [{ definition, data }] : [];
-      }),
-    // Queries map one-to-one to the specs, so the dependency list only changes size when the specs change.
-    [definitions, ...dataList],
-  );
+  return definitions.flatMap((definition, index) => {
+    const data = queries[index]?.data;
+    return data ? [{ definition, data }] : [];
+  });
 }
