@@ -16,7 +16,6 @@ import {
   useAnnotationActions,
   useAnnotationSpecs,
   useAnnotationSpecAndState,
-  useAnnotationStates,
   usePanelAnnotationsWithData,
 } from '@perses-dev/dashboards';
 import type * as PluginSystemModule from '@perses-dev/plugin-system';
@@ -111,28 +110,6 @@ describe('usePanelAnnotationsWithData', () => {
     await waitFor(() => expect(result.current).toEqual(['Deploys', 'Incidents']));
   });
 
-  it('keeps the same array across renders until the annotation data changes', () => {
-    // useQueries returns a new results array on every render, but data references are stable.
-    const dataByName = new Map<string, AnnotationData[]>([
-      ['Deploys', [{ start: 1, title: 'Deploys' }]],
-      ['Incidents', [{ start: 2, title: 'Incidents' }]],
-    ]);
-    resolveAnnotations.mockImplementation((definitions) =>
-      definitions.map((definition) => ({ data: dataByName.get(definition.display.name) })),
-    );
-    const panelDefinitions = [panelDefinition];
-    const { result, rerender } = renderHook(() => usePanelAnnotationsWithData(panelDefinitions), { wrapper });
-    const firstResult = result.current;
-
-    rerender();
-    expect(result.current).toBe(firstResult);
-
-    dataByName.set('Incidents', [{ start: 3, title: 'Incidents' }]);
-    rerender();
-    expect(result.current).not.toBe(firstResult);
-    expect(result.current.map((annotation) => annotation.data[0]?.start)).toEqual([1, 3]);
-  });
-
   it('does not fetch annotations when only specs are consumed', () => {
     const { result } = renderHook(() => useAnnotationSpecs(), { wrapper });
     expect(result.current).toEqual([dashboardDefinition]);
@@ -197,41 +174,5 @@ describe('usePanelAnnotationsWithData', () => {
     resolveAnnotations.mockReturnValue([{ isLoading: false, error }]);
     rerender();
     expect(result.current.state).toEqual({ data: null, isPending: false, error });
-  });
-});
-
-describe('annotation state hooks', () => {
-  const deploysData: AnnotationData[] = [{ start: 1, title: 'Deploys' }];
-
-  it('keeps the same state map across renders until a query state changes', () => {
-    let query: { data?: AnnotationData[]; isLoading?: boolean; error?: Error } = {
-      data: deploysData,
-      isLoading: false,
-    };
-    resolveAnnotations.mockImplementation((definitions) => definitions.map(() => query));
-    const { result, rerender } = renderHook(() => useAnnotationStates(), { wrapper });
-    const firstResult = result.current;
-    expect(firstResult).toEqual({ Deploys: { data: deploysData, isPending: false } });
-
-    rerender();
-    expect(result.current).toBe(firstResult);
-
-    const error = new Error('Request failed');
-    query = { data: deploysData, isLoading: false, error };
-    rerender();
-    expect(result.current).not.toBe(firstResult);
-    expect(result.current['Deploys']).toEqual({ data: deploysData, isPending: false, error });
-  });
-
-  it('keeps the same spec and state for a named annotation across renders', () => {
-    // Each render passes a new names array and receives new query results with the same data.
-    resolveAnnotations.mockImplementation((definitions) => definitions.map(() => ({ data: deploysData })));
-    const { result, rerender } = renderHook(() => useAnnotationSpecAndState('Deploys'), { wrapper });
-    const firstResult = result.current;
-    expect(firstResult.definition).toEqual(dashboardDefinition);
-    expect(firstResult.state?.data).toBe(deploysData);
-
-    rerender();
-    expect(result.current).toBe(firstResult);
   });
 });

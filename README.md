@@ -152,40 +152,6 @@ Common commands:
 6. Make changes to the shared libraries and see them reflected in your plugins.
 7. When done, run `./scripts/link-with-perses/link-with-perses.sh unlink --plugins` to restore the original dependencies in the plugins repo.
 
-## Annotations in panel plugins
-
-Panel plugins that render annotations should set `supportsAnnotations: true` to expose the panel editor's Annotations tab.
-Use `usePanelAnnotationsWithData` from `@perses-dev/dashboards` inside the panel component:
-
-```tsx
-const annotations = usePanelAnnotationsWithData(definition?.spec.annotations);
-```
-
-Here, `definition` is `PanelProps.definition`. Each returned item contains the complete annotation spec in `definition`
-(including display options and plugin configuration) and its fetched events in `data`. The hook combines dashboard
-annotations with panel-local annotations. Without an `AnnotationProvider`, it returns only panel-local annotations.
-Hidden annotations (`display.hidden`) are skipped and never fetched. Entries without data yet are omitted; successful
-empty results are retained. The returned array keeps its identity until the specs or their data change, so it can be used
-as a `useMemo` dependency when building chart options.
-
-For specs alone, use `useAnnotationSpecs()` from `@perses-dev/dashboards` for dashboard annotations and
-`definition?.spec.annotations` for panel-local annotations. For loading, error, or refetch controls, pass specs to
-`useAnnotations(specs)` or `useAnnotationData(spec)` from `@perses-dev/plugin-system`. These hooks also work for consumers
-outside dashboards when the query, plugin registry, time range, datasource, and variable providers are present.
-
-Annotation data lives in the TanStack Query cache. Panels and annotation previews under the same `QueryClientProvider`
-share in-flight requests and cached results for the same annotation spec, absolute time range, and dependent variable
-values. Mounting another consumer does not refetch cached data. Changing those inputs or refreshing dashboard queries
-fetches updated data. Queries wait for the annotation plugin and dependent variables to load. Annotation queries use the
-`['annotation', spec, absoluteTimeRange, variablesValueKey]` key: invalidate `['annotation', spec]` to refetch a single
-annotation, or `['annotation']` for all of them (as the dashboard refresh does).
-
-`AnnotationProvider` stores specs without fetching data. The existing `useAnnotationsWithData`, `useAnnotationStates`, and
-`useAnnotationSpecAndState` hooks now read query results on demand, and their results keep their identity until the specs
-or the query state they expose change. The hydration-only `setAnnotationState` action and
-`annotationState` store field have been removed; consumers should use query results instead of writing fetched state to
-Zustand. `setAnnotationSpecs` remains available for editing definitions.
-
 ## Contributing
 
 Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for details on our development process and how to submit pull requests.
