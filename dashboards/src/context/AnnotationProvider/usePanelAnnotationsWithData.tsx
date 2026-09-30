@@ -17,23 +17,32 @@ import { useMemo } from 'react';
 
 import { useAnnotationSpecsWithData } from './annotation-data';
 import type { AnnotationSpecWithData } from './AnnotationProvider';
-import { useAnnotationsWithData } from './AnnotationProvider';
+import { useAnnotationSpecs } from './AnnotationProvider';
+
+/** Resolves the visible annotations among the given specs. Hidden annotations are not fetched. */
+function useVisibleAnnotationsWithData(definitions: AnnotationSpec[] | undefined): AnnotationSpecWithData[] {
+  const visibleDefinitions = useMemo(
+    () => (definitions ?? []).filter((definition) => !definition.display.hidden),
+    [definitions],
+  );
+  const queries = useAnnotations(visibleDefinitions);
+  return useAnnotationSpecsWithData(visibleDefinitions, queries);
+}
 
 /**
  * Returns the annotations to display on a single panel:
  *  - dashboard-level annotations (every panel receives these)
  *  - panel-local annotations from `PanelProps.definition?.spec.annotations`
  *
+ * Hidden annotations (`display.hidden`) are skipped and never fetched.
  * Data is fetched on demand through the shared query cache, including annotation previews.
  * Each result pairs the complete annotation spec (`definition`) with its available `data`.
  * The returned array keeps its identity until the specs or their data change.
  */
 export function usePanelAnnotationsWithData(panelAnnotations?: AnnotationSpec[]): AnnotationSpecWithData[] {
-  const dashboardAnnotations = useAnnotationsWithData();
-
-  const localDefinitions = useMemo(() => panelAnnotations ?? [], [panelAnnotations]);
-  const localResults = useAnnotations(localDefinitions);
-  const localAnnotations = useAnnotationSpecsWithData(localDefinitions, localResults);
+  const dashboardDefinitions = useAnnotationSpecs();
+  const dashboardAnnotations = useVisibleAnnotationsWithData(dashboardDefinitions);
+  const localAnnotations = useVisibleAnnotationsWithData(panelAnnotations);
 
   return useMemo(
     () => (localAnnotations.length === 0 ? dashboardAnnotations : [...dashboardAnnotations, ...localAnnotations]),
