@@ -49,7 +49,8 @@ function getQueryOptions({
   const dependencies = plugin?.dependsOn?.(definition.plugin.spec, context);
   const filteredVariableState = filterVariableStateMap(variableState, dependencies?.variables);
   const variablesValueKey = getVariableValuesKey(filteredVariableState);
-  const waitToLoad = Object.values(filteredVariableState).some((variable) => variable.loading);
+  // Only declared variable dependencies delay the query, like other query plugins.
+  const waitToLoad = dependencies?.variables?.some((name) => variableState[name]?.loading) ?? false;
 
   return {
     // ['annotation', spec] prefix: refreshed by TimeRangeProvider and invalidated by the annotation editor preview.
@@ -59,11 +60,12 @@ function getQueryOptions({
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     staleTime: Infinity,
-    queryFn: ({ signal }): Promise<AnnotationData[]> => {
+    queryFn: async ({ signal }): Promise<AnnotationData[]> => {
       if (plugin === undefined) {
         throw new Error('Expected annotation plugin to be loaded');
       }
-      return plugin.getAnnotationData(definition.plugin.spec, context, signal);
+      const data = await plugin.getAnnotationData(definition.plugin.spec, context, signal);
+      return data;
     },
   };
 }

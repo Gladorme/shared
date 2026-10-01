@@ -37,11 +37,19 @@ const definition: AnnotationSpec = {
   display: { name: 'Deploys' },
   plugin: { kind: 'TestAnnotation', spec: {} },
 };
+const definitionWithoutDependsOn: AnnotationSpec = {
+  display: { name: 'Incidents' },
+  plugin: { kind: 'PlainAnnotation', spec: {} },
+};
 const data: AnnotationData[] = [{ start: 1, title: 'Deployment' }];
 const getAnnotationData = vi.fn<AnnotationPlugin['getAnnotationData']>();
 const dependsOn = vi.fn<NonNullable<AnnotationPlugin['dependsOn']>>();
 const plugin: AnnotationPlugin = { createInitialOptions: () => ({}), getAnnotationData, dependsOn };
-const registryProps = mockPluginRegistry({ kind: 'Annotation', spec: { name: 'TestAnnotation' }, plugin });
+const pluginWithoutDependsOn: AnnotationPlugin = { createInitialOptions: () => ({}), getAnnotationData };
+const registryProps = mockPluginRegistry(
+  { kind: 'Annotation', spec: { name: 'TestAnnotation' }, plugin },
+  { kind: 'Annotation', spec: { name: 'PlainAnnotation' }, plugin: pluginWithoutDependsOn },
+);
 let queryClient: QueryClient;
 
 function wrapper({ children }: { children: ReactNode }): ReactElement {
@@ -131,14 +139,38 @@ describe('annotation query cache', () => {
     expect(getAnnotationData).toHaveBeenCalledTimes(1);
   });
 
-  it('defaults to waiting for all variables when dependencies are unspecified', async () => {
+  it.each([
+    ['declares no variables', definition],
+    ['has no dependsOn', definitionWithoutDependsOn],
+  ])('does not wait for variables when the plugin %s', async (_, spec) => {
     runtime.variables = { cluster: { value: 'prod', loading: true } };
-    const { result, rerender } = renderHook(() => useAnnotationData(definition), { wrapper });
-    await waitFor(() => expect(dependsOn).toHaveBeenCalled());
-    expect(getAnnotationData).not.toHaveBeenCalled();
-    runtime.variables = { cluster: { value: 'prod', loading: false } };
-    rerender();
-    await waitFor(() => expect(result.current.data).toEqual(data));
+    const { result } = renderHook(
+      () => ({
+        panel: useAnnotations([spec])[0],
+        preview: useAnnotationData(spec),
+      }),
+      { wrapper },
+    );
+    await waitFor(() => {
+      expect(result.current.panel?.data).toEqual(data);
+      expect(result.current.preview.data).toEqual(data);
+    });
+    expect(getAnnotationData).toHaveBeenCalledTimes(1);
+  });
+
+  it.each([undefined, null])('resolves to an empty list when the plugin returns %s', async (response) => {
+    getAnnotationData.mockResolvedValue(response as unknown as AnnotationData[]);
+    const { result } = renderHook(
+      () => ({
+        panel: useAnnotations([definition])[0],
+        preview: useAnnotationData(definition),
+      }),
+      { wrapper },
+    );
+    await waitFor(() => {
+      expect(result.current.panel?.data).toEqual([]);
+      expect(result.current.preview.data).toEqual([]);
+    });
   });
 
   it('ignores unrelated variables and refetches for changed dependencies, specs, and time ranges', async () => {
