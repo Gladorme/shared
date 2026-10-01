@@ -16,6 +16,7 @@ import {
   useAnnotationActions,
   useAnnotationSpecs,
   useAnnotationSpecAndState,
+  useAnnotationStates,
   usePanelAnnotationsWithData,
 } from '@perses-dev/dashboards';
 import type * as PluginSystemModule from '@perses-dev/plugin-system';
@@ -38,11 +39,21 @@ vi.mock('@perses-dev/plugin-system', async () => {
   return { ...actual, useAnnotations: resolveAnnotations };
 });
 
+// Like the query cache, the mock keeps returning the same data reference until the data changes.
+const annotationDataByName = new Map<string, AnnotationData[]>();
+
+function getAnnotationData(name: string): AnnotationData[] {
+  const data = annotationDataByName.get(name) ?? [{ start: 1, title: name }];
+  annotationDataByName.set(name, data);
+  return data;
+}
+
 beforeEach(() => {
+  annotationDataByName.clear();
   resolveAnnotations
     .mockReset()
     .mockImplementation((definitions) =>
-      definitions.map((definition) => ({ data: [{ start: 1, title: definition.display.name }] })),
+      definitions.map((definition) => ({ data: getAnnotationData(definition.display.name), isLoading: false })),
     );
 });
 
@@ -136,11 +147,30 @@ describe('usePanelAnnotationsWithData', () => {
   });
 
   it('preserves empty results and omits annotations with no data yet', () => {
+    const emptyData: AnnotationData[] = [];
     resolveAnnotations.mockImplementation((definitions) =>
-      definitions.map((definition) => (definition.display.name === 'Deploys' ? { isLoading: true } : { data: [] })),
+      definitions.map((definition) =>
+        definition.display.name === 'Deploys' ? { isLoading: true } : { data: emptyData },
+      ),
     );
     const { result } = renderHook(() => usePanelAnnotationsWithData([panelDefinition]), { wrapper });
     expect(result.current).toEqual([{ definition: panelDefinition, data: [] }]);
+  });
+
+  it('keeps the same array across renders until the annotation data changes', () => {
+    const { result, rerender } = renderHook(() => usePanelAnnotationsWithData([panelDefinition]), { wrapper });
+    const firstResult = result.current;
+    rerender();
+    expect(result.current).toBe(firstResult);
+
+    annotationDataByName.set('Incidents', [{ start: 2, title: 'Incidents' }]);
+    rerender();
+    expect(result.current).not.toBe(firstResult);
+    expect(result.current).toEqual([
+      { definition: dashboardDefinition, data: [{ start: 1, title: 'Deploys' }] },
+      { definition: panelDefinition, data: [{ start: 2, title: 'Incidents' }] },
+    ]);
+    expect(result.current[0]).toBe(firstResult[0]);
   });
 
   it('neither fetches nor returns hidden annotations', () => {
@@ -167,12 +197,33 @@ describe('usePanelAnnotationsWithData', () => {
   });
 
   it('reads loading and error states directly from the query results', () => {
-    resolveAnnotations.mockReturnValue([{ isLoading: true }]);
+    resolveAnnotations.mockImplementation(() => [{ isLoading: true }]);
     const { result, rerender } = renderHook(() => useAnnotationSpecAndState('Deploys'), { wrapper });
-    expect(result.current).toEqual({ definition: dashboardDefinition, state: { data: null, isPending: true } });
+    const pendingResult = result.current;
+    expect(pendingResult).toEqual({ definition: dashboardDefinition, state: { data: null, isPending: true } });
+    rerender();
+    expect(result.current).toBe(pendingResult);
+
     const error = new Error('Request failed');
-    resolveAnnotations.mockReturnValue([{ isLoading: false, error }]);
+    resolveAnnotations.mockImplementation(() => [{ isLoading: false, error }]);
     rerender();
     expect(result.current.state).toEqual({ data: null, isPending: false, error });
+  });
+
+  it('keeps annotation states across renders until a query state changes', () => {
+    const { result, rerender } = renderHook(() => useAnnotationStates(), { wrapper: wrapperWithHidden });
+    const firstResult = result.current;
+    expect(firstResult).toEqual({
+      Deploys: { data: [{ start: 1, title: 'Deploys' }], isPending: false },
+      Maintenance: { data: [{ start: 1, title: 'Maintenance' }], isPending: false },
+    });
+    rerender();
+    expect(result.current).toBe(firstResult);
+
+    annotationDataByName.set('Maintenance', []);
+    rerender();
+    expect(result.current).not.toBe(firstResult);
+    expect(result.current.Maintenance?.data).toEqual([]);
+    expect(result.current.Deploys).toBe(firstResult.Deploys);
   });
 });
