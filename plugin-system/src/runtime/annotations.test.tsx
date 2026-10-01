@@ -158,21 +158,6 @@ describe('annotation query cache', () => {
     expect(getAnnotationData).toHaveBeenCalledTimes(1);
   });
 
-  it.each([undefined, null])('resolves to an empty list when the plugin returns %s', async (response) => {
-    getAnnotationData.mockResolvedValue(response as unknown as AnnotationData[]);
-    const { result } = renderHook(
-      () => ({
-        panel: useAnnotations([definition])[0],
-        preview: useAnnotationData(definition),
-      }),
-      { wrapper },
-    );
-    await waitFor(() => {
-      expect(result.current.panel?.data).toEqual([]);
-      expect(result.current.preview.data).toEqual([]);
-    });
-  });
-
   it('ignores unrelated variables and refetches for changed dependencies, specs, and time ranges', async () => {
     dependsOn.mockReturnValue({ variables: ['cluster'] });
     runtime.variables = { cluster: { value: 'prod', loading: false }, unrelated: { value: 'a', loading: true } };

@@ -22,7 +22,7 @@ import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/shallow';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 
-import { useAnnotationSpecsWithData, useAnnotationStateMap } from './annotation-data';
+import { getAnnotationSpecsWithData } from './annotation-data';
 
 export type AnnotationState = {
   data: AnnotationData[] | null;
@@ -57,15 +57,25 @@ export function useAnnotationSpecs(): AnnotationSpec[] {
   return useStore(store, (s) => s.annotationSpecs);
 }
 
-/**
- * Returns query-backed state for the requested dashboard annotations.
- * The returned map keeps its identity until the state of a requested annotation changes.
- */
+/** Returns query-backed state for the requested dashboard annotations. */
 export function useAnnotationStates(annotationNames?: string[]): AnnotationStateMap {
   const specs = useAnnotationSpecs();
   const definitions = annotationNames ? specs.filter((spec) => annotationNames.includes(spec.display.name)) : specs;
   const queries = useAnnotations(definitions);
-  return useAnnotationStateMap(definitions, queries);
+  return useMemo(() => {
+    const result: AnnotationStateMap = {};
+    definitions.forEach((definition, index) => {
+      const query = queries[index];
+      if (query) {
+        result[definition.display.name] = {
+          data: query.data ?? null,
+          isPending: query.isLoading,
+          error: query.error instanceof Error ? query.error : undefined,
+        };
+      }
+    });
+    return result;
+  }, [definitions, queries]);
 }
 
 export function useAnnotationActions(): AnnotationStoreActions {
@@ -81,10 +91,7 @@ export function useAnnotationActions(): AnnotationStoreActions {
   );
 }
 
-/**
- * Returns the spec and query-backed state of a dashboard annotation.
- * The returned object keeps its identity until the spec or its state changes.
- */
+/** Returns the spec and query-backed state of a dashboard annotation. */
 export function useAnnotationSpecAndState(name: string): {
   definition: AnnotationSpec | undefined;
   state: AnnotationState | undefined;
@@ -104,12 +111,11 @@ export type AnnotationSpecWithData = {
 /**
  * Resolves dashboard annotations on demand, returning specs paired with available query data.
  * Hidden annotations are included; `usePanelAnnotationsWithData` skips them for panels.
- * The returned array keeps its identity until a spec or its data changes.
  */
 export function useAnnotationsWithData(): AnnotationSpecWithData[] {
   const definitions = useAnnotationSpecs();
   const queries = useAnnotations(definitions);
-  return useAnnotationSpecsWithData(definitions, queries);
+  return getAnnotationSpecsWithData(definitions, queries);
 }
 
 interface AnnotationStoreArgs {
