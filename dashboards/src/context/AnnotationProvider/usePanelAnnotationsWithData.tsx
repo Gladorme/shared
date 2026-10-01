@@ -15,7 +15,7 @@ import { useAnnotations } from '@perses-dev/plugin-system';
 import type { AnnotationSpec } from '@perses-dev/spec';
 import { useMemo } from 'react';
 
-import { useAnnotationSpecsWithData } from './annotation-data';
+import { getAnnotationSpecsWithData } from './annotation-data';
 import type { AnnotationSpecWithData } from './AnnotationProvider';
 import { useAnnotationSpecs } from './AnnotationProvider';
 
@@ -23,7 +23,7 @@ import { useAnnotationSpecs } from './AnnotationProvider';
 function useVisibleAnnotationsWithData(definitions: AnnotationSpec[] | undefined): AnnotationSpecWithData[] {
   const visibleDefinitions = (definitions ?? []).filter((definition) => !definition.display.hidden);
   const queries = useAnnotations(visibleDefinitions);
-  return useAnnotationSpecsWithData(visibleDefinitions, queries);
+  return getAnnotationSpecsWithData(visibleDefinitions, queries);
 }
 
 /**
@@ -34,7 +34,6 @@ function useVisibleAnnotationsWithData(definitions: AnnotationSpec[] | undefined
  * Hidden annotations (`display.hidden`) are skipped and never fetched.
  * Data is fetched on demand through the shared query cache, including annotation previews.
  * Each result pairs the complete annotation spec (`definition`) with its available `data`.
- * The returned array keeps its identity until an annotation spec or its data changes.
  */
 export function usePanelAnnotationsWithData(panelAnnotations?: AnnotationSpec[]): AnnotationSpecWithData[] {
   const dashboardDefinitions = useAnnotationSpecs();
