@@ -39,3 +39,20 @@ it('restores each explorer draft and preserves data when selecting the current e
   act(() => result.current.setExplorer('logs'));
   expect(result.current.data).toEqual({ query: 'error' });
 });
+
+it('falls back to the default explorer and caches its draft like a selected explorer', () => {
+  function DefaultWrapper({ children }: PropsWithChildren): ReactElement {
+    return (
+      <StrictMode>
+        <ExplorerManagerProvider defaultExplorer="metrics">{children}</ExplorerManagerProvider>
+      </StrictMode>
+    );
+  }
+  const { result } = renderHook(() => useExplorerManagerContext<{ query?: string }>(), { wrapper: DefaultWrapper });
+  expect(result.current.explorer).toBe('metrics');
+  act(() => result.current.setData({ query: 'up' }));
+  act(() => result.current.setExplorer('logs'));
+  expect(result.current.data).toEqual({});
+  act(() => result.current.setExplorer('metrics'));
+  expect(result.current.data).toEqual({ query: 'up' });
+});
