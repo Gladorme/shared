@@ -102,6 +102,8 @@ function UsageMetricsSession({ apiPrefix, project, dashboard, children }: UsageM
   const markQuery = useCallback(
     (definition: QueryDefinition, newState: QueryState): void => {
       const metrics = metricsRef.current;
+      // Metrics are sent once per dashboard, so later transitions have nothing left to record.
+      if (metrics.submitted) return;
       const definitionKey = JSON.stringify(definition);
       // Never allow transitions back to pending, to avoid re-sending stats on a re-render.
       if (metrics.pendingQueries.has(definitionKey) && newState === 'pending') return;
@@ -109,15 +111,17 @@ function UsageMetricsSession({ apiPrefix, project, dashboard, children }: UsageM
       metrics.pendingQueries.set(definitionKey, newState);
       if (newState === 'error') metrics.renderErrorCount += 1;
       const allDone = [...metrics.pendingQueries.values()].every((state) => state !== 'pending');
-      if (!metrics.submitted && allDone) {
+      if (allDone) {
         metrics.submitted = true;
-        void submitMetrics({
+        submitMetrics({
           project,
           dashboard,
           apiPrefix,
           renderDurationMs: Date.now() - startRenderTime,
           renderErrorCount: metrics.renderErrorCount,
           fetchFn: fetch,
+        }).catch((error: unknown) => {
+          console.warn('Failed to submit dashboard usage metrics', error);
         });
       }
     },

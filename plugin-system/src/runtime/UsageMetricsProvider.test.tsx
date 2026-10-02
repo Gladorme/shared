@@ -66,6 +66,29 @@ describe('UsageMetricsProvider', () => {
     }
   });
 
+  it('logs a warning when the metrics cannot be submitted', async () => {
+    const error = new Error('network down');
+    const fetchFn = vi.fn().mockRejectedValue(error);
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+    function Wrapper({ children }: PropsWithChildren): ReactElement {
+      return (
+        <FetchProvider fetchFn={fetchFn}>
+          <UsageMetricsProvider project="project" dashboard="dashboard">
+            {children}
+          </UsageMetricsProvider>
+        </FetchProvider>
+      );
+    }
+    try {
+      const { result } = renderHook(() => useUsageMetrics(), { wrapper: Wrapper });
+      await act(async () => result.current.markQuery(query, 'success'));
+      expect(fetchFn).toHaveBeenCalledTimes(1);
+      expect(warn).toHaveBeenCalledWith('Failed to submit dashboard usage metrics', error);
+    } finally {
+      vi.restoreAllMocks();
+    }
+  });
+
   it('supports directly supplied context values', () => {
     const markQuery = vi.fn();
     const stats = { project: 'project', dashboard: 'dashboard', markQuery };
