@@ -15,7 +15,6 @@ export * from './axis';
 export * from './browser-storage';
 export * from './chart-actions';
 export * from './combine-sx';
-export * from './component-ids';
 export * from './data-field-interpolation';
 export * from './format';
 export * from './request-interpolation';
