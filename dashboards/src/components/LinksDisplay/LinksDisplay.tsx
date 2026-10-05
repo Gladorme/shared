@@ -13,7 +13,7 @@
 
 import type { Theme } from '@mui/material';
 import { IconButton, Link as LinkComponent, Menu, MenuItem, Chip, capitalize, Stack } from '@mui/material';
-import { InfoTooltip } from '@perses-dev/components';
+import { InfoTooltip, isSafeLinkUrl } from '@perses-dev/components';
 import { useReplaceVariablesInString, useReplaceVariablesInUrl } from '@perses-dev/plugin-system';
 import type { Link } from '@perses-dev/spec';
 import LaunchIcon from 'mdi-material-ui/Launch';
@@ -116,13 +116,14 @@ export function LinksDisplay({ links, variant }: LinksProps): ReactElement | nul
 
 function LinkChip({ link }: { link: Link }): ReactElement {
   const { url, name, tooltip, targetBlank } = useLink(link);
+  const href = isSafeLinkUrl(url) ? url : undefined;
 
   return (
     <InfoTooltip description={tooltip ?? url} enterDelay={100}>
       <Chip
         label={name ?? url}
         component="a"
-        href={url}
+        href={href}
         target={targetBlank ? '_blank' : '_self'}
         clickable
         size="medium"
@@ -135,13 +136,15 @@ function LinkChip({ link }: { link: Link }): ReactElement {
 
 function LinkButton({ link }: { link: Link }): ReactElement {
   const { url, name, tooltip, targetBlank } = useLink(link);
+  const href = isSafeLinkUrl(url) ? url : undefined;
 
   return (
     <InfoTooltip description={tooltip ?? url} enterDelay={100}>
       <IconButton
         aria-label={name ?? url}
         size="small"
-        href={url}
+        component="a"
+        href={href}
         target={targetBlank ? '_blank' : '_self'}
         sx={(theme) => ({ borderRadius: theme.shape.borderRadius, padding: '4px' })}
       >
@@ -153,10 +156,11 @@ function LinkButton({ link }: { link: Link }): ReactElement {
 
 function LinkMenuItem({ link }: { link: Link }): ReactElement {
   const { url, name, tooltip, targetBlank } = useLink(link);
+  const href = isSafeLinkUrl(url) ? url : undefined;
 
   return (
     <InfoTooltip description={tooltip ?? url} enterDelay={100}>
-      <MenuItem component={LinkComponent} href={url} target={targetBlank ? '_blank' : '_self'}>
+      <MenuItem component={LinkComponent} href={href} target={targetBlank ? '_blank' : '_self'}>
         {name ?? url}
       </MenuItem>
     </InfoTooltip>

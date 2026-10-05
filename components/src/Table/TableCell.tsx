@@ -17,6 +17,7 @@ import type { ReactElement } from 'react';
 import { useEffect, useMemo, useRef } from 'react';
 
 import { hasDataFieldPatterns, replaceDataFields } from '../utils/data-field-interpolation';
+import { isSafeLinkUrl } from '../utils/url';
 import type { DataLink, TableCellAlignment, TableDensity } from './model/table-model';
 import { getTableCellLayout } from './model/table-model';
 
@@ -190,7 +191,7 @@ export function TableCell({
         aria-label={description}
         textAlign={align}
       >
-        {modifiedDataLink ? (
+        {modifiedDataLink && isSafeLinkUrl(modifiedDataLink.url) ? (
           <Link
             href={modifiedDataLink.url}
             target={modifiedDataLink.targetBlank ? '_blank' : '_self'}

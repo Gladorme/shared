@@ -15,6 +15,8 @@ import { render, screen } from '@testing-library/react';
 
 import { TableCell } from './TableCell';
 
+const unsafeDataLink = { url: 'javascript:void(0)' };
+
 describe('TableCell', () => {
   describe('embedding adjacent cell value into the data_link', () => {
     it('should replace referenced adjacent values', async () => {
@@ -31,5 +33,15 @@ describe('TableCell', () => {
       );
       expect(await screen.findByRole('link', { name: 'prometheus_http_requests_total' })).toBeInTheDocument();
     });
+  });
+
+  it('should render plain text when the data_link url has an unsafe scheme', () => {
+    render(
+      <TableCell density="compact" isFirstColumn={false} isLastColumn={false} dataLink={unsafeDataLink}>
+        prometheus_http_requests_total
+      </TableCell>,
+    );
+    expect(screen.getByText('prometheus_http_requests_total')).toBeInTheDocument();
+    expect(screen.queryByRole('link')).toBeNull();
   });
 });
