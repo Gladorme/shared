@@ -16,6 +16,7 @@ import {
   useAnnotationActions,
   useAnnotationSpecs,
   useAnnotationSpecAndState,
+  useAnnotationsWithData,
   usePanelAnnotationsWithData,
 } from '@perses-dev/dashboards';
 import type * as PluginSystemModule from '@perses-dev/plugin-system';
@@ -197,5 +198,27 @@ describe('usePanelAnnotationsWithData', () => {
     resolveAnnotations.mockImplementation(() => [{ isLoading: false, error }]);
     rerender();
     expect(result.current.state).toEqual({ data: null, isPending: false, error });
+  });
+
+  it('does not loop when panel specs are rebuilt on every render', () => {
+    const { result, rerender } = renderHook(
+      () =>
+        usePanelAnnotationsWithData([{ display: { name: 'Inline' }, plugin: { kind: 'FirstAnnotation', spec: {} } }]),
+      { wrapper },
+    );
+    const firstResult = result.current;
+    expect(firstResult).toHaveLength(2);
+    rerender();
+    expect(result.current).toBe(firstResult);
+  });
+});
+
+describe('useAnnotationsWithData', () => {
+  it('keeps the same array across renders, including hidden annotations, while specs and data are unchanged', () => {
+    const { result, rerender } = renderHook(() => useAnnotationsWithData(), { wrapper: wrapperWithHidden });
+    const firstResult = result.current;
+    expect(firstResult.map((annotation) => annotation.definition.display.name)).toEqual(['Deploys', 'Maintenance']);
+    rerender();
+    expect(result.current).toBe(firstResult);
   });
 });

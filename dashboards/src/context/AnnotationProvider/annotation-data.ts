@@ -13,6 +13,7 @@
 
 import type { AnnotationData, AnnotationSpec } from '@perses-dev/spec';
 import type { UseQueryResult } from '@tanstack/react-query';
+import { useState } from 'react';
 
 import type { AnnotationSpecWithData } from './AnnotationProvider';
 
@@ -29,4 +30,36 @@ export function getAnnotationSpecsWithData(
     return data ? [{ definition, data }] : [];
   });
   return annotations.length > 0 ? annotations : NO_ANNOTATIONS;
+}
+
+// Callers may rebuild specs on every render (e.g. `.map()`): compare by value, otherwise the state update below never settles.
+function isSameDefinition(previous: AnnotationSpec, next: AnnotationSpec): boolean {
+  return previous === next || JSON.stringify(previous) === JSON.stringify(next);
+}
+
+function isSameAnnotations(previous: AnnotationSpecWithData[], next: AnnotationSpecWithData[]): boolean {
+  return (
+    previous.length === next.length &&
+    next.every((annotation, index) => {
+      const previousAnnotation = previous[index];
+      return (
+        previousAnnotation !== undefined &&
+        previousAnnotation.data === annotation.data &&
+        isSameDefinition(previousAnnotation.definition, annotation.definition)
+      );
+    })
+  );
+}
+
+/**
+ * Returns the previous annotations while their specs and data are unchanged.
+ * `useQueries` returns new arrays and result objects on every render, only `data` keeps its reference.
+ */
+export function useStableAnnotations(annotations: AnnotationSpecWithData[]): AnnotationSpecWithData[] {
+  const [stableAnnotations, setStableAnnotations] = useState(annotations);
+  if (isSameAnnotations(stableAnnotations, annotations)) {
+    return stableAnnotations;
+  }
+  setStableAnnotations(annotations);
+  return annotations;
 }

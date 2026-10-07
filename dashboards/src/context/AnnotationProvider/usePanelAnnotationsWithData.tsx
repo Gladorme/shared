@@ -13,21 +13,11 @@
 
 import { useAnnotations } from '@perses-dev/plugin-system';
 import type { AnnotationSpec } from '@perses-dev/spec';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
-import { getAnnotationSpecsWithData } from './annotation-data';
+import { getAnnotationSpecsWithData, useStableAnnotations } from './annotation-data';
 import type { AnnotationSpecWithData } from './AnnotationProvider';
 import { useAnnotationSpecs } from './AnnotationProvider';
-
-function isSameAnnotations(previous: AnnotationSpecWithData[], next: AnnotationSpecWithData[]): boolean {
-  return (
-    previous.length === next.length &&
-    next.every((annotation, index) => {
-      const previousAnnotation = previous[index];
-      return previousAnnotation?.definition === annotation.definition && previousAnnotation.data === annotation.data;
-    })
-  );
-}
 
 /**
  * Returns the annotations to display on a single panel:
@@ -46,12 +36,5 @@ export function usePanelAnnotationsWithData(panelAnnotations?: AnnotationSpec[])
     [dashboardDefinitions, panelAnnotations],
   );
   const queries = useAnnotations(definitions);
-  // `useQueries` returns new arrays and result objects on every render, only `data` keeps its reference.
-  const annotations = getAnnotationSpecsWithData(definitions, queries);
-  const [stableAnnotations, setStableAnnotations] = useState(annotations);
-  if (isSameAnnotations(stableAnnotations, annotations)) {
-    return stableAnnotations;
-  }
-  setStableAnnotations(annotations);
-  return annotations;
+  return useStableAnnotations(getAnnotationSpecsWithData(definitions, queries));
 }

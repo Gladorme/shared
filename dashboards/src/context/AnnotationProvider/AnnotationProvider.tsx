@@ -22,7 +22,7 @@ import { immer } from 'zustand/middleware/immer';
 import { shallow } from 'zustand/shallow';
 import { useStoreWithEqualityFn } from 'zustand/traditional';
 
-import { getAnnotationSpecsWithData } from './annotation-data';
+import { getAnnotationSpecsWithData, useStableAnnotations } from './annotation-data';
 
 export type AnnotationState = {
   data: AnnotationData[] | null;
@@ -108,11 +108,12 @@ export type AnnotationSpecWithData = {
 /**
  * Resolves dashboard annotations on demand, returning specs paired with available query data.
  * Hidden annotations are included; `usePanelAnnotationsWithData` skips them for panels.
+ * The returned array keeps its identity until an annotation spec or its data changes.
  */
 export function useAnnotationsWithData(): AnnotationSpecWithData[] {
   const definitions = useAnnotationSpecs();
   const queries = useAnnotations(definitions);
-  return getAnnotationSpecsWithData(definitions, queries);
+  return useStableAnnotations(getAnnotationSpecsWithData(definitions, queries));
 }
 
 interface AnnotationStoreArgs {
