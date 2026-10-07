@@ -14,7 +14,7 @@
 import { useAnnotations } from '@perses-dev/plugin-system';
 import type { AnnotationData, AnnotationSpec } from '@perses-dev/spec';
 import type { ReactNode } from 'react';
-import { createContext, useContext, useMemo, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 import type { StoreApi } from 'zustand';
 import { createStore, useStore } from 'zustand';
 import { devtools } from 'zustand/middleware';
@@ -62,20 +62,18 @@ export function useAnnotationStates(annotationNames?: string[]): AnnotationState
   const specs = useAnnotationSpecs();
   const definitions = annotationNames ? specs.filter((spec) => annotationNames.includes(spec.display.name)) : specs;
   const queries = useAnnotations(definitions);
-  return useMemo(() => {
-    const result: AnnotationStateMap = {};
-    definitions.forEach((definition, index) => {
-      const query = queries[index];
-      if (query) {
-        result[definition.display.name] = {
-          data: query.data ?? null,
-          isPending: query.isLoading,
-          error: query.error instanceof Error ? query.error : undefined,
-        };
-      }
-    });
-    return result;
-  }, [definitions, queries]);
+  const result: AnnotationStateMap = {};
+  definitions.forEach((definition, index) => {
+    const query = queries[index];
+    if (query) {
+      result[definition.display.name] = {
+        data: query.data ?? null,
+        isPending: query.isLoading,
+        error: query.error instanceof Error ? query.error : undefined,
+      };
+    }
+  });
+  return result;
 }
 
 export function useAnnotationActions(): AnnotationStoreActions {
@@ -99,8 +97,7 @@ export function useAnnotationSpecAndState(name: string): {
   const specs = useAnnotationSpecs();
   const states = useAnnotationStates([name]);
   const definition = specs.find((spec) => spec.display.name === name);
-  const state = states[name];
-  return useMemo(() => ({ definition, state }), [definition, state]);
+  return { definition, state: states[name] };
 }
 
 export type AnnotationSpecWithData = {

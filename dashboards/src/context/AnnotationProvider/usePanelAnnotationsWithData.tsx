@@ -13,17 +13,20 @@
 
 import { useAnnotations } from '@perses-dev/plugin-system';
 import type { AnnotationSpec } from '@perses-dev/spec';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { getAnnotationSpecsWithData } from './annotation-data';
 import type { AnnotationSpecWithData } from './AnnotationProvider';
 import { useAnnotationSpecs } from './AnnotationProvider';
 
-/** Resolves the visible annotations among the given specs. Hidden annotations are not fetched. */
-function useVisibleAnnotationsWithData(definitions: AnnotationSpec[] | undefined): AnnotationSpecWithData[] {
-  const visibleDefinitions = (definitions ?? []).filter((definition) => !definition.display.hidden);
-  const queries = useAnnotations(visibleDefinitions);
-  return getAnnotationSpecsWithData(visibleDefinitions, queries);
+function isSameAnnotations(previous: AnnotationSpecWithData[], next: AnnotationSpecWithData[]): boolean {
+  return (
+    previous.length === next.length &&
+    next.every((annotation, index) => {
+      const previousAnnotation = previous[index];
+      return previousAnnotation?.definition === annotation.definition && previousAnnotation.data === annotation.data;
+    })
+  );
 }
 
 /**
@@ -34,10 +37,21 @@ function useVisibleAnnotationsWithData(definitions: AnnotationSpec[] | undefined
  * Hidden annotations (`display.hidden`) are skipped and never fetched.
  * Data is fetched on demand through the shared query cache, including annotation previews.
  * Each result pairs the complete annotation spec (`definition`) with its available `data`.
+ * The returned array keeps its identity until an annotation spec or its data changes.
  */
 export function usePanelAnnotationsWithData(panelAnnotations?: AnnotationSpec[]): AnnotationSpecWithData[] {
   const dashboardDefinitions = useAnnotationSpecs();
-  const dashboardAnnotations = useVisibleAnnotationsWithData(dashboardDefinitions);
-  const localAnnotations = useVisibleAnnotationsWithData(panelAnnotations);
-  return useMemo(() => [...dashboardAnnotations, ...localAnnotations], [dashboardAnnotations, localAnnotations]);
+  const definitions = useMemo(
+    () => [...dashboardDefinitions, ...(panelAnnotations ?? [])].filter((definition) => !definition.display.hidden),
+    [dashboardDefinitions, panelAnnotations],
+  );
+  const queries = useAnnotations(definitions);
+  // `useQueries` returns new arrays and result objects on every render, only `data` keeps its reference.
+  const annotations = getAnnotationSpecsWithData(definitions, queries);
+  const [stableAnnotations, setStableAnnotations] = useState(annotations);
+  if (isSameAnnotations(stableAnnotations, annotations)) {
+    return stableAnnotations;
+  }
+  setStableAnnotations(annotations);
+  return annotations;
 }

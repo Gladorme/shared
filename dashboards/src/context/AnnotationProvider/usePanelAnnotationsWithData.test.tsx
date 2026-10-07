@@ -39,11 +39,16 @@ vi.mock('@perses-dev/plugin-system', async () => {
 });
 
 beforeEach(() => {
-  resolveAnnotations
-    .mockReset()
-    .mockImplementation((definitions) =>
-      definitions.map((definition) => ({ data: [{ start: 1, title: definition.display.name }] })),
-    );
+  // Like react-query, keep the same `data` reference for a given annotation across renders.
+  const dataByName = new Map<string, AnnotationData[]>();
+  resolveAnnotations.mockReset().mockImplementation((definitions) =>
+    definitions.map((definition) => {
+      const name = definition.display.name;
+      const data = dataByName.get(name) ?? [{ start: 1, title: name }];
+      dataByName.set(name, data);
+      return { data };
+    }),
+  );
 });
 
 const dashboardDefinition: AnnotationSpec = {
@@ -148,6 +153,14 @@ describe('usePanelAnnotationsWithData', () => {
     const { result, rerender } = renderHook(() => usePanelAnnotationsWithData([panelDefinition]), { wrapper });
     const firstResult = result.current;
     expect(firstResult).toEqual([]);
+    rerender();
+    expect(result.current).toBe(firstResult);
+  });
+
+  it('keeps the same array across renders while specs and data are unchanged', () => {
+    const { result, rerender } = renderHook(() => usePanelAnnotationsWithData([panelDefinition]), { wrapper });
+    const firstResult = result.current;
+    expect(firstResult).toHaveLength(2);
     rerender();
     expect(result.current).toBe(firstResult);
   });
