@@ -11,13 +11,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import ReactDOM from 'react-dom';
+import { useResizeObserver } from 'use-resize-observer';
+
 import { loadPlugin } from './PluginRuntime';
 
+type SharedModuleConfig = {
+  version: string;
+  get?: () => Promise<() => Record<string, unknown>>;
+};
+
+let runtimeShared: Record<string, SharedModuleConfig> = {};
 const registerRemotes = vi.fn();
 const loadRemote = vi.fn().mockResolvedValue({});
 
 vi.mock('@module-federation/enhanced/runtime', () => ({
-  createInstance: vi.fn(() => ({ options: { remotes: [] }, registerRemotes, loadRemote })),
+  createInstance: vi.fn((options: { shared: Record<string, SharedModuleConfig> }) => {
+    runtimeShared = options.shared;
+    return { options: { remotes: [] }, registerRemotes, loadRemote };
+  }),
 }));
 
 describe('loadPlugin', () => {
@@ -52,5 +64,24 @@ describe('loadPlugin', () => {
     expect(registerRemotes).toHaveBeenCalledWith([
       expect.objectContaining({ entry: '/Tempo~0.59.0/mf-manifest.json' }),
     ]);
+  });
+});
+
+describe('shared modules', () => {
+  beforeAll(async () => {
+    await loadPlugin({ moduleName: 'Tempo', pluginName: 'TempoExplorer', version: '0.59.0' });
+  });
+
+  it('should share the react-dom version provided by the host', () => {
+    expect(runtimeShared['react-dom']?.version).toBe(ReactDOM.version);
+  });
+
+  it('should share use-resize-observer for both its v9 default export and its v10 named export', async () => {
+    const getModule = await runtimeShared['use-resize-observer']?.get?.();
+    const sharedModule = getModule?.();
+
+    expect(sharedModule).toHaveProperty('__esModule', true);
+    expect(sharedModule?.default).toBe(useResizeObserver);
+    expect(sharedModule?.useResizeObserver).toBe(useResizeObserver);
   });
 });
