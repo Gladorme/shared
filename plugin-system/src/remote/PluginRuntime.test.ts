@@ -19,6 +19,7 @@ import { loadPlugin } from './PluginRuntime';
 type SharedModuleConfig = {
   version: string;
   get?: () => Promise<() => Record<string, unknown>>;
+  shareConfig?: { requiredVersion?: string };
 };
 
 let runtimeShared: Record<string, SharedModuleConfig> = {};
@@ -76,12 +77,13 @@ describe('shared modules', () => {
     expect(runtimeShared['react-dom']?.version).toBe(ReactDOM.version);
   });
 
-  it('should share use-resize-observer for both its v9 default export and its v10 named export', async () => {
+  it('should share use-resize-observer v10 and its named export', async () => {
+    expect(runtimeShared['use-resize-observer']?.shareConfig?.requiredVersion).toBe('^10.0.0');
+
     const getModule = await runtimeShared['use-resize-observer']?.get?.();
     const sharedModule = getModule?.();
 
-    expect(sharedModule).toHaveProperty('__esModule', true);
-    expect(sharedModule?.default).toBe(useResizeObserver);
     expect(sharedModule?.useResizeObserver).toBe(useResizeObserver);
+    expect(sharedModule).not.toHaveProperty('default');
   });
 });

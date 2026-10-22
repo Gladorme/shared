@@ -222,14 +222,10 @@ const getPluginRuntime = (): ModuleFederation => {
         },
         'use-resize-observer': {
           version: '10.0.0',
-          get: createSharedModuleLoader(async () => {
-            const module = await import('use-resize-observer');
-            // Plugins built against v9 import the default export, which v10 replaced with a named export.
-            return { __esModule: true, ...module, default: module.useResizeObserver };
-          }),
+          get: createSharedModuleLoader(() => import('use-resize-observer')),
           shareConfig: {
             singleton: true,
-            requiredVersion: '^9.1.0 || ^10.0.0',
+            requiredVersion: '^10.0.0',
           },
         },
         'mdi-material-ui': {
