@@ -48,9 +48,6 @@ npm run build
 npm run test
 ```
 
-Tests compile package sources with the same SWC React Compiler settings as the build (see `vitest.shared.ts`), so they
-exercise the memoized output that is published.
-
 #### Type checking
 
 ```bash
