@@ -11,13 +11,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+import React from 'react';
 import ReactDOM from 'react-dom';
+import * as ReactJSXRuntime from 'react/jsx-runtime';
 import { useResizeObserver } from 'use-resize-observer';
 
 import { loadPlugin } from './PluginRuntime';
 
 type SharedModuleConfig = {
   version: string;
+  lib?: () => unknown;
   get?: () => Promise<() => Record<string, unknown>>;
   shareConfig?: { requiredVersion?: string };
 };
@@ -75,6 +78,14 @@ describe('shared modules', () => {
 
   it('should share the react-dom version provided by the host', () => {
     expect(runtimeShared['react-dom']?.version).toBe(ReactDOM.version);
+  });
+
+  it('should share the JSX runtime of the host React version', () => {
+    const jsxRuntime = runtimeShared['react/jsx-runtime'];
+
+    expect(jsxRuntime?.version).toBe(React.version);
+    expect(jsxRuntime?.shareConfig?.requiredVersion).toBe(`^${React.version}`);
+    expect(jsxRuntime?.lib?.()).toBe(ReactJSXRuntime);
   });
 
   it('should share use-resize-observer v10 and its named export', async () => {

@@ -20,6 +20,7 @@ import React, { useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import * as ReactHookForm from 'react-hook-form';
 import * as ReactRouterDOM from 'react-router-dom';
+import * as ReactJSXRuntime from 'react/jsx-runtime';
 
 import type { PersesPlugin, RemotePluginModule } from './PersesPlugin.types';
 
@@ -77,6 +78,15 @@ const getPluginRuntime = (): ModuleFederation => {
         react: {
           version: React.version,
           lib: () => React,
+          shareConfig: {
+            singleton: true,
+            requiredVersion: `^${React.version}`,
+          },
+        },
+        // Plugins must use the JSX runtime of the host's React: a bundled React 18 runtime crashes on a React 19 host.
+        'react/jsx-runtime': {
+          version: React.version,
+          lib: () => ReactJSXRuntime,
           shareConfig: {
             singleton: true,
             requiredVersion: `^${React.version}`,
