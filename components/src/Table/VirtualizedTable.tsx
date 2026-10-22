@@ -47,7 +47,7 @@ export type VirtualizedTableProps<TableData extends RowData> = Required<
     columns: Array<Column<TableFeatures, TableData, unknown>>;
     headers: Array<HeaderGroup<TableFeatures, TableData>>;
     columnSizing: ColumnSizingState;
-    columnSizingInfo: columnResizingState;
+    columnResizing: columnResizingState;
     cellConfigs?: TableCellConfigs;
     rowCount: number;
     toolbarConfig: Pick<

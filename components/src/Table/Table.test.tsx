@@ -664,6 +664,23 @@ describe('table', () => {
         '2': true,
       } as const;
 
+      test('header checkbox is checked and not indeterminate', () => {
+        renderTable({
+          data: data,
+          checkboxSelection: true,
+          rowSelection: allCheckboxRowSelection,
+        });
+
+        const table = screen.getByRole('table');
+        const headerCheckbox = within(table).getAllByRole('checkbox')[0];
+        if (!headerCheckbox) {
+          throw new Error('Missing header checkbox');
+        }
+
+        expect(headerCheckbox).toBeChecked();
+        expect(headerCheckbox).not.toHaveAttribute('data-indeterminate', 'true');
+      });
+
       // Able to test the standard and legend with modified together.
       // Testing un-modified legend separately because it behaves differently.
       describe.each([

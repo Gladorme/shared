@@ -168,7 +168,7 @@ export function Table<TableData extends RowData>({
         return (
           <TableCheckbox
             checked={table.getIsAllRowsSelected()}
-            indeterminate={table.getIsSomeRowsSelected()}
+            indeterminate={table.getIsSomeRowsSelected() && !table.getIsAllRowsSelected()}
             onChange={table.getToggleAllRowsSelectedHandler()}
             color={theme.palette.text.primary}
             density={density}
@@ -207,16 +207,14 @@ export function Table<TableData extends RowData>({
     return initTableColumns;
   }, [columns, defaultColumnConfig, hasItemActions, checkboxSelection, actionsColumn, checkboxColumn]);
 
-  // Oxlint still checks incompatible APIs inside functions opted out of compilation above.
-  // oxlint-disable-next-line react/incompatible-library
   const table = useTable({
     features: TABLE_FEATURES,
     ...fuzzySearchOptions,
     data: data,
     columns: tableColumns,
     getRowId: getRowId,
-    // without this setting, the getPaginationRowModel setting persists and it is not possible to switch from paginated to unpaginated
-    // can be removed once https://github.com/TanStack/table/pull/5974 is merged
+    // manualPagination: true disables the paginated row model for this render,
+    // allowing switching between paginated and unpaginated at runtime.
     manualPagination: !pagination,
     enableRowSelection: !!checkboxSelection,
     onRowSelectionChange: handleRowSelectionChange,
@@ -257,7 +255,7 @@ export function Table<TableData extends RowData>({
       rows={table.getRowModel().rows}
       columns={table.getVisibleFlatColumns()}
       columnSizing={table.state.columnSizing}
-      columnSizingInfo={table.state.columnResizing}
+      columnResizing={table.state.columnResizing}
       headers={table.getHeaderGroups()}
       cellConfigs={cellConfigs}
       pagination={pagination}
