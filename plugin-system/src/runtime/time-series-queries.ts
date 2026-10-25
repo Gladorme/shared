@@ -47,8 +47,8 @@ function getQueryOptions({
   const variableDependencies = dependencies?.variables;
 
   // Determine queryKey
-  const filteredVariabledState = filterVariableStateMap(variableState, variableDependencies);
-  const variablesValueKey = getVariableValuesKey(filteredVariabledState);
+  const filteredVariableState = filterVariableStateMap(variableState, variableDependencies);
+  const variablesValueKey = getVariableValuesKey(filteredVariableState);
 
   const queryKey = [
     'query',
@@ -61,10 +61,7 @@ function getQueryOptions({
   ] as const;
 
   // Determine queryEnabled
-  let waitToLoad = false;
-  if (variableDependencies) {
-    waitToLoad = variableDependencies.some((v) => variableState[v]?.loading);
-  }
+  const waitToLoad = Object.values(filteredVariableState).some((variable) => variable.loading);
 
   const queryEnabled = plugin !== undefined && !waitToLoad;
 
@@ -89,7 +86,7 @@ export const useTimeSeriesQuery = (
   const context = useTimeSeriesQueryContext();
   const { queryEnabled, queryKey } = getQueryOptions({ plugin, definition, context });
   return useQuery({
-    enabled: (queryOptions?.enabled ?? true) || queryEnabled,
+    enabled: (queryOptions?.enabled ?? true) && queryEnabled,
     queryKey: queryKey,
     queryFn: ({ signal }) => {
       // The 'enabled' option should prevent this from happening, but make TypeScript happy by checking

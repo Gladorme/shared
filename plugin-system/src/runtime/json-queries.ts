@@ -17,8 +17,9 @@ import { useQueries } from '@tanstack/react-query';
 
 import type { JsonQueryContext } from '../model/json-queries';
 import { useDatasourceStore } from './datasources';
-import { usePluginRegistry } from './plugin-registry';
-import { useVariableValues } from './variables';
+import { usePluginRegistry, usePlugins } from './plugin-registry';
+import { filterVariableStateMap, getVariableValuesKey } from './utils';
+import { useAllVariableValues } from './variables';
 
 export type JsonQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'JsonQuery', PluginSpec>;
 export const JSON_QUERY_KEY = 'JsonQuery';
@@ -31,26 +32,47 @@ export const JSON_QUERY_KEY = 'JsonQuery';
 export function useJsonQueries(definitions: JsonQueryDefinition[]): Array<UseQueryResult<JsonData>> {
   const { getPlugin } = usePluginRegistry();
   const datasourceStore = useDatasourceStore();
-  const variableValues = useVariableValues();
+  const variableValues = useAllVariableValues();
 
   const context: JsonQueryContext = {
     variableState: variableValues,
     datasourceStore,
   };
 
+  const plugins = usePlugins(
+    JSON_QUERY_KEY,
+    definitions.map(({ spec }) => ({
+      kind: spec.plugin.kind,
+      version: spec.plugin.metadata?.version,
+      registry: spec.plugin.metadata?.registry,
+    })),
+  );
+
   return useQueries({
-    queries: definitions.map((definition) => {
-      const queryKey = ['query', JSON_QUERY_KEY, definition, variableValues] as const;
+    queries: definitions.map((definition, index) => {
+      const plugin = plugins[index]?.data;
+      const dependencies = plugin?.dependsOn?.(definition.spec.plugin.spec, context).variables;
+      const dependentVariables = filterVariableStateMap(variableValues, dependencies);
+      const valuesKey = getVariableValuesKey(dependentVariables);
+      const queryKey = ['query', JSON_QUERY_KEY, definition, valuesKey] as const;
       const jsonQueryKind = definition?.spec?.plugin?.kind;
       return {
+        enabled:
+          (plugin !== undefined || plugins[index]?.isError) &&
+          !Object.values(dependentVariables).some((variable) => variable.loading),
         queryKey,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         staleTime: Infinity,
         queryFn: async ({ signal }: { signal?: AbortSignal }): Promise<JsonData> => {
-          const plugin = await getPlugin({ kind: JSON_QUERY_KEY, name: jsonQueryKind });
-          return plugin.getJsonData(definition.spec.plugin.spec, context, signal);
+          const queryPlugin = await getPlugin({
+            kind: JSON_QUERY_KEY,
+            name: jsonQueryKind,
+            version: definition.spec.plugin.metadata?.version,
+            registry: definition.spec.plugin.metadata?.registry,
+          });
+          return queryPlugin.getJsonData(definition.spec.plugin.spec, context, signal);
         },
         structuralSharing: false,
       };

@@ -49,8 +49,7 @@ function getQueryOptions({
   const dependencies = plugin?.dependsOn?.(definition.plugin.spec, context);
   const filteredVariableState = filterVariableStateMap(variableState, dependencies?.variables);
   const variablesValueKey = getVariableValuesKey(filteredVariableState);
-  // Only declared variable dependencies delay the query, like other query plugins.
-  const waitToLoad = dependencies?.variables?.some((name) => variableState[name]?.loading) ?? false;
+  const waitToLoad = Object.values(filteredVariableState).some((variable) => variable.loading);
 
   return {
     // ['annotation', spec] prefix: refreshed by TimeRangeProvider and invalidated by the annotation editor preview.

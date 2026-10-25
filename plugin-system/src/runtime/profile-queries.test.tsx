@@ -56,14 +56,6 @@ const registryProps = mockPluginRegistry(
 );
 let queryClient: QueryClient;
 
-function WrapperWithoutVariables({ children }: { children: ReactNode }): ReactElement {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <PluginRegistry {...registryProps}>{children}</PluginRegistry>
-    </QueryClientProvider>
-  );
-}
-
 const builtinValue = {
   variables: [
     { kind: 'BuiltinVariable' as const, spec: { source: 'test', name: '__test', value: (): string => 'builtin' } },
@@ -73,11 +65,13 @@ function Wrapper({ children }: { children: ReactNode }): ReactElement {
   const state = runtime.variables;
   const value = useMemo(() => ({ state }), [state]);
   return (
-    <WrapperWithoutVariables>
-      <VariableContext.Provider value={value}>
-        <BuiltinVariableContext.Provider value={builtinValue}>{children}</BuiltinVariableContext.Provider>
-      </VariableContext.Provider>
-    </WrapperWithoutVariables>
+    <QueryClientProvider client={queryClient}>
+      <PluginRegistry {...registryProps}>
+        <VariableContext.Provider value={value}>
+          <BuiltinVariableContext.Provider value={builtinValue}>{children}</BuiltinVariableContext.Provider>
+        </VariableContext.Provider>
+      </PluginRegistry>
+    </QueryClientProvider>
   );
 }
 
@@ -132,9 +126,12 @@ it('refetches changed dependencies and ranges but ignores unrelated variables', 
   await waitFor(() => expect(getProfileData).toHaveBeenCalledTimes(4));
 });
 
-it('keeps plugins without a dependency hook compatible and supports dashboard refresh', async () => {
+it('waits for variables without a dependency hook and supports dashboard refresh', async () => {
   runtime.variables = { service: { value: 'api', loading: true } };
-  const { result } = renderHook(() => useProfileQueries([plainDefinition]), { wrapper: Wrapper });
+  const { result, rerender } = renderHook(() => useProfileQueries([plainDefinition]), { wrapper: Wrapper });
+  expect(getProfileData).not.toHaveBeenCalled();
+  runtime.variables = { service: { value: 'api', loading: false } };
+  rerender();
   await waitFor(() => expect(result.current[0]?.data).toEqual(data));
   await act(async () => {
     await queryClient.invalidateQueries({ queryKey: ['query', 'ProfileQuery'] });
@@ -157,16 +154,6 @@ it('surfaces query failures', async () => {
   getProfileData.mockRejectedValue(error);
   const { result } = renderHook(() => useProfileQueries([definition]), { wrapper: Wrapper });
   await waitFor(() => expect(result.current[0]?.error).toBe(error));
-});
-
-it('keeps standalone consumers without variable providers compatible', async () => {
-  const { result } = renderHook(() => useProfileQueries([plainDefinition]), { wrapper: WrapperWithoutVariables });
-  await waitFor(() => expect(result.current[0]?.data).toEqual(data));
-  expect(getProfileData).toHaveBeenCalledWith(
-    {},
-    expect.objectContaining({ variableState: {} }),
-    expect.any(AbortSignal),
-  );
 });
 
 it('surfaces plugin loading failures instead of leaving the query disabled', async () => {

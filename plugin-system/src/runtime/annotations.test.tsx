@@ -140,17 +140,20 @@ describe('annotation query cache', () => {
   });
 
   it.each([
-    ['declares no variables', definition],
+    ['omits the variable list', definition],
     ['has no dependsOn', definitionWithoutDependsOn],
-  ])('does not wait for variables when the plugin %s', async (_, spec) => {
+  ])('waits for current variables when the plugin %s', async (_, spec) => {
     runtime.variables = { cluster: { value: 'prod', loading: true } };
-    const { result } = renderHook(
+    const { result, rerender } = renderHook(
       () => ({
         panel: useAnnotations([spec])[0],
         preview: useAnnotationData(spec),
       }),
       { wrapper },
     );
+    expect(getAnnotationData).not.toHaveBeenCalled();
+    runtime.variables = { cluster: { value: 'prod', loading: false } };
+    rerender();
     await waitFor(() => {
       expect(result.current.panel?.data).toEqual(data);
       expect(result.current.preview.data).toEqual(data);

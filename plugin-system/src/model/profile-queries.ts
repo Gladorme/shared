@@ -36,8 +36,8 @@ export interface ProfileQueryPlugin<Spec = UnknownSpec> extends Plugin<Spec> {
 export interface ProfileQueryContext {
   datasourceStore: DatasourceStore;
   absoluteTimeRange?: AbsoluteTimeRange;
-  /** Current dashboard variables. Optional for compatibility with existing callers. */
-  variableState?: VariableStateMap;
+  /** Current dashboard and built-in variable values. */
+  variableState: VariableStateMap;
 }
 
 export type ProfileDataQuery = Query<ProfileData, unknown, ProfileData, QueryKey>;

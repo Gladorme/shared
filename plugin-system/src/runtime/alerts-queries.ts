@@ -86,15 +86,12 @@ function getQueryOptions({
   const dependencies = plugin?.dependsOn ? plugin.dependsOn(definition.spec.plugin.spec, context) : {};
   const variableDependencies = dependencies?.variables;
 
-  const filteredVariabledState = filterVariableStateMap(variableState, variableDependencies);
-  const variablesValueKey = getVariableValuesKey(filteredVariabledState);
+  const filteredVariableState = filterVariableStateMap(variableState, variableDependencies);
+  const variablesValueKey = getVariableValuesKey(filteredVariableState);
   // Note: no absoluteTimeRange in query key since alerts are current state
   const queryKey = ['query', ALERTS_QUERY_KEY, definition, variablesValueKey] as const;
 
-  let waitToLoad = false;
-  if (variableDependencies) {
-    waitToLoad = variableDependencies.some((v) => variableState[v]?.loading);
-  }
+  const waitToLoad = Object.values(filteredVariableState).some((variable) => variable.loading);
 
   const queryEnabled = plugin !== undefined && !waitToLoad;
   return {

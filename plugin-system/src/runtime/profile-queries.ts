@@ -14,15 +14,13 @@
 import type { QueryDefinition, UnknownSpec, ProfileData } from '@perses-dev/spec';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { useQueries } from '@tanstack/react-query';
-import { useContext, useMemo } from 'react';
 
 import type { ProfileQueryContext } from '../model';
-import { BuiltinVariableContext } from './builtin-variables';
 import { useDatasourceStore } from './datasources';
 import { usePluginRegistry, usePlugins } from './plugin-registry';
 import { useTimeRange } from './TimeRangeProvider';
 import { filterVariableStateMap, getVariableValuesKey } from './utils';
-import { VariableContext } from './variables';
+import { useAllVariableValues } from './variables';
 export type ProfileQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'ProfileQuery', PluginSpec>;
 export const PROFILE_QUERY_KEY = 'ProfileQuery';
 
@@ -35,16 +33,7 @@ export function useProfileQueries(definitions: ProfileQueryDefinition[]): Array<
   const datasourceStore = useDatasourceStore();
   const { absoluteTimeRange } = useTimeRange();
 
-  // Profiles previously worked without variable providers. Keep those standalone consumers compatible.
-  const dashboardVariables = useContext(VariableContext)?.state;
-  const builtinVariables = useContext(BuiltinVariableContext)?.variables;
-  const variableState = useMemo(() => {
-    const values = { ...dashboardVariables };
-    for (const variable of builtinVariables ?? []) {
-      values[variable.spec.name] = { loading: false, value: variable.spec.value() };
-    }
-    return values;
-  }, [dashboardVariables, builtinVariables]);
+  const variableState = useAllVariableValues();
   const context: ProfileQueryContext = {
     variableState,
     datasourceStore,
@@ -66,13 +55,14 @@ export function useProfileQueries(definitions: ProfileQueryDefinition[]): Array<
     queries: definitions.map((definition, index) => {
       const plugin = plugins[index]?.data;
       const dependencies = plugin?.dependsOn?.(definition.spec.plugin.spec, context).variables;
-      const valuesKey = getVariableValuesKey(filterVariableStateMap(variableState, dependencies));
+      const dependentVariables = filterVariableStateMap(variableState, dependencies);
+      const valuesKey = getVariableValuesKey(dependentVariables);
       const queryKey = ['query', PROFILE_QUERY_KEY, definition, absoluteTimeRange, valuesKey] as const;
       const profileQueryKind = definition?.spec?.plugin?.kind;
       return {
         enabled:
           (plugin !== undefined || plugins[index]?.isError) &&
-          !(dependencies ?? []).some((name) => variableState[name]?.loading),
+          !Object.values(dependentVariables).some((variable) => variable.loading),
         queryKey: queryKey,
         refetchOnMount: false,
         refetchOnWindowFocus: false,

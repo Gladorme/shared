@@ -88,14 +88,11 @@ function getQueryOptions({
   const dependencies = plugin?.dependsOn ? plugin.dependsOn(definition.spec.plugin.spec, context) : {};
   const variableDependencies = dependencies?.variables;
 
-  const filteredVariabledState = filterVariableStateMap(variableState, variableDependencies);
-  const variablesValueKey = getVariableValuesKey(filteredVariabledState);
+  const filteredVariableState = filterVariableStateMap(variableState, variableDependencies);
+  const variablesValueKey = getVariableValuesKey(filteredVariableState);
   const queryKey = ['query', TRACE_QUERY_KEY, definition, absoluteTimeRange, variablesValueKey] as const;
 
-  let waitToLoad = false;
-  if (variableDependencies) {
-    waitToLoad = variableDependencies.some((v) => variableState[v]?.loading);
-  }
+  const waitToLoad = Object.values(filteredVariableState).some((variable) => variable.loading);
 
   const queryEnabled = plugin !== undefined && !waitToLoad;
   return {
