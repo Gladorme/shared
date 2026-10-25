@@ -53,7 +53,7 @@ export function useAlertsQueries(definitions: AlertsQueryDefinition[]): Array<Us
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
-        staleTime: 60_000,
+        staleTime: Infinity,
         queryFn: async ({ signal }: { signal?: AbortSignal }): Promise<AlertsData> => {
           const plugin = await getPlugin({
             kind: ALERTS_QUERY_KEY,

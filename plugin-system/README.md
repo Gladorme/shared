@@ -24,6 +24,9 @@ Query-backed list variables receive their declared dependencies in `context.vari
 used by the query in `dependsOn` so chained variables resolve in order and refresh when their inputs change.
 A list variable cannot depend on itself; an omitted dependency list is empty to avoid circular loading.
 
+The signal `use…Queries` hooks all use `staleTime: Infinity`. Cached results remain fresh until invalidated,
+including by manual or scheduled dashboard refresh. Changed query inputs produce separate cache entries.
+
 ## Profile queries
 
 `ProfileQueryPlugin.getProfileData(spec, context, abortSignal)` receives the datasource store,

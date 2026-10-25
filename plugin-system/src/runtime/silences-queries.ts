@@ -53,7 +53,7 @@ export function useSilencesQueries(definitions: SilencesQueryDefinition[]): Arra
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
-        staleTime: 60_000,
+        staleTime: Infinity,
         queryFn: async ({ signal }: { signal?: AbortSignal }): Promise<SilencesData> => {
           const plugin = await getPlugin({
             kind: SILENCES_QUERY_KEY,
