@@ -28,9 +28,10 @@ The signal `use…Queries` hooks all use `staleTime: Infinity`. Cached results r
 including by manual or scheduled dashboard refresh. Changed query inputs produce separate cache entries.
 
 Signal queries (including the single time series and annotation hooks) and list-variable option queries use
-`structuralSharing: false`. Refetched results are stored without deep comparison against previous results, so
-new objects keep their new references even when their contents are equal. Cache keys and request deduplication
-are unchanged. The bulk time series hook still accepts an explicit `queryOptions.structuralSharing` override.
+`structuralSharing: false` for performance: deeply comparing large datasets on every refetch can be expensive
+and block the main thread. Disabling structural sharing skips that comparison. Refetched objects keep their
+new references even when their contents are equal. Cache keys and request deduplication are unchanged.
+The bulk time series hook still accepts an explicit `queryOptions.structuralSharing` override.
 
 ## Signal queries
 
@@ -57,22 +58,11 @@ request. Once variable dependencies are ready, plugin loading errors and query f
 Dashboard refresh invalidates `['query']` and `['annotation']`. Applications can invalidate an individual signal
 using its prefix above. Annotations additionally support `['annotation', annotationSpec]` for editor previews.
 
-### Migrating plugin time ranges
-
-`TimeSeriesQueryContext`, `LogQueryContext`, and `GetVariableOptionsContext` now expose `absoluteTimeRange`
-instead of `timeRange`. This is a breaking plugin API change: update plugin implementations, dependency hooks,
-log volume-query builders, and callers constructing these contexts to use the new property. The value remains
-the same resolved absolute start/end range. Result-data fields such as `LogQueryResult.timeRange` and
-`TimeSeriesData.timeRange`, and the provider's relative-or-absolute `timeRange` selection, are unchanged.
-
-`LogQueryContext.refreshKey` has also been removed. Refreshing logs uses the same query invalidation and
-refetch mechanisms as other signals; callers should remove the field when constructing a log context.
-
 ### Remaining API differences
 
 - All time-dependent plugin contexts use `absoluteTimeRange`, including list-variable plugins.
-  The trace and profile context types allow an omitted range, although
-  their runtime hooks supply the selected range.
+  The trace context permits an omitted range for ID-based trace or span lookups; its runtime hook supplies the
+  selected range. Profile queries require a range because profile data is queried over a time interval.
 - JSON returns arbitrary JSON; alerts and silences represent current state. Their contexts and cache keys have no
   explicit time range. A dependency on a time-related built-in variable can still change their cache keys.
 - Time series has `mode`, `suggestedStepMs`, caller query options, and active-query helpers. The bulk hook includes
