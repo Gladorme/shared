@@ -14,7 +14,7 @@
 import type { AbsoluteTimeRange, ListVariableDefinition } from '@perses-dev/spec';
 import type { UseQueryResult } from '@tanstack/react-query';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook, waitFor } from '@testing-library/react';
 import type { ReactElement, ReactNode } from 'react';
 import { useMemo } from 'react';
 
@@ -44,7 +44,7 @@ vi.mock('./TimeRangeProvider', () => ({
 vi.mock('./datasources', () => ({ useDatasourceStore: (): Record<string, never> => ({}) }));
 
 const fetchData = vi.fn();
-const dependsOn = vi.fn<() => { variables?: string[] }>();
+const dependsOn = vi.fn<(spec: unknown, context: unknown) => { variables?: string[] }>();
 const plugin = {
   createInitialOptions: (): Record<string, never> => ({}),
   dependsOn,
@@ -76,18 +76,33 @@ const variableDefinition: ListVariableDefinition = {
   kind: 'ListVariable',
   spec: { ...spec, name: 'child', allowAllValue: false, allowMultiple: false },
 };
-type QueryCase = { name: string; useQuery: () => UseQueryResult<unknown> | undefined };
+type QueryCase = { name: string; useQuery: (querySpec?: typeof spec) => UseQueryResult<unknown> | undefined };
 const queryCases: QueryCase[] = [
-  { name: 'time series', useQuery: () => useTimeSeriesQueries([{ kind: 'TimeSeriesQuery', spec }])[0] },
-  { name: 'single time series', useQuery: () => useTimeSeriesQuery({ kind: 'TimeSeriesQuery', spec }) },
-  { name: 'logs', useQuery: () => useLogQueries([{ kind: 'LogQuery', spec }])[0] },
-  { name: 'traces', useQuery: () => useTraceQueries([{ kind: 'TraceQuery', spec }])[0] },
-  { name: 'profiles', useQuery: () => useProfileQueries([{ kind: 'ProfileQuery', spec }])[0] },
-  { name: 'JSON', useQuery: () => useJsonQueries([{ kind: 'JsonQuery', spec }])[0] },
-  { name: 'alerts', useQuery: () => useAlertsQueries([{ kind: 'AlertsQuery', spec }])[0] },
-  { name: 'silences', useQuery: () => useSilencesQueries([{ kind: 'SilencesQuery', spec }])[0] },
-  { name: 'annotations', useQuery: () => useAnnotations([annotationSpec])[0] },
-  { name: 'annotation preview', useQuery: () => useAnnotationData(annotationSpec) },
+  {
+    name: 'time series',
+    useQuery: (querySpec = spec) => useTimeSeriesQueries([{ kind: 'TimeSeriesQuery', spec: querySpec }])[0],
+  },
+  {
+    name: 'single time series',
+    useQuery: (querySpec = spec) => useTimeSeriesQuery({ kind: 'TimeSeriesQuery', spec: querySpec }),
+  },
+  { name: 'logs', useQuery: (querySpec = spec) => useLogQueries([{ kind: 'LogQuery', spec: querySpec }])[0] },
+  { name: 'traces', useQuery: (querySpec = spec) => useTraceQueries([{ kind: 'TraceQuery', spec: querySpec }])[0] },
+  {
+    name: 'profiles',
+    useQuery: (querySpec = spec) => useProfileQueries([{ kind: 'ProfileQuery', spec: querySpec }])[0],
+  },
+  { name: 'JSON', useQuery: (querySpec = spec) => useJsonQueries([{ kind: 'JsonQuery', spec: querySpec }])[0] },
+  { name: 'alerts', useQuery: (querySpec = spec) => useAlertsQueries([{ kind: 'AlertsQuery', spec: querySpec }])[0] },
+  {
+    name: 'silences',
+    useQuery: (querySpec = spec) => useSilencesQueries([{ kind: 'SilencesQuery', spec: querySpec }])[0],
+  },
+  { name: 'annotations', useQuery: (querySpec = spec) => useAnnotations([{ ...annotationSpec, ...querySpec }])[0] },
+  {
+    name: 'annotation preview',
+    useQuery: (querySpec = spec) => useAnnotationData({ ...annotationSpec, ...querySpec }),
+  },
   { name: 'variable options', useQuery: () => useListVariablePluginValues(variableDefinition) },
 ];
 let queryClient: QueryClient;
@@ -210,3 +225,113 @@ it('honors explicit disabling of a single time series query after its plugin and
   await waitFor(() => expect(dependsOn).toHaveBeenCalled());
   expect(fetchData).not.toHaveBeenCalled();
 });
+
+describe.each(
+  queryCases.filter(({ name }) => ['time series', 'single time series', 'logs', 'variable options'].includes(name)),
+)('$name absolute time range context', ({ useQuery }) => {
+  it('supplies the resolved range under absoluteTimeRange to dependency discovery and execution', async () => {
+    const { result } = renderHook(() => useQuery(), { wrapper: Wrapper });
+    await waitFor(() => expect(result.current?.isSuccess).toBe(true));
+    for (const calls of [dependsOn.mock.calls, fetchData.mock.calls]) {
+      for (const call of calls) {
+        expect(call[1]).toHaveProperty('absoluteTimeRange', runtime.timeRange);
+        expect(call[1]).not.toHaveProperty('timeRange');
+      }
+    }
+  });
+});
+
+describe.each(queryCases.filter(({ name }) => name !== 'variable options'))(
+  '$name query lifecycle',
+  ({ useQuery, name }) => {
+    it('surfaces plugin loading errors once variables are ready', async () => {
+      const missingSpec = { plugin: { kind: 'Missing', spec: {} } };
+      const { result } = renderHook(() => useQuery(missingSpec), { wrapper: Wrapper });
+      await waitFor(() => expect(result.current?.isError).toBe(true));
+      expect(result.current?.error).toBeInstanceOf(Error);
+      expect(fetchData).not.toHaveBeenCalled();
+    });
+
+    it.each([{ version: '2.0.0' }, { registry: 'missing-registry' }])(
+      'does not fall back to an unpinned plugin for %j',
+      async (metadata) => {
+        const pinnedSpec = { plugin: { ...spec.plugin, metadata } };
+        const { result } = renderHook(() => useQuery(pinnedSpec), { wrapper: Wrapper });
+        await waitFor(() => expect(result.current?.isError).toBe(true));
+        expect(fetchData).not.toHaveBeenCalled();
+      },
+    );
+
+    it('surfaces query failures', async () => {
+      const error = new Error('Query failed');
+      fetchData.mockRejectedValue(error);
+      const { result } = renderHook(() => useQuery(), { wrapper: Wrapper });
+      await waitFor(() => expect(result.current?.error).toBe(error));
+    });
+
+    it('cancels in-flight work on unmount', async () => {
+      fetchData.mockImplementation(() => new Promise(() => {}));
+      const { unmount } = renderHook(() => useQuery(), { wrapper: Wrapper });
+      await waitFor(() => expect(fetchData).toHaveBeenCalledTimes(1));
+      const signal = fetchData.mock.calls[0]?.[2] as AbortSignal;
+      expect(signal.aborted).toBe(false);
+      unmount();
+      expect(signal.aborted).toBe(true);
+    });
+
+    it('refetches through the dashboard refresh prefix', async () => {
+      const { result } = renderHook(() => useQuery(), { wrapper: Wrapper });
+      await waitFor(() => expect(result.current?.isSuccess).toBe(true));
+      const prefix = name.startsWith('annotation') ? 'annotation' : 'query';
+      await act(async () => {
+        await queryClient.invalidateQueries({ queryKey: [prefix] });
+      });
+      expect(fetchData).toHaveBeenCalledTimes(2);
+    });
+  },
+);
+
+describe.each(queryCases)('$name structural sharing', ({ useQuery }) => {
+  it('keeps new result references when a refetch returns equal content', async () => {
+    fetchData.mockImplementation(async () => ({ data: [{ label: 'api', value: 'api' }] }));
+    const { result } = renderHook(() => useQuery(), { wrapper: Wrapper });
+    await waitFor(() => expect(result.current?.isSuccess).toBe(true));
+    const firstData = result.current?.data;
+
+    await act(async () => {
+      await result.current?.refetch();
+    });
+
+    expect(fetchData).toHaveBeenCalledTimes(2);
+    expect(result.current?.data).toEqual(firstData);
+    await waitFor(() => expect(result.current?.data).not.toBe(firstData));
+  });
+});
+
+it.each([true, false, undefined])(
+  'supports bulk time series structuralSharing=%s with a false default',
+  async (structuralSharing) => {
+    fetchData.mockImplementation(async () => ({ series: [{ name: 'up', values: [[1, 1]] }] }));
+    const { result } = renderHook(
+      () => useTimeSeriesQueries([{ kind: 'TimeSeriesQuery', spec }], undefined, { structuralSharing })[0],
+      { wrapper: Wrapper },
+    );
+    await waitFor(() => expect(result.current?.isSuccess).toBe(true));
+    const firstData = result.current?.data;
+
+    await act(async () => {
+      const refreshed = await result.current?.refetch();
+      if (structuralSharing) {
+        expect(refreshed?.data).toBe(firstData);
+      }
+    });
+
+    expect(fetchData).toHaveBeenCalledTimes(2);
+    expect(result.current?.data).toEqual(firstData);
+    if (structuralSharing) {
+      expect(result.current?.data).toBe(firstData);
+    } else {
+      await waitFor(() => expect(result.current?.data).not.toBe(firstData));
+    }
+  },
+);

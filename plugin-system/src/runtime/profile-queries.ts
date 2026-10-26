@@ -12,35 +12,28 @@
 // limitations under the License.
 
 import type { QueryDefinition, UnknownSpec, ProfileData } from '@perses-dev/spec';
-import type { UseQueryResult } from '@tanstack/react-query';
+import type { QueryKey, UseQueryResult } from '@tanstack/react-query';
 import { useQueries } from '@tanstack/react-query';
 
-import type { ProfileQueryContext } from '../model';
+import type { ProfileQueryContext, ProfileQueryPlugin } from '../model';
 import { useDatasourceStore } from './datasources';
 import { usePluginRegistry, usePlugins } from './plugin-registry';
 import { useTimeRange } from './TimeRangeProvider';
 import { filterVariableStateMap, getVariableValuesKey } from './utils';
 import { useAllVariableValues } from './variables';
+
 export type ProfileQueryDefinition<PluginSpec = UnknownSpec> = QueryDefinition<'ProfileQuery', PluginSpec>;
 export const PROFILE_QUERY_KEY = 'ProfileQuery';
 
 /**
  * Run a profile query using a ProfileQuery plugin and return the results
- * @param definitions: dashboard defintion for a profile query
+ * @param definitions: dashboard definition for a profile query
  */
 export function useProfileQueries(definitions: ProfileQueryDefinition[]): Array<UseQueryResult<ProfileData>> {
   const { getPlugin } = usePluginRegistry();
-  const datasourceStore = useDatasourceStore();
-  const { absoluteTimeRange } = useTimeRange();
+  const context = useProfileQueryContext();
 
-  const variableState = useAllVariableValues();
-  const context: ProfileQueryContext = {
-    variableState,
-    datasourceStore,
-    absoluteTimeRange,
-  };
-
-  const plugins = usePlugins(
+  const pluginLoaderResponse = usePlugins(
     PROFILE_QUERY_KEY,
     definitions.map(({ spec }) => ({
       kind: spec.plugin.kind,
@@ -49,38 +42,71 @@ export function useProfileQueries(definitions: ProfileQueryDefinition[]): Array<
     })),
   );
 
-  // useQueries() handles data fetching from query plugins (e.g. traceQL queries, promQL queries)
-  // https://tanstack.com/query/v4/docs/react/reference/useQuery
   return useQueries({
     queries: definitions.map((definition, index) => {
-      const plugin = plugins[index]?.data;
-      const dependencies = plugin?.dependsOn?.(definition.spec.plugin.spec, context).variables;
-      const dependentVariables = filterVariableStateMap(variableState, dependencies);
-      const valuesKey = getVariableValuesKey(dependentVariables);
-      const queryKey = ['query', PROFILE_QUERY_KEY, definition, absoluteTimeRange, valuesKey] as const;
-      const profileQueryKind = definition?.spec?.plugin?.kind;
+      const plugin = pluginLoaderResponse[index]?.data;
+      const pluginLoadFailed = pluginLoaderResponse[index]?.isError ?? false;
+      const { queryEnabled, queryKey } = getQueryOptions({ plugin, pluginLoadFailed, definition, context });
       return {
-        enabled:
-          (plugin !== undefined || plugins[index]?.isError) &&
-          !Object.values(dependentVariables).some((variable) => variable.loading),
-        queryKey: queryKey,
+        enabled: queryEnabled,
+        queryKey,
         refetchOnMount: false,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         staleTime: Infinity,
+        structuralSharing: false,
         queryFn: async ({ signal }: { signal?: AbortSignal }): Promise<ProfileData> => {
           const queryPlugin = await getPlugin({
             kind: PROFILE_QUERY_KEY,
-            name: profileQueryKind,
+            name: definition.spec.plugin.kind,
             version: definition.spec.plugin.metadata?.version,
             registry: definition.spec.plugin.metadata?.registry,
           });
-          const data = await queryPlugin.getProfileData(definition.spec.plugin.spec, context, signal);
-          return data;
+          return queryPlugin.getProfileData(definition.spec.plugin.spec, context, signal);
         },
-
-        structuralSharing: false,
       };
     }),
   });
+}
+
+function getQueryOptions({
+  plugin,
+  pluginLoadFailed,
+  definition,
+  context,
+}: {
+  plugin?: ProfileQueryPlugin;
+  pluginLoadFailed: boolean;
+  definition: ProfileQueryDefinition;
+  context: ProfileQueryContext;
+}): {
+  queryKey: QueryKey;
+  queryEnabled: boolean;
+} {
+  const { variableState, absoluteTimeRange } = context;
+  const dependencies = plugin?.dependsOn?.(definition.spec.plugin.spec, context);
+  const variableDependencies = dependencies?.variables;
+  const filteredVariableState = filterVariableStateMap(variableState, variableDependencies);
+  const variablesValueKey = getVariableValuesKey(filteredVariableState);
+  const queryKey = ['query', PROFILE_QUERY_KEY, definition, absoluteTimeRange, variablesValueKey] as const;
+  const waitToLoad = Object.values(filteredVariableState).some((variable) => variable.loading);
+  // Let the query function surface plugin loading errors once variable dependencies are ready.
+  const queryEnabled = (plugin !== undefined || pluginLoadFailed) && !waitToLoad;
+
+  return {
+    queryKey,
+    queryEnabled,
+  };
+}
+
+function useProfileQueryContext(): ProfileQueryContext {
+  const { absoluteTimeRange } = useTimeRange();
+  const variableState = useAllVariableValues();
+  const datasourceStore = useDatasourceStore();
+
+  return {
+    variableState,
+    datasourceStore,
+    absoluteTimeRange,
+  };
 }
