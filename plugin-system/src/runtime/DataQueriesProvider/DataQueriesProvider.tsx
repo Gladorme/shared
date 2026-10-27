@@ -157,12 +157,10 @@ export function DataQueriesProvider(props: DataQueriesProviderProps): ReactEleme
         usageMetrics.markQuery(result.definition, 'pending');
       }
       for (const result of ctx.queryResults) {
-        if (!result.isLoading && !result.isFetching && !result.error) {
-          usageMetrics.markQuery(result.definition, 'success');
-        } else if (result.error) {
+        if (result.error) {
           usageMetrics.markQuery(result.definition, 'error');
-        } else {
-          usageMetrics.markQuery(result.definition, 'pending');
+        } else if (!result.isLoading && !result.isFetching) {
+          usageMetrics.markQuery(result.definition, 'success');
         }
       }
     }
