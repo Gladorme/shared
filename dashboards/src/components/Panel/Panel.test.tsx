@@ -99,7 +99,7 @@ function makeQueryResult(
     definition: testQueryDefinition,
     error: new Error(''),
     isFetching: false,
-    isLoading: false,
+    isPending: false,
     ...overrides,
   };
 }
@@ -112,7 +112,7 @@ function makeDataQueriesContext(
     queryResults,
     refetchAll: vi.fn(),
     isFetching: queryResults.some((result) => result.isFetching),
-    isLoading: queryResults.some((result) => result.isLoading),
+    isPending: queryResults.some((result) => result.isPending),
     errors: queryResults.flatMap((result) => (result.error.message ? [result.error] : [])),
   };
 }
@@ -247,7 +247,7 @@ describe('Panel', () => {
   it('passes pending, successful, and errored queries to plugin actions in order', async () => {
     vi.mocked(useDataQueriesContext).mockReturnValue(
       makeDataQueriesContext([
-        makeQueryResult({ isLoading: true }),
+        makeQueryResult({ isPending: true }),
         makeQueryResult({ data: { series: [{ name: 'test', values: [[1, 2]] }] } }),
         makeQueryResult({ error: new Error('query failed') }),
       ]),
