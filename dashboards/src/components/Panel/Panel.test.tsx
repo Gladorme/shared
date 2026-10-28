@@ -20,6 +20,8 @@ import { DEFAULT_ALL_VALUE } from '@perses-dev/spec';
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { ReactElement } from 'react';
+import type * as ResizeObserverModule from 'use-resize-observer';
+import { useResizeObserver } from 'use-resize-observer';
 
 import { VariableProvider } from '../../context';
 import { renderWithContext } from '../../test';
@@ -144,10 +146,11 @@ vi.mock('@perses-dev/plugin-system', async () => {
         PanelComponent: (): ReactElement => <div>TimeSeriesChart panel</div>,
         actions: [
           {
-            component: ({ queryResults }: PluginSystemModule.PanelProps<unknown>): ReactElement => (
+            component: ({ queryResults, contentDimensions }: PluginSystemModule.PanelProps<unknown>): ReactElement => (
               <button
                 aria-label="Export CSV"
                 data-testid="export-action"
+                data-content-dimensions={contentDimensions ? JSON.stringify(contentDimensions) : 'undefined'}
                 data-query-count={queryResults.length}
                 data-query-states={queryResults
                   .map((query) => (query.data === undefined ? 'unavailable' : 'ready'))
@@ -161,6 +164,14 @@ vi.mock('@perses-dev/plugin-system', async () => {
         ],
       }),
     })),
+  };
+});
+
+vi.mock('use-resize-observer', async () => {
+  const actual = await vi.importActual<typeof ResizeObserverModule>('use-resize-observer');
+  return {
+    ...actual,
+    useResizeObserver: vi.fn(actual.useResizeObserver),
   };
 });
 
@@ -252,6 +263,24 @@ describe('Panel', () => {
       );
     });
     vi.mocked(useDataQueriesContext).mockReturnValue(makeDataQueriesContext());
+  });
+
+  it.each([
+    { label: '0x0', measured: { width: 0, height: 0 }, expected: 'undefined' },
+    { label: '120x0', measured: { width: 120, height: 0 }, expected: 'undefined' },
+    { label: '120x80', measured: { width: 120, height: 80 }, expected: JSON.stringify({ width: 120, height: 80 }) },
+  ])('passes $expected content dimensions for a $label measurement', async ({ measured, expected }) => {
+    vi.mocked(useResizeObserver).mockReturnValue({ ref: vi.fn(), ...measured });
+
+    try {
+      await renderPanel();
+
+      await waitFor(() => {
+        expect(screen.getByRole('button', { name: 'Export CSV' })).toHaveAttribute('data-content-dimensions', expected);
+      });
+    } finally {
+      vi.mocked(useResizeObserver).mockReset();
+    }
   });
 
   it('should render panel', async () => {

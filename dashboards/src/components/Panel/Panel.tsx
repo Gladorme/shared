@@ -97,7 +97,8 @@ export const Panel = memo(function Panel(props: PanelProps) {
   const { width, height } = useResizeObserver({ ref: contentElement });
 
   const contentDimensions = useMemo(() => {
-    if (width === undefined || height === undefined) return undefined;
+    // use-resize-observer v10 reports a measured 0 instead of undefined; plugins treat undefined as "not measured".
+    if (!width || !height) return undefined;
     return { width, height };
   }, [width, height]);
 
