@@ -13,10 +13,11 @@
 
 import { Skeleton } from '@mui/material';
 import { LoadingOverlay } from '@perses-dev/components';
-import type { PanelProps, QueryData, PanelPlugin } from '@perses-dev/plugin-system';
+import type { PanelData, PanelProps, QueryData, PanelPlugin } from '@perses-dev/plugin-system';
 import { usePlugin } from '@perses-dev/plugin-system';
 import type { UnknownSpec, PanelDefinition, QueryDataType } from '@perses-dev/spec';
 import type { ReactElement } from 'react';
+import { useState } from 'react';
 
 import { PanelPluginLoader } from './PanelPluginLoader';
 
@@ -32,6 +33,7 @@ export interface PanelContentProps extends Omit<PanelProps<UnknownSpec>, 'queryR
  */
 export function PanelContent(props: PanelContentProps): ReactElement {
   const { panelPluginKind, definition, queryResults, spec, contentDimensions } = props;
+  const queryResultsWithData = useQueryResultsWithData(queryResults);
   const { data: plugin, isLoading: isPanelLoading } = usePlugin('Panel', panelPluginKind, {
     useErrorBoundary: true,
     version: definition?.spec.plugin.metadata?.version,
@@ -52,9 +54,6 @@ export function PanelContent(props: PanelContentProps): ReactElement {
 
   // Render the panel if any query has data, or the panel doesn't have a query attached (for example MarkdownPanel).
   // Loading indicator or errors of other queries are shown in the panel header.
-  const queryResultsWithData = queryResults.flatMap((q) =>
-    q.data ? [{ data: q.data, definition: q.definition }] : [],
-  );
   if (queryResultsWithData.length > 0 || queryResults.length === 0) {
     return (
       <PanelPluginLoader
@@ -83,6 +82,26 @@ export function PanelContent(props: PanelContentProps): ReactElement {
   // This can happen if all queries are disabled (e.g. dependent dashboard variables are loading, or they are not in the viewport of the browser).
   // Most likely, some query will be enabled later. Render the panel loading skeleton.
   return <PanelLoading plugin={plugin} spec={spec} definition={definition} contentDimensions={contentDimensions} />;
+}
+
+/**
+ * Returns the queries having data. The array is kept while the data and definitions are the same, so the panel plugin
+ * does not re-render when only the loading state of the queries changes (e.g. while refreshing).
+ */
+function useQueryResultsWithData(queryResults: QueryData[]): PanelData[] {
+  const [previous, setPrevious] = useState<PanelData[]>([]);
+  const next = queryResults.flatMap((q) => (q.data ? [{ data: q.data, definition: q.definition }] : []));
+  if (
+    next.length === previous.length &&
+    next.every(
+      (result, index) => result.data === previous[index]!.data && result.definition === previous[index]!.definition,
+    )
+  ) {
+    return previous;
+  }
+  // Adjusting state while rendering: https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes
+  setPrevious(next);
+  return next;
 }
 
 interface PanelLoadingProps extends Pick<PanelContentProps, 'spec' | 'definition' | 'contentDimensions'> {
