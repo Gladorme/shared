@@ -49,10 +49,6 @@ export function EditVariablesButton({
   fullWidth,
 }: EditVariablesButtonProps): ReactElement {
   const [isVariableEditorOpen, setIsVariableEditorOpen] = useState(false);
-  const variableDefinitions: VariableDefinition[] = useVariableDefinitions();
-  const externalVariableDefinitions: ExternalVariableDefinition[] = useExternalVariableDefinitions();
-  const builtinVariableDefinitions: BuiltinVariableDefinition[] = useBuiltinVariableDefinitions();
-  const { setVariableDefinitions } = useVariableDefinitionActions();
 
   const openVariableEditor = (): void => {
     setIsVariableEditorOpen(true);
@@ -83,17 +79,31 @@ export function EditVariablesButton({
         PaperProps={{ sx: { width: '50%' } }}
         data-testid="variable-editor"
       >
-        <VariableEditor
-          variableDefinitions={variableDefinitions}
-          externalVariableDefinitions={externalVariableDefinitions}
-          builtinVariableDefinitions={builtinVariableDefinitions}
-          onCancel={closeVariableEditor}
-          onChange={(variables: VariableDefinition[]) => {
-            setVariableDefinitions(variables);
-            setIsVariableEditorOpen(false);
-          }}
-        />
+        <DashboardVariableEditor onClose={closeVariableEditor} />
       </Drawer>
     </>
+  );
+}
+
+/**
+ * Only rendered while the drawer is open: the builtin variable definitions load every datasource plugin.
+ */
+function DashboardVariableEditor({ onClose }: { onClose: () => void }): ReactElement {
+  const variableDefinitions: VariableDefinition[] = useVariableDefinitions();
+  const externalVariableDefinitions: ExternalVariableDefinition[] = useExternalVariableDefinitions();
+  const builtinVariableDefinitions: BuiltinVariableDefinition[] = useBuiltinVariableDefinitions();
+  const { setVariableDefinitions } = useVariableDefinitionActions();
+
+  return (
+    <VariableEditor
+      variableDefinitions={variableDefinitions}
+      externalVariableDefinitions={externalVariableDefinitions}
+      builtinVariableDefinitions={builtinVariableDefinitions}
+      onCancel={onClose}
+      onChange={(variables: VariableDefinition[]) => {
+        setVariableDefinitions(variables);
+        onClose();
+      }}
+    />
   );
 }

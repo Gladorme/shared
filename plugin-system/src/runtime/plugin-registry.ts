@@ -158,6 +158,10 @@ export function useListPluginMetadata(
   });
 }
 
+/**
+ * Returns the builtin variable definitions of every installed datasource plugin. This loads every datasource plugin:
+ * only use it where the definitions are displayed, not while a dashboard loads.
+ */
 export function usePluginBuiltinVariableDefinitions(): UseQueryResult<BuiltinVariableDefinition[]> {
   const { getPlugin, listPluginMetadata } = usePluginRegistry();
 
@@ -166,14 +170,10 @@ export function usePluginBuiltinVariableDefinitions(): UseQueryResult<BuiltinVar
     queryFn: async () => {
       const datasources = await listPluginMetadata(['Datasource']);
       const datasourceNames = new Set(datasources.map((datasource) => datasource.spec.name));
-      const result: BuiltinVariableDefinition[] = [];
-      for (const name of datasourceNames) {
-        const plugin = await getPlugin({ kind: 'Datasource', name });
-        if (plugin.getBuiltinVariableDefinitions) {
-          plugin.getBuiltinVariableDefinitions().forEach((definition) => result.push(definition));
-        }
-      }
-      return result;
+      const plugins = await Promise.all([...datasourceNames].map((name) => getPlugin({ kind: 'Datasource', name })));
+      return plugins.flatMap((plugin) => plugin.getBuiltinVariableDefinitions?.() ?? []);
     },
+    // The installed plugins do not change while the app runs.
+    staleTime: Infinity,
   });
 }
