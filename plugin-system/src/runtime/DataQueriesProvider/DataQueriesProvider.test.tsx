@@ -25,7 +25,8 @@ import {
   MOCK_SILENCES_DATA,
   MOCK_JSON_DATA,
 } from '../../test';
-import { DataQueriesContext, DataQueriesProvider, useDataQueries } from './DataQueriesProvider';
+import { useTimeSeriesQueries } from '../time-series-queries';
+import { DataQueriesContext, DataQueriesProvider, useDataQueries, useDataQueriesContext } from './DataQueriesProvider';
 import type { DataQueriesContextType } from './model';
 
 vi.mock('../time-series-queries', () => ({
@@ -202,6 +203,54 @@ describe('useDataQueries', (): void => {
       wrapper,
     });
     expect(result.current.queryResults[0]?.data).toEqual(MOCK_TIME_SERIES_DATA);
+  });
+
+  it('keeps the context value while the query results are the same', () => {
+    const definitions: QueryDefinition[] = [
+      { kind: 'TimeSeriesQuery', spec: { plugin: { kind: 'PrometheusTimeSeriesQuery', spec: { query: 'up' } } } },
+    ];
+    const wrapper = ({ children }: React.PropsWithChildren): ReactElement => (
+      <DataQueriesProvider definitions={definitions}>{children}</DataQueriesProvider>
+    );
+
+    const { result, rerender } = renderHook(() => useDataQueriesContext(), { wrapper });
+    const initialContext = result.current;
+
+    // React Query returns new result objects on every render.
+    rerender();
+    expect(result.current).toBe(initialContext);
+
+    const updatedData = { ...MOCK_TIME_SERIES_DATA };
+    vi.mocked(useTimeSeriesQueries).mockImplementation(
+      () => [{ data: updatedData }] as ReturnType<typeof useTimeSeriesQueries>,
+    );
+    rerender();
+    expect(result.current).not.toBe(initialContext);
+    expect(result.current.queryResults[0]?.data).toBe(updatedData);
+    vi.mocked(useTimeSeriesQueries).mockImplementation(
+      () => [{ data: MOCK_TIME_SERIES_DATA }] as ReturnType<typeof useTimeSeriesQueries>,
+    );
+  });
+
+  it('keeps the context value when only the refetch functions change', () => {
+    // Before its observers are registered, React Query returns new refetch functions on every render.
+    vi.mocked(useTimeSeriesQueries).mockImplementation(
+      () => [{ data: MOCK_TIME_SERIES_DATA, refetch: vi.fn() }] as unknown as ReturnType<typeof useTimeSeriesQueries>,
+    );
+    const definitions: QueryDefinition[] = [
+      { kind: 'TimeSeriesQuery', spec: { plugin: { kind: 'PrometheusTimeSeriesQuery', spec: { query: 'up' } } } },
+    ];
+    const wrapper = ({ children }: React.PropsWithChildren): ReactElement => (
+      <DataQueriesProvider definitions={definitions}>{children}</DataQueriesProvider>
+    );
+
+    const { result, rerender } = renderHook(() => useDataQueriesContext(), { wrapper });
+    const initialContext = result.current;
+    rerender();
+    expect(result.current).toBe(initialContext);
+    vi.mocked(useTimeSeriesQueries).mockImplementation(
+      () => [{ data: MOCK_TIME_SERIES_DATA }] as ReturnType<typeof useTimeSeriesQueries>,
+    );
   });
 
   it('should return the correct data for TraceQuery', () => {

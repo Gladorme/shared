@@ -13,6 +13,7 @@
 
 import { render, screen, act, renderHook, fireEvent } from '@testing-library/react';
 import type { ReactElement } from 'react';
+import { Profiler } from 'react';
 
 import {
   PANEL_FOCUS_DEBOUNCE_MS,
@@ -41,6 +42,19 @@ function PanelFocusTest({ panelKey }: { panelKey: string }): ReactElement {
       <div data-testid="focused-panel">{focused ?? 'none'}</div>
     </div>
   );
+}
+
+function PanelHandlersOnly({ panelKey }: { panelKey: string }): ReactElement {
+  const { onMouseEnter, onMouseLeave } = usePanelFocusHandlers(panelKey);
+  return (
+    <div data-testid={panelKey} tabIndex={-1} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+      {panelKey}
+    </div>
+  );
+}
+
+function FocusedPanel(): ReactElement {
+  return <div data-testid="focused-panel">{useFocusedPanel() ?? 'none'}</div>;
 }
 
 describe('PanelFocusProvider', () => {
@@ -87,6 +101,38 @@ describe('PanelFocusProvider', () => {
 
       expect(popupTrigger).toHaveFocus();
       expect(panel).not.toHaveFocus();
+    });
+
+    it('should not re-render the panels when the focused panel changes', () => {
+      const renders: Record<string, number> = {};
+      const countRender = (id: string): void => {
+        renders[id] = (renders[id] ?? 0) + 1;
+      };
+      render(
+        <PanelFocusProvider>
+          <Profiler id="panel-1" onRender={countRender}>
+            <PanelHandlersOnly panelKey="panel-1" />
+          </Profiler>
+          <Profiler id="panel-2" onRender={countRender}>
+            <PanelHandlersOnly panelKey="panel-2" />
+          </Profiler>
+          <FocusedPanel />
+        </PanelFocusProvider>,
+      );
+      const initialRenders = { ...renders };
+
+      fireEvent.mouseEnter(screen.getByTestId('panel-1'));
+      act(() => {
+        vi.advanceTimersByTime(PANEL_FOCUS_DEBOUNCE_MS);
+      });
+      fireEvent.mouseLeave(screen.getByTestId('panel-1'));
+      fireEvent.mouseEnter(screen.getByTestId('panel-2'));
+      act(() => {
+        vi.advanceTimersByTime(PANEL_FOCUS_DEBOUNCE_MS);
+      });
+
+      expect(screen.getByTestId('focused-panel').textContent).toBe('panel-2');
+      expect(renders).toEqual(initialRenders);
     });
 
     it('should shift focus to the panel when there is no open popup', () => {

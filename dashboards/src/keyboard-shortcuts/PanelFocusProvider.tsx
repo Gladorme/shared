@@ -14,52 +14,45 @@
 import type { ReactElement, ReactNode } from 'react';
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-interface PanelFocusContextValue {
-  focusedPanelKey: string | null;
+interface PanelFocusActions {
   setFocusedPanel: (panelKey: string) => void;
   clearFocusedPanel: () => void;
 }
 
-const PanelFocusContext = createContext<PanelFocusContextValue | undefined>(undefined);
+// The focused panel and the actions live in separate contexts: every panel uses the actions, so they must not
+// re-render each time the mouse enters or leaves a panel.
+const PanelFocusedKeyContext = createContext<string | null | undefined>(undefined);
+const PanelFocusActionsContext = createContext<PanelFocusActions | undefined>(undefined);
 
-function usePanelFocusContext(): PanelFocusContextValue {
-  const ctx = useContext(PanelFocusContext);
-  if (ctx === undefined) {
+function assertInProvider<T>(value: T | undefined): T {
+  if (value === undefined) {
     throw new Error('Panel focus hooks must be used within a PanelFocusProvider');
   }
-  return ctx;
+  return value;
 }
 
 /** Tracks which dashboard panel is currently focused (hovered) for panel-scoped shortcuts. */
 export function PanelFocusProvider({ children }: { children: ReactNode }): ReactElement {
   const [focusedPanelKey, setFocusedPanelKeyState] = useState<string | null>(null);
 
-  // This wrapper narrow the setter type (string-only / null-only) and provide
-  // stable references for the useMemo context value below. React guarantees
-  // setFocusedPanelKeyState is stable, but useCallback makes the stability
-  // explicit and satisfies exhaustive-deps when used in useMemo.
-  const setFocusedPanel = useCallback((panelKey: string) => {
-    setFocusedPanelKeyState(panelKey);
-  }, []);
-
-  const clearFocusedPanel = useCallback(() => {
-    setFocusedPanelKeyState(null);
-  }, []);
-
-  const value = useMemo(
-    (): PanelFocusContextValue => ({
-      focusedPanelKey,
-      setFocusedPanel,
-      clearFocusedPanel,
+  // Narrow the setter type (string-only / null-only) and keep the actions context value stable.
+  const actions = useMemo(
+    (): PanelFocusActions => ({
+      setFocusedPanel: (panelKey: string): void => setFocusedPanelKeyState(panelKey),
+      clearFocusedPanel: (): void => setFocusedPanelKeyState(null),
     }),
-    [focusedPanelKey, setFocusedPanel, clearFocusedPanel],
+    [],
   );
 
-  return <PanelFocusContext.Provider value={value}>{children}</PanelFocusContext.Provider>;
+  return (
+    <PanelFocusActionsContext.Provider value={actions}>
+      <PanelFocusedKeyContext.Provider value={focusedPanelKey}>{children}</PanelFocusedKeyContext.Provider>
+    </PanelFocusActionsContext.Provider>
+  );
 }
 
 export function useFocusedPanel(): string | null {
-  return usePanelFocusContext().focusedPanelKey;
+  return assertInProvider(useContext(PanelFocusedKeyContext));
 }
 
 export const PANEL_FOCUS_DEBOUNCE_MS = 50;
@@ -69,7 +62,7 @@ export function usePanelFocusHandlers(panelKey: string): {
   onMouseEnter: (e: React.MouseEvent<HTMLElement>) => void;
   onMouseLeave: () => void;
 } {
-  const { setFocusedPanel, clearFocusedPanel } = usePanelFocusContext();
+  const { setFocusedPanel, clearFocusedPanel } = assertInProvider(useContext(PanelFocusActionsContext));
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const onMouseEnter = useCallback(

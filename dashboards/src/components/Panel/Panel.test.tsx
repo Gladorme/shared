@@ -141,8 +141,9 @@ vi.mock('@perses-dev/plugin-system', async () => {
   return {
     ...actual,
     useDataQueriesContext: vi.fn(() => makeDataQueriesContext()),
-    usePluginRegistry: vi.fn(() => ({
-      getPlugin: vi.fn().mockResolvedValue({
+    usePlugin: vi.fn(() => ({
+      isLoading: false,
+      data: {
         PanelComponent: (): ReactElement => <div>TimeSeriesChart panel</div>,
         actions: [
           {
@@ -162,7 +163,7 @@ vi.mock('@perses-dev/plugin-system', async () => {
             location: 'header',
           },
         ],
-      }),
+      },
     })),
   };
 });
