@@ -52,7 +52,7 @@ export function QuerySummaryTable(props: QuerySummaryTableProps): ReactElement |
   const completedQueries = queries.filter((query) => query.state.status === 'success');
   const querySummary = useActiveTimeSeriesQueries();
 
-  if (datasourceClient.isLoading === true) {
+  if (datasourceClient.isPending === true) {
     return null;
   }
 
