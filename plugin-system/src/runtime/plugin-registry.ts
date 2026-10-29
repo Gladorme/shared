@@ -170,8 +170,13 @@ export function usePluginBuiltinVariableDefinitions(): UseQueryResult<BuiltinVar
     queryFn: async () => {
       const datasources = await listPluginMetadata(['Datasource']);
       const datasourceNames = new Set(datasources.map((datasource) => datasource.spec.name));
-      const plugins = await Promise.all([...datasourceNames].map((name) => getPlugin({ kind: 'Datasource', name })));
-      return plugins.flatMap((plugin) => plugin.getBuiltinVariableDefinitions?.() ?? []);
+      const plugins = await Promise.allSettled(
+        [...datasourceNames].map((name) => getPlugin({ kind: 'Datasource', name })),
+      );
+      // A datasource plugin failing to load must not hide the builtin variables of the other ones.
+      return plugins.flatMap((plugin) =>
+        plugin.status === 'fulfilled' ? (plugin.value.getBuiltinVariableDefinitions?.() ?? []) : [],
+      );
     },
     // The installed plugins do not change while the app runs.
     staleTime: Infinity,

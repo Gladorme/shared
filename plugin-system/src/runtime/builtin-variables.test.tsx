@@ -86,4 +86,32 @@ describe('useBuiltinVariableDefinitions', () => {
     );
     expect(registry.getPlugin).toHaveBeenCalledTimes(2);
   });
+
+  it('keeps the builtin variables of the datasource plugins that load when another one fails', async () => {
+    const registry = {
+      listPluginMetadata: vi.fn().mockResolvedValue([
+        { kind: 'Datasource', spec: { name: 'BrokenDatasource' } },
+        { kind: 'Datasource', spec: { name: 'PrometheusDatasource' } },
+      ]),
+      getPlugin: vi.fn(({ name }: { name: string }) =>
+        name === 'BrokenDatasource'
+          ? Promise.reject(new Error('Unable to load the plugin'))
+          : Promise.resolve({
+              getBuiltinVariableDefinitions: (): BuiltinVariableDefinition[] => [
+                builtinVariable('__interval', 'Prometheus'),
+              ],
+            }),
+      ),
+    } as unknown as PluginRegistryContextType;
+
+    const { result } = renderHook(() => useBuiltinVariableDefinitions(), {
+      wrapper: ({ children }) => (
+        <TestProviders registry={registry} builtinVariables={{ variables: [] }}>
+          {children}
+        </TestProviders>
+      ),
+    });
+
+    await waitFor(() => expect(result.current.map((variable) => variable.spec.name)).toEqual(['__interval']));
+  });
 });
