@@ -19,7 +19,7 @@ import type { TimeSeriesDataQuery, TimeSeriesQueryContext, TimeSeriesQueryMode, 
 import { useDatasourceStore } from './datasources';
 import { usePlugin, usePluginRegistry, usePlugins } from './plugin-registry';
 import { useTimeRange } from './TimeRangeProvider';
-import { filterVariableStateMap, getVariableValuesKey } from './utils';
+import { filterVariableStateMap, getVariableValuesKey, shareEqualData } from './utils';
 import { useAllVariableValues } from './variables';
 
 export interface UseTimeSeriesQueryOptions {
@@ -91,6 +91,7 @@ export const useTimeSeriesQuery = (
   return useQuery({
     enabled: (queryOptions?.enabled ?? true) || queryEnabled,
     queryKey: queryKey,
+    structuralSharing: shareEqualData,
     queryFn: ({ signal }) => {
       // The 'enabled' option should prevent this from happening, but make TypeScript happy by checking
       if (plugin === undefined) {
@@ -137,6 +138,7 @@ export function useTimeSeriesQueries(
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
         staleTime: Infinity,
+        structuralSharing: shareEqualData,
         queryKey: queryKey,
         queryFn: async ({ signal }: { signal: AbortSignal }): Promise<TimeSeriesData> => {
           const plugin = await getPlugin({
