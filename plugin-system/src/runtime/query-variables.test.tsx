@@ -202,15 +202,12 @@ describe.each(queryCases)('$name variable support', ({ useQuery, name }) => {
 describe.each(queryCases.filter(({ name }) => name !== 'variable options'))(
   '$name with unspecified dependencies',
   ({ useQuery }) => {
-    it('waits for all current variables and reruns when their values change', async () => {
+    it('does not wait for loading variables but reruns when their values change', async () => {
       dependsOn.mockReturnValue({});
       runtime.variables.service = { value: 'api', loading: true };
       const { result, rerender } = renderHook(useQuery, { wrapper: Wrapper });
-      await waitFor(() => expect(dependsOn).toHaveBeenCalled());
-      expect(fetchData).not.toHaveBeenCalled();
-      runtime.variables = { ...runtime.variables, service: { value: 'api', loading: false } };
-      rerender();
       await waitFor(() => expect(result.current?.isSuccess).toBe(true));
+      expect(fetchData).toHaveBeenCalledTimes(1);
       runtime.variables = { ...runtime.variables, service: { value: 'worker', loading: false } };
       rerender();
       await waitFor(() => expect(fetchData).toHaveBeenCalledTimes(2));

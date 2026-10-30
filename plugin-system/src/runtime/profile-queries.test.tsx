@@ -126,12 +126,9 @@ it('refetches changed dependencies and ranges but ignores unrelated variables', 
   await waitFor(() => expect(getProfileData).toHaveBeenCalledTimes(4));
 });
 
-it('waits for variables without a dependency hook and supports dashboard refresh', async () => {
+it('does not wait for variables without a dependency hook and supports dashboard refresh', async () => {
   runtime.variables = { service: { value: 'api', loading: true } };
-  const { result, rerender } = renderHook(() => useProfileQueries([plainDefinition]), { wrapper: Wrapper });
-  expect(getProfileData).not.toHaveBeenCalled();
-  runtime.variables = { service: { value: 'api', loading: false } };
-  rerender();
+  const { result } = renderHook(() => useProfileQueries([plainDefinition]), { wrapper: Wrapper });
   await waitFor(() => expect(result.current[0]?.data).toEqual(data));
   await act(async () => {
     await queryClient.invalidateQueries({ queryKey: ['query', 'ProfileQuery'] });

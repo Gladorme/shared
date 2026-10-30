@@ -89,7 +89,8 @@ function getQueryOptions({
   const filteredVariableState = filterVariableStateMap(variableState, variableDependencies);
   const variablesValueKey = getVariableValuesKey(filteredVariableState);
   const queryKey = ['query', ALERTS_QUERY_KEY, definition, variablesValueKey] as const;
-  const waitToLoad = Object.values(filteredVariableState).some((variable) => variable.loading);
+  // Only declared dependencies delay the query; undeclared ones still rerun it through the cache key.
+  const waitToLoad = variableDependencies?.some((name) => variableState[name]?.loading) ?? false;
   // Let the query function surface plugin loading errors once variable dependencies are ready.
   const queryEnabled = (plugin !== undefined || pluginLoadFailed) && !waitToLoad;
 

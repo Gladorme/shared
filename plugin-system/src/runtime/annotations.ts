@@ -57,7 +57,8 @@ function getQueryOptions({
   const variablesValueKey = getVariableValuesKey(filteredVariableState);
   // ['annotation', spec] prefix: refreshed by TimeRangeProvider and invalidated by the annotation editor preview.
   const queryKey = ['annotation', definition, absoluteTimeRange, variablesValueKey] as const;
-  const waitToLoad = Object.values(filteredVariableState).some((variable) => variable.loading);
+  // Only declared dependencies delay the query; undeclared ones still rerun it through the cache key.
+  const waitToLoad = variableDependencies?.some((name) => variableState[name]?.loading) ?? false;
   // Let the query function surface plugin loading errors once variable dependencies are ready.
   const queryEnabled = (plugin !== undefined || pluginLoadFailed) && !waitToLoad;
 
