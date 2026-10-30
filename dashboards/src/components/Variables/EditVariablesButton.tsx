@@ -14,7 +14,7 @@
 import type { ButtonProps } from '@mui/material';
 import { Button } from '@mui/material';
 import { Drawer, InfoTooltip } from '@perses-dev/components';
-import { useBuiltinVariableDefinitions } from '@perses-dev/plugin-system';
+import { useBuiltinVariableDefinitions, usePluginBuiltinVariableDefinitions } from '@perses-dev/plugin-system';
 import type { BuiltinVariableDefinition, VariableDefinition } from '@perses-dev/spec';
 import PencilIcon from 'mdi-material-ui/PencilOutline';
 import type { ReactElement } from 'react';
@@ -92,6 +92,7 @@ function DashboardVariableEditor({ onClose }: { onClose: () => void }): ReactEle
   const variableDefinitions: VariableDefinition[] = useVariableDefinitions();
   const externalVariableDefinitions: ExternalVariableDefinition[] = useExternalVariableDefinitions();
   const builtinVariableDefinitions: BuiltinVariableDefinition[] = useBuiltinVariableDefinitions();
+  const { isLoading: isBuiltinVariableDefinitionsLoading } = usePluginBuiltinVariableDefinitions();
   const { setVariableDefinitions } = useVariableDefinitionActions();
 
   return (
@@ -99,6 +100,7 @@ function DashboardVariableEditor({ onClose }: { onClose: () => void }): ReactEle
       variableDefinitions={variableDefinitions}
       externalVariableDefinitions={externalVariableDefinitions}
       builtinVariableDefinitions={builtinVariableDefinitions}
+      isBuiltinVariableDefinitionsLoading={isBuiltinVariableDefinitionsLoading}
       onCancel={onClose}
       onChange={(variables: VariableDefinition[]) => {
         setVariableDefinitions(variables);

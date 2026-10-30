@@ -106,8 +106,6 @@ export function ViewDashboard(props: ViewDashboardProps): ReactElement {
         },
       } as BuiltinVariableDefinition,
     ];
-    // The builtin variables of the datasource plugins are only loaded where they are displayed (see
-    // useBuiltinVariableDefinitions): loading every installed datasource plugin slowed down every dashboard.
     return result;
   }, [dashboardResource.metadata.name, dashboardResource.metadata.project]);
 

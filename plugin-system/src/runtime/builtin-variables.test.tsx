@@ -25,17 +25,32 @@ function builtinVariable(name: string, source: string): BuiltinVariableDefinitio
   return { kind: 'BuiltinVariable', spec: { name, value: () => name, source, display: { name } } };
 }
 
+function registryWithDatasource(source: string): PluginRegistryContextType {
+  return {
+    listPluginMetadata: vi.fn().mockResolvedValue([{ kind: 'Datasource', spec: { name: `${source}Datasource` } }]),
+    getPlugin: vi.fn().mockResolvedValue({
+      getBuiltinVariableDefinitions: (): BuiltinVariableDefinition[] => [builtinVariable('__interval', source)],
+    }),
+  } as unknown as PluginRegistryContextType;
+}
+
+function createQueryClient(): QueryClient {
+  return new QueryClient({ defaultOptions: { queries: { retry: false } } });
+}
+
 function TestProviders({
   registry,
   builtinVariables,
+  queryClient,
   children,
 }: {
   registry: PluginRegistryContextType;
   builtinVariables: BuiltinVariableSrv;
+  queryClient: QueryClient;
   children: ReactNode;
 }): ReactElement {
   return (
-    <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+    <QueryClientProvider client={queryClient}>
       <PluginRegistryContext.Provider value={registry}>
         <BuiltinVariableContext.Provider value={builtinVariables}>{children}</BuiltinVariableContext.Provider>
       </PluginRegistryContext.Provider>
@@ -66,10 +81,11 @@ describe('useBuiltinVariableDefinitions', () => {
       ),
     } as unknown as PluginRegistryContextType;
     const builtinVariables = { variables: [dashboardVariable, contextVariable] };
+    const queryClient = createQueryClient();
 
     const { result } = renderHook(() => useBuiltinVariableDefinitions(), {
       wrapper: ({ children }) => (
-        <TestProviders registry={registry} builtinVariables={builtinVariables}>
+        <TestProviders registry={registry} builtinVariables={builtinVariables} queryClient={queryClient}>
           {children}
         </TestProviders>
       ),
@@ -103,15 +119,41 @@ describe('useBuiltinVariableDefinitions', () => {
             }),
       ),
     } as unknown as PluginRegistryContextType;
+    const queryClient = createQueryClient();
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
 
     const { result } = renderHook(() => useBuiltinVariableDefinitions(), {
       wrapper: ({ children }) => (
-        <TestProviders registry={registry} builtinVariables={{ variables: [] }}>
+        <TestProviders registry={registry} builtinVariables={{ variables: [] }} queryClient={queryClient}>
           {children}
         </TestProviders>
       ),
     });
 
     await waitFor(() => expect(result.current.map((variable) => variable.spec.name)).toEqual(['__interval']));
+    expect(warn).toHaveBeenCalledWith(
+      "Unable to load the builtin variables of the datasource plugin 'BrokenDatasource'",
+      expect.any(Error),
+    );
+    warn.mockRestore();
+  });
+
+  it('does not share the builtin variables of the datasource plugins between registries', async () => {
+    const queryClient = createQueryClient();
+
+    const renderWithRegistry = (registry: PluginRegistryContextType): { current: BuiltinVariableDefinition[] } =>
+      renderHook(() => useBuiltinVariableDefinitions(), {
+        wrapper: ({ children }) => (
+          <TestProviders registry={registry} builtinVariables={{ variables: [] }} queryClient={queryClient}>
+            {children}
+          </TestProviders>
+        ),
+      }).result;
+
+    const prometheus = renderWithRegistry(registryWithDatasource('Prometheus'));
+    await waitFor(() => expect(prometheus.current.map((variable) => variable.spec.source)).toEqual(['Prometheus']));
+
+    const loki = renderWithRegistry(registryWithDatasource('Loki'));
+    await waitFor(() => expect(loki.current.map((variable) => variable.spec.source)).toEqual(['Loki']));
   });
 });
