@@ -111,8 +111,6 @@ export const Panel = memo(function Panel(props: PanelProps) {
     registry: definition.spec.plugin.metadata?.registry,
   });
 
-  // Plugin actions are derived during render: storing them in a state updated by an effect re-rendered the panel
-  // after every query update.
   const pluginActions = useMemo((): ReactNode[] => {
     const headerActions = Array.isArray(plugin?.actions)
       ? plugin.actions.filter((action) => !action.location || action.location === 'header')
