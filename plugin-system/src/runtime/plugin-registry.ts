@@ -47,7 +47,6 @@ export function usePluginRegistry(): PluginRegistryContextType {
 
 type UsePluginQueryKey = [string, PluginType | undefined, string, string, string];
 
-// Allows consumers to pass useQuery options from react-query when loading a plugin
 /**
  * Plugin modules are imported once and cached by the plugin registry, so a loaded plugin never changes. Without this,
  * every component mounting a plugin query refetches it, and the fetching state notifies every component using the same
@@ -55,6 +54,7 @@ type UsePluginQueryKey = [string, PluginType | undefined, string, string, string
  */
 const PLUGIN_STALE_TIME = Infinity;
 
+// Allows consumers to pass useQuery options from react-query when loading a plugin
 type UsePluginOptions<T extends PluginType> = Omit<
   UseQueryOptions<PluginImplementation<T>, Error, PluginImplementation<T>, UsePluginQueryKey>,
   'queryKey' | 'queryFn'
