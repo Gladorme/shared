@@ -26,6 +26,23 @@ import (
 
 var versionPattern = regexp.MustCompile(`^\d+\.\d+\.\d+(?:-[\w\d.]+)?$`)
 
+// pluginRuntimePath is the file declaring the version of the packages shared with the plugins.
+const pluginRuntimePath = "plugin-system/src/remote/PluginRuntime.tsx"
+
+// updatePluginRuntimeVersions sets the version of every workspace package shared with the plugins by the module
+// federation runtime. Each of them is declared in the plugin runtime with a `version` and a `requiredVersion`.
+// It returns an error when a workspace package is not declared there, to never release a runtime that is not aligned.
+func updatePluginRuntimeVersions(data []byte, workspaces []string, newVersion string) ([]byte, error) {
+	for _, workspace := range workspaces {
+		sharedModule := regexp.MustCompile(fmt.Sprintf(`(?s)('@perses-dev/%s': \{\s*version: ')[^']*(',.*?requiredVersion: '\^)[^']*(')`, regexp.QuoteMeta(workspace)))
+		if !sharedModule.Match(data) {
+			return nil, fmt.Errorf("unable to find the shared module @perses-dev/%s in %s", workspace, pluginRuntimePath)
+		}
+		data = sharedModule.ReplaceAll(data, []byte(fmt.Sprintf("${1}%s${2}%s${3}", newVersion, newVersion)))
+	}
+	return data, nil
+}
+
 func updatePackageVersion(workspaces []string, workspacePath string, newVersion string) error {
 	pkgPath := filepath.Join(workspacePath, "package.json")
 	data, err := os.ReadFile(pkgPath)
@@ -67,6 +84,16 @@ func main() {
 		return
 	}
 
+	// The plugin runtime is read and updated in memory first: if a package is missing there, nothing is written.
+	pluginRuntime, err := os.ReadFile(pluginRuntimePath)
+	if err != nil {
+		logrus.WithError(err).Fatalf("unable to read the file %s", pluginRuntimePath)
+	}
+	pluginRuntime, err = updatePluginRuntimeVersions(pluginRuntime, workspaces, version)
+	if err != nil {
+		logrus.WithError(err).Fatal("failed to update the plugin runtime")
+	}
+
 	// First, update the root package.json
 	if err := updatePackageVersion(workspaces, ".", version); err != nil {
 		logrus.WithError(err).Fatal("failed to update root package.json")
@@ -80,6 +107,11 @@ func main() {
 		}
 		logrus.Infof("✓ Updated %s to version %s", workspace, version)
 	}
+
+	if writeErr := os.WriteFile(pluginRuntimePath, pluginRuntime, 0644); writeErr != nil {
+		logrus.WithError(writeErr).Fatalf("unable to write the file %s", pluginRuntimePath)
+	}
+	logrus.Infof("✓ Updated %s to version %s", pluginRuntimePath, version)
 
 	logrus.Info("All workspace packages updated successfully")
 }

@@ -16,6 +16,7 @@ import ReactDOM from 'react-dom';
 import * as ReactJSXRuntime from 'react/jsx-runtime';
 import { useResizeObserver } from 'use-resize-observer';
 
+import pluginSystemPackage from '../../package.json';
 import { loadPlugin } from './PluginRuntime';
 
 type SharedModuleConfig = {
@@ -96,5 +97,24 @@ describe('shared modules', () => {
 
     expect(sharedModule?.useResizeObserver).toBe(useResizeObserver);
     expect(sharedModule).not.toHaveProperty('default');
+  });
+
+  // All the packages of this repository are versioned together: the version of this package is the one of all of them.
+  it.each([
+    '@perses-dev/client',
+    '@perses-dev/components',
+    '@perses-dev/plugin-system',
+    '@perses-dev/explore',
+    '@perses-dev/dashboards',
+  ])('should share %s with the version of the packages of this repository', (name) => {
+    expect(runtimeShared[name]?.version).toBe(pluginSystemPackage.version);
+    expect(runtimeShared[name]?.shareConfig?.requiredVersion).toBe(`^${pluginSystemPackage.version}`);
+  });
+
+  it('should share @perses-dev/spec with the version this package depends on', () => {
+    const specVersion = pluginSystemPackage.dependencies['@perses-dev/spec'];
+
+    expect(runtimeShared['@perses-dev/spec']?.version).toBe(specVersion);
+    expect(runtimeShared['@perses-dev/spec']?.shareConfig?.requiredVersion).toBe(`^${specVersion}`);
   });
 });
