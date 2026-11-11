@@ -179,14 +179,37 @@ export const formatTimestampISO = (timestamp: number | string): string => {
   return date.toISOString();
 };
 
+// Spreadsheet software runs as a formula a cell that starts with one of these characters.
+const FORMULA_TRIGGER_CHARACTERS = new Set(['=', '+', '-', '@', '\t', '\r']);
+
+// A number written as a text, like "-12.5" or "+1e3". It starts with a trigger character but cannot hold a formula.
+const NUMERIC_TEXT = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
+
+/**
+ * Whether spreadsheet software would run the given text as a formula when it opens the CSV file.
+ * A single character and a number written as a text are harmless, and they are kept as is.
+ */
+function isSpreadsheetFormula(value: string): boolean {
+  return value.length > 1 && FORMULA_TRIGGER_CHARACTERS.has(value.charAt(0)) && !NUMERIC_TEXT.test(value);
+}
+
+/**
+ * Format a value as a field of a CSV file.
+ *
+ * The exported values come from the datasources and the dashboards. A text that spreadsheet software would run as a
+ * formula is prefixed with a single quote and wrapped in double quotes, so that it is read as a text (this is the
+ * mitigation of the "CSV injection"). Numbers and booleans are never changed.
+ */
 export const escapeCsvValue = (value: unknown): string => {
   if (value === null || value === undefined) {
     return '';
   }
 
-  const stringValue = String(value);
+  const isFormula = typeof value === 'string' && isSpreadsheetFormula(value);
+  const stringValue = isFormula ? `'${value}` : String(value);
 
   if (
+    isFormula ||
     stringValue.includes(',') ||
     stringValue.includes('"') ||
     stringValue.includes('\n') ||
@@ -281,7 +304,7 @@ export const exportDataAsCSV = ({ data }: ExportDataOptions): Blob => {
   }
 
   const columnNames = seriesInfo.map((info) => info.columnName);
-  csvString += `DateTime,${columnNames.join(',')}\n`;
+  csvString += `DateTime,${columnNames.map((columnName) => escapeCsvValue(columnName)).join(',')}\n`;
 
   const sortedDateTimes = Object.keys(result).toSorted((a, b) => {
     const dateA = new Date(a).getTime();
