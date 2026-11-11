@@ -28,6 +28,11 @@ export interface MultiQueryEditorProps {
   filteredQueryPlugins?: string[];
   queries?: QueryDefinition[];
   queryResults?: QueryData[];
+  /**
+   * Hide the "Add Query" button, for consumers that only accept a single query (e.g. a trace explorer).
+   * Queries already present are still rendered and can be removed down to one.
+   */
+  hideAddQueryButton?: boolean;
   onChange: (queries: QueryDefinition[]) => void;
   onQueryRun: (index: number, query: QueryDefinition) => void;
 }
@@ -79,12 +84,21 @@ function useDefaultQueryDefinition(
  * It allows adding, removing and editing queries.
  * @param queryTypes The list of query types that the underlying editor will propose
  * @param queries The list of query definitions to render
+ * @param hideAddQueryButton Hide the "Add Query" button when only a single query is accepted
  * @param onChange The callback to call when the queries are modified
  * @constructor
  */
 
 export const MultiQueryEditor = forwardRef<PluginEditorRef, MultiQueryEditorProps>((props, ref): ReactElement => {
-  const { queryTypes, queries = [], queryResults, filteredQueryPlugins, onChange, onQueryRun } = props;
+  const {
+    queryTypes,
+    queries = [],
+    queryResults,
+    filteredQueryPlugins,
+    hideAddQueryButton,
+    onChange,
+    onQueryRun,
+  } = props;
   const { defaultInitialQueryDefinition, isLoading } = useDefaultQueryDefinition(queryTypes, filteredQueryPlugins);
   // State for which queries are collapsed
   const [queriesCollapsed, setQueriesCollapsed] = useState(queries.map(() => false));
@@ -167,9 +181,11 @@ export const MultiQueryEditor = forwardRef<PluginEditorRef, MultiQueryEditorProp
           />
         ))}
       </Stack>
-      <Button variant="contained" startIcon={<AddIcon />} sx={{ marginTop: 1 }} onClick={handleQueryAdd}>
-        Add Query
-      </Button>
+      {!hideAddQueryButton && (
+        <Button variant="contained" startIcon={<AddIcon />} sx={{ marginTop: 1 }} onClick={handleQueryAdd}>
+          Add Query
+        </Button>
+      )}
     </>
   );
 });

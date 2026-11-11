@@ -12,7 +12,7 @@
 // limitations under the License.
 
 import type { QueryPluginType } from '@perses-dev/spec';
-import { render, cleanup } from '@testing-library/react';
+import { render, cleanup, screen } from '@testing-library/react';
 
 import { MultiQueryEditor } from './MultiQueryEditor';
 
@@ -60,5 +60,19 @@ describe('MultiQueryEditor', () => {
     // Give any effects a chance to run before asserting no persistence happened.
     await new Promise((resolve) => setTimeout(resolve, 0));
     expect(onChange).not.toHaveBeenCalled();
+  });
+
+  it('hides the add query button when hideAddQueryButton is set', () => {
+    const props = {
+      queryTypes: ['AlertsQuery'] as QueryPluginType[],
+      onChange: vi.fn(),
+      onQueryRun: vi.fn(),
+    };
+
+    const { rerender } = render(<MultiQueryEditor {...props} />);
+    expect(screen.getByRole('button', { name: 'Add Query' })).toBeInTheDocument();
+
+    rerender(<MultiQueryEditor {...props} hideAddQueryButton />);
+    expect(screen.queryByRole('button', { name: 'Add Query' })).not.toBeInTheDocument();
   });
 });
